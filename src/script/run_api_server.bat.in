@@ -1,0 +1,12 @@
+@echo off
+
+rem if "h" == "h" goto begin
+rem mshta vbscript:createobject("wscript.shell").run("""%~nx0"" h",0)(window.close)&&exit
+rem :begin
+
+set PATH=@SITE_PACKAGE_PY_SIDE2_HOME@;%PATH%
+set PYTHONPATH=@SITE_PACKAGE_HOME@;%PYTHONPATH%
+
+
+call @WS_EXTRA_PYTHON_INTERPRETER@ @PYTHON_API_ROOT@\src\IN_API_SERVER_RUN.py %*
+

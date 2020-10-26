@@ -1,0 +1,9 @@
+# pychram
+.idea
+
+# python
+*.pyc
+__pycache__
+
+# script
+src/script/run_api_server.bat
