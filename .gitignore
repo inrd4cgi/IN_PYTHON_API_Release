@@ -7,3 +7,6 @@ __pycache__
 
 # script
 src/script/run_api_server.bat
+
+# log
+log.txt

@@ -1,4 +1,0 @@
-@echo off
-
-call @WS_EXTRA_PYTHON_INTERPRETER@ @PYTHON_API_ROOT@\src\script\sum_of_two_numbers.py %*
-
