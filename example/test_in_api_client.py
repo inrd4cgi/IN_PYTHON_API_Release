@@ -97,6 +97,20 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # _recursivePrint(files)
 
 
+# -------------------- 如何获取 doc --------------------
+# 在其它地方可直接 help(InApiClient)
+#
+# 在 Maya 里需要
+# import codecs
+# for func in dir(InApiClient):
+#     doc = eval('InApiClient.%s' % func).__doc__
+#     print('-'*60)
+#     print func, '\n'
+#     if doc:
+#         s = codecs.decode(doc, 'utf-8')
+#         print s
+
+
 
 # ------------------------------ Get ------------------------------
 _test_Get = False
@@ -138,7 +152,6 @@ if _test_Get:
     pass
 
     # _recursivePrint(resources)
-
 
 
 # ------------------------------ Tag ------------------------------
@@ -328,7 +341,7 @@ _test_Asset = False
 if _test_Asset:
 
     # ---------- Create Asset ----------
-    i = 6
+    i = 7
     asset_name = 'BonAsset_%s' % i
     project_id, workflow_id, asset_color = 217, 2083, ''
     tags = [ ['my_tag_name', '#ffffff'], ['my_tag_name_2', ''] ] # [ [tag_name, tag_color] ]
@@ -341,6 +354,7 @@ if _test_Asset:
 
     # ---------- Get Asset Info ----------
     # assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
+    # asset_id = 963
     asset = in_api.getAssetInfo(asset_id=asset_id)
     _recursivePrint(asset)
 
@@ -349,7 +363,7 @@ if _test_Asset:
     # assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
 
     # ---------- Edit Asset ----------
-    r = in_api.editAsset(asset_id=947, color='#000000', description='Edit Asset by Python API')
+    r = in_api.editAsset(asset_id=asset_id, color='#000000', description='Edit Asset by Python API')
     print('edit asset:', r)
 
 
@@ -368,7 +382,7 @@ if _test_Scene:
     print('scene_id:', scene_id)
 
     # e.g. {'scene_id': 'scene_name'}
-    scenes = in_api.getSceneList(project_id=217)
+    scenes = in_api.getSceneList(project_id=project_id)
     pprint(scenes)
     assert scene_id in scenes
 
@@ -400,7 +414,7 @@ if _test_Shot:
     # shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
 
     # ---------- Edit Shot ----------
-    r = in_api.editShot(shot_id=693, color='#000000', description='Edit Asset by Python API')
+    r = in_api.editShot(shot_id=shot_id, color='#000000', description='Edit Asset by Python API')
     print('edit shot:', r)
 
 
@@ -654,8 +668,14 @@ if _test_Variant:
 # assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
 # _recursivePrint(assets)
 
+
 # asset = in_api.getAssetInfo(asset_id=947)
 # help(asset)
+
+
+# tasks = in_api.getTasksByConditions(project_id=217)    # object_ids=[644, 659], task_ids=[5217, 5319, 5320], project_id=72
+# _recursivePrint(tasks)
+
 
 
 
