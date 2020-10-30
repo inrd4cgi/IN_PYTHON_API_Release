@@ -13,7 +13,7 @@ import unittest
 
 # IN Python Module
 from IN_API_CLIENT import InApiClient
-from IN_API_CLIENT import _recursivePrint
+from IN_API_CLIENT import printer
 import IN_DATA_STRUCTURE
 import IN_STREAMING
 import IN_COMMON
@@ -70,13 +70,14 @@ from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus
 
 in_map_dir = 'I:/'
 
-ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
+ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'root', 'wsrnd', 'DCC', "http://127.0.0.1:20618"
+
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
 # IN_API_SERVER_MANAGER 等地方的 webserver 都使用了这些默认值, 所以...
-ip = IN_COMMON.IN_SERVER_IP_ADDRESS
-port = IN_COMMON.IN_SERVER_PORT
-webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
+# ip = IN_COMMON.IN_SERVER_IP_ADDRESS
+# port = IN_COMMON.IN_SERVER_PORT
+# webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
 
 
 # 第一次登陆
@@ -92,14 +93,16 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 
 # -------------------- Examples --------------------
-# projs = in_api.getProjectFiles()
-# _recursivePrint(projs)    # 只是测试打印, 这个 function 可能存在问题, 可自行 print
+projs = in_api.getProjectFiles()
+printer(projs)    # 只是测试打印, 这个 function 可能存在问题, 可自行 print
 
-# proj = in_api.getProject(project_id=217)
-# _recursivePrint(proj)
+
+# proj = in_api.getProject(project_id=88)
+# printer(proj)
 
 # files = in_api.listdir(folder_id=12873)
-# _recursivePrint(files)
+# printer(files)
+
 
 
 # -------------------- 如何获取 doc --------------------
@@ -115,7 +118,8 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 #         s = codecs.decode(doc, 'utf-8')
 #         print s
 
-
+# files = in_api.listdir(folder_id=13027)
+# printer(files)
 
 # ------------------------------ Get ------------------------------
 _test_Get = False
@@ -140,7 +144,7 @@ if _test_Get:
     resources = in_api.getTagResource(tag_name="BonAssetTag_1")
     teams_info = in_api.getTeams(department_id=181)    # department_id=0
     team_info = in_api.getTeam(team_id=400)
-    assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
+    assets = in_api.getAssetsByCondition(project_id=222)    # project_id=72, asset_ids=[435]
     asset = in_api.getAssetInfo(asset_id=947)
     departments = in_api.getDepartments()
     department = in_api.getDepartment(department_id=181)
@@ -179,7 +183,7 @@ if _test_Tag:
     # ---------- Get Tag ----------
     resources = in_api.getTagResource(tag_name=tag_name)
     print('Get Tag `%s`: %s' % (tag_name, len(resources)))
-    _recursivePrint(resources)
+    printer(resources)
 
 
     # ---------- Remove Tag ----------
@@ -205,7 +209,7 @@ if _test_Streaming:
 
     def testDownload():
         path = r'I:\demo\s.mp4'
-        file_id = 5358
+        file_id = 5213
         # 不填 dst_path, 则下载到映射路径下
         r = in_api.download(file_id=file_id, dst_path=None, version=None)
         print('download: ', r)
@@ -304,7 +308,7 @@ if _test_Streaming:
         assert r is True
 
         files = in_api.listdir(folder_id=12961)    # library: 12161
-        _recursivePrint(files)
+        printer(files)
 
 
     def testUploadCommentFile():
@@ -327,7 +331,7 @@ if _test_Streaming:
         assert r is True
 
         placeholder_list = in_api.getPlaceHolderList()
-        _recursivePrint(placeholder_list)
+        printer(placeholder_list)
 
 
     # testUpload()
@@ -365,7 +369,7 @@ if _test_Asset:
     # assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
     # asset_id = 963
     asset = in_api.getAssetInfo(asset_id=asset_id)
-    _recursivePrint(asset)
+    printer(asset)
 
 
     # And
@@ -438,7 +442,7 @@ if _test_Task:
     # -------------------- Get Task Info --------------------
     def testGetTaskInfo(task_id):
         task = in_api.getTaskFromID(task_id)
-        # _recursivePrint(task)
+        # printer(task)
         print('Task:', task.taskId, task.taskName)
 
         # And
@@ -684,7 +688,7 @@ if _test_Variant:
         print(variant.variantId, variant.variantName)
         if variant.variantName == variant_name:
             for task_file in variant.taskFiles:
-                _recursivePrint(task_file.files)
+                printer(task_file.files)
 
 
     # ----- Edit Variant -----
@@ -695,7 +699,7 @@ if _test_Variant:
 
     # ----- Get Asset Variant Record/Usage -----
     # variants_record = in_api.getVariantRecordByAssetId(asset_id=asset_id)
-    # _recursivePrint(variants_record)
+    # printer(variants_record)
 
 
     # ----- Delete Variant -----
