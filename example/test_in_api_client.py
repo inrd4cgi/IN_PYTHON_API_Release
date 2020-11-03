@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Python Module
 
 import sys
 import inspect
@@ -21,7 +20,7 @@ import IN_COMMON
 from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus, CommentType, TaskStatus, PipelineType
 
 
-
+# help(IN_DATA_STRUCTURE.TaskStatus)
 
 # ---------------------- 需要添加本项目路径 ----------------------------
 # 如果 3rd_party_plugins 和 Launch Tool 里已添加路径可不加
@@ -74,14 +73,13 @@ ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'root',
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
 # IN_API_SERVER_MANAGER 等地方的 webserver 都使用了这些默认值, 所以...
-# ip = IN_COMMON.IN_SERVER_IP_ADDRESS
-# port = IN_COMMON.IN_SERVER_PORT
-# webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
+ip = IN_COMMON.IN_SERVER_IP_ADDRESS
+port = IN_COMMON.IN_SERVER_PORT
+webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
 
 
 # 第一次登陆
 in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, ctype, webserver)
-
 
 # 如果之前已启动过 Server, 并登录过, 那么在其它 DCC, 可以不用再登录
 # in_api = InApiClient(in_map_dir, webserver=webserver)
@@ -90,10 +88,9 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # in_api = InApiClient.instance()
 
 
-
 # -------------------- Examples --------------------
-projs = in_api.getProjectFiles()
-printer(projs)    # 只是测试打印, 这个 function 可能存在问题, 可自行 print
+# projs = in_api.getProjectFiles()
+# printer(projs)    # 只是测试打印, 这个 function 可能存在问题, 可自行 print
 
 
 # proj = in_api.getProject(project_id=88)
@@ -117,8 +114,6 @@ printer(projs)    # 只是测试打印, 这个 function 可能存在问题, 可�
 #         s = codecs.decode(doc, 'utf-8')
 #         print s
 
-# files = in_api.listdir(folder_id=13027)
-# printer(files)
 
 # ------------------------------ Get ------------------------------
 _test_Get = False
@@ -160,7 +155,6 @@ if _test_Get:
     logs = in_api.getLogs(from_time='2020-4-10 14:13:23')
     storage = in_api.getStorageInfos(project_id=217)
     pass
-
 
 
 # ------------------------------ Tag ------------------------------
