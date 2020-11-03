@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+import os
 import sys
+import time
 import inspect
 from pprint import pprint
 import collections
@@ -114,6 +116,9 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 #         s = codecs.decode(doc, 'utf-8')
 #         print s
 
+# -----------------------------------------------------------------
+
+
 
 # ------------------------------ Get ------------------------------
 _test_Get = False
@@ -154,6 +159,9 @@ if _test_Get:
     jobs = in_api.getJobList()
     logs = in_api.getLogs(from_time='2020-4-10 14:13:23')
     storage = in_api.getStorageInfos(project_id=217)
+
+    task_workflow = in_api.getWorkFlowInstance(resource_id=947, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+
     pass
 
 
@@ -201,8 +209,9 @@ if _test_Streaming:
 
 
     def testDownload():
-        path = r'I:\demo\s.mp4'
-        file_id = 5213
+        path = r'I:/BonProject/assets/BonAsset_9/none/12888.jpg'
+        file_id = 5615
+        file_id = 5610
         # 不填 dst_path, 则下载到映射路径下
         r = in_api.download(file_id=file_id, dst_path=None, version=None)
         print('download: ', r)
@@ -277,9 +286,13 @@ if _test_Streaming:
 
 
     def testUploadOutputFile():
-        path = 'I:/BonProject/assets/GG/output/faces/5.jpg'
-        task_id = 6478
+        path = 'I:/BonProject/assets/BonAsset_9/none/a.jpg'
+        task_id = 6622
 
+        # 别用这个接口了..., 看看下面的 `addTaskOutputFile`,
+        # 调用 `addTaskOutputFile`, 添加 output file 路径
+        # 然后调 `checkout(file_id, download=False)`
+        # 最后调 `checkin` 就能解决问题了
         r = in_api.uploadOutputFile(task_id=task_id, src_path=path)
         assert r is True
 
@@ -481,6 +494,10 @@ if _test_Task:
         print('assign task to person: %s' % r)
 
     # -------------------- Update Task Status --------------------
+    # 想要获得任务的流向, 判断任务先后顺序, 需要调用 `getWorkFlowInstance` 接口
+    # 判断 TaskWorkflow.taskList.parentTaskIdList,
+    # 没有 parent 的, 就证明是单个节点, 或是最 top 的节点
+    # 这里只列出了 parent attribute, 没有 child
 
     def testToWorkInProgress(task_id):
         # ----- to WorkInProgress -----
@@ -592,7 +609,6 @@ if _test_Task:
     def testTaskOutputFile(task_id):
         # ----- Task Output & Intermediate File -----
 
-
         # 你要添加的 OutputFile 路径
         relpath_n_name = ('/BonProject/assets/GG/geo', 'source.mb')    # e.g. file
         # relpath_n_name = (r'\BonProject\assets\GG\geo', '')    # e.g. folder
@@ -618,6 +634,8 @@ if _test_Task:
         print('add output file, placeholder_file %s: %s' % (placeholder_file_id, r))
 
 
+        # 检查是否添加成功, 添加之后服务器可能有延迟, 所以下面可能有报错, 可以 time.sleep 一下
+        time.sleep(2)
         file_id = None
         # Get
         files = in_api._getTaskRelatedFiles(task_id=task_id, file_type=TaskFileType.Output)
@@ -653,7 +671,7 @@ if _test_Task:
     task_id = 6478
     file_id = 5213
 
-    testGetTaskInfo(task_id)
+    # testGetTaskInfo(task_id)
     # testEditTask()
     # testToWorkInProgress(task_id)
     # testToPendingApproval(task_id)
