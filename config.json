@@ -27,6 +27,18 @@
     "USING_RECEIVE_BLOCKING": false,
     "USING_INSIDE_PYTHON_ENV": true,
     "USING_COLORFUL_CONSOLE_FOR_MESSAGE": false,
+    "PROJECT_FILE_FORMAT": {
+        "Maya": [
+            "ma",
+            "mb"
+        ],
+        "Houdini": [
+            "hip",
+            "hiplc",
+            "hipnc"
+        ],
+        "Unreal": []
+    },
     "ENVIRONMENTS_VARIABLES": {
         "WS_EXTRA_PYTHON_INTERPRETER": "G:\\Python3\\python.exe",
         "WS_IN_MAPPING_DIRECTORY": "G:\\IN_map_dir"
