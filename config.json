@@ -42,5 +42,6 @@
     "ENVIRONMENTS_VARIABLES": {
         "WS_EXTRA_PYTHON_INTERPRETER": "G:\\Python3\\python.exe",
         "WS_IN_MAPPING_DIRECTORY": "G:\\IN_map_dir"
-    }
+    },
+    "VERSION": "beta 1.0.12"
 }
