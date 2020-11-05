@@ -39,9 +39,14 @@
         ],
         "Unreal": []
     },
+    "MAYA_INTERNAL_IN_INFO": {
+        "import_file_sets_name": "_SET_Loaded",
+        "in_node_name": "_IN_INFO_",
+        "attr_taskId_name": "task_id"
+    },
     "ENVIRONMENTS_VARIABLES": {
         "WS_EXTRA_PYTHON_INTERPRETER": "G:\\Python3\\python.exe",
         "WS_IN_MAPPING_DIRECTORY": "G:\\IN_map_dir"
     },
-    "VERSION": "beta1.0.12.4"
+    "VERSION": "beta1.0.13.1"
 }
