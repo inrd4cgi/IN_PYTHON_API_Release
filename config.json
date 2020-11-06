@@ -45,8 +45,8 @@
         "attr_taskId_name": "task_id"
     },
     "ENVIRONMENTS_VARIABLES": {
-        "WS_EXTRA_PYTHON_INTERPRETER": "G:\\Python3\\python.exe",
-        "WS_IN_MAPPING_DIRECTORY": "G:\\IN_map_dir"
+        "WS_EXTRA_PYTHON_INTERPRETER": "",
+        "WS_IN_MAPPING_DIRECTORY": ""
     },
-    "VERSION": "beta1.0.15.1"
+    "VERSION": "beta1.0.15.2"
 }
