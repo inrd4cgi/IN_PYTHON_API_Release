@@ -6,6 +6,7 @@ import INSDriver
 from INSDriver import *
 from multiprocessing import Process
 
+
 def works(func, arg, worknum):
     proc_record = []
     for i in range(worknum):
@@ -130,10 +131,22 @@ def test_getHistory():
     r = INI.GetFileHistory(filebase, bb)
     print(bb.get_value())
 
+def test_get_asset():
+    fiter =  INS.AssetFilterParam()
+    fiter.projectId = 222
+    jstr = str('[') + fiter.toJsonString() + str(']')
+    pp = INI.jsonRequest(541, jstr)
+    print(pp.encode("utf-8"))
+
+def test_edit_task_assignee():
+    jstr = "[[2842,2843], 20200437]"
+    pp = INI.jsonRequest(528, jstr)
+    print(pp.encode("utf-8"))
+
 def conn_test(j):
     app = INI.initApp()
-    ipAddr = "192.168.17.27"
-    port = 7000
+    ipAddr = "192.168.17.25"
+    port = 6060
     INI.ConnectToServer(ipAddr, port)
     ret = INI.Login("root", "wsrnd", True, str(j))
     if ret != 1:
@@ -143,7 +156,7 @@ def conn_test(j):
     #time.sleep(1);
     times = 1
     for i in range(times):
-        test_getHistory()
+        test_edit_task_assignee()
     
     
     #通过调节接口调用次数来给服务器压力
