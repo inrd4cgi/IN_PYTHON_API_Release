@@ -22,7 +22,7 @@ import IN_COMMON
 from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus, CommentType, TaskStatus, PipelineType
 
 
-# help(IN_DATA_STRUCTURE.TaskStatus)
+
 
 # ---------------------- 需要添加本项目路径 ----------------------------
 # 如果 3rd_party_plugins 和 Launch Tool 里已添加路径可不加
@@ -49,9 +49,9 @@ from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus
 
 # ------ 在 DCC 里可运行以下命令 启动/停止 Server ------
 # import IN_API_SERVER_MANAGER
-
+#
 # print("prepare: {}".format(IN_API_SERVER_MANAGER.prepare_server()))
-
+#
 # servers = IN_API_SERVER_MANAGER.check_server()
 # print('servers:', servers)
 # if not servers:
@@ -70,14 +70,14 @@ from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus
 
 in_map_dir = 'I:/'
 
-ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'root', 'wsrnd', 'DCC', "http://127.0.0.1:20618"
+ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
 # IN_API_SERVER_MANAGER 等地方的 webserver 都使用了这些默认值, 所以...
-ip = IN_COMMON.IN_SERVER_IP_ADDRESS
-port = IN_COMMON.IN_SERVER_PORT
-webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
+# ip = IN_COMMON.IN_SERVER_IP_ADDRESS
+# port = IN_COMMON.IN_SERVER_PORT
+# webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
 
 
 # 第一次登陆
@@ -92,13 +92,12 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 # -------------------- Examples --------------------
 # projs = in_api.getProjectFiles()
-# printer(projs)    # 只是测试打印, 这个 function 可能存在问题, 可自行 print
-
+# printer(projs)
 
 # proj = in_api.getProject(project_id=88)
 # printer(proj)
 
-# files = in_api.listdir(folder_id=12873)
+# files = in_api.listdir(folder_id=12880)
 # printer(files)
 
 
@@ -210,8 +209,7 @@ if _test_Streaming:
 
     def testDownload():
         path = r'I:/BonProject/assets/BonAsset_9/none/12888.jpg'
-        file_id = 5615
-        file_id = 5610
+        file_id = 5022
         # 不填 dst_path, 则下载到映射路径下
         r = in_api.download(file_id=file_id, dst_path=None, version=None)
         print('download: ', r)
@@ -610,10 +608,12 @@ if _test_Task:
         # ----- Task Output & Intermediate File -----
 
         # 你要添加的 OutputFile 路径
-        relpath_n_name = ('/BonProject/assets/GG/geo', 'source.mb')    # e.g. file
+        relpath_n_name = ('/BonProject/assets/BonAsset_100/none', 'a.b.c.mb')    # e.g. file
+        relpath_n_name = ('/BonProject/assets/BonAsset_100/none/a.b.c.d', '')    # e.g. file
+        # relpath_n_name = ('/BonProject/assets/GG/geo', 'source.mb')    # e.g. file
         # relpath_n_name = (r'\BonProject\assets\GG\geo', '')    # e.g. folder
 
-        suffix = 'mb'
+        suffix = 'folder'
         placeholder_file_id = None
 
         # Add
@@ -668,7 +668,7 @@ if _test_Task:
         return True
 
 
-    task_id = 6478
+    task_id = 6545
     file_id = 5213
 
     # testGetTaskInfo(task_id)
