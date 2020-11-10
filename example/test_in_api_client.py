@@ -22,7 +22,7 @@ import IN_COMMON
 from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus, CommentType, TaskStatus, PipelineType
 
 
-# help(IN_DATA_STRUCTURE.TaskStatus)
+
 
 # ---------------------- 需要添加本项目路径 ----------------------------
 # 如果 3rd_party_plugins 和 Launch Tool 里已添加路径可不加
@@ -48,43 +48,48 @@ from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus
 
 
 # ------ 在 DCC 里可运行以下命令 启动/停止 Server ------
-# import IN_API_SERVER_MANAGER
-
-# print("prepare: {}".format(IN_API_SERVER_MANAGER.prepare_server()))
-
-# servers = IN_API_SERVER_MANAGER.check_server()
-# print('servers:', servers)
-# if not servers:
-#     assert IN_API_SERVER_MANAGER.start_server() is True
+# import IN_API_CLIENT
+#
+# # result: [pid]
+# if IN_API_CLIENT.check_server():
+#     IN_API_CLIENT.stop_server()
+#
+# assert IN_API_CLIENT.start_server() is True
 
 
 # -------------------- 注意 --------------------
 # 在结束的时候使用 stop_server
-# 或者在更新之后注意后台有没 server 存在, 即 python.exe
+# 或者在更新 API 之后注意后台有没 server 存在, 即 python.exe
 
-# print("stop: {}".format(IN_API_SERVER_MANAGER.stop_server()))
+# print("stop: {}".format(IN_API_CLIENT.stop_server()))
 
+
+# 打印信息太多, 请调用
+import logging
+logging.getLogger().setLevel(logging.ERROR)
 
 
 # -------------------- 连接到刚打开的 Local Server --------------------
 
 in_map_dir = 'I:/'
 
-ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'root', 'wsrnd', 'DCC', "http://127.0.0.1:20618"
+ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
-# IN_API_SERVER_MANAGER 等地方的 webserver 都使用了这些默认值, 所以...
-ip = IN_COMMON.IN_SERVER_IP_ADDRESS
-port = IN_COMMON.IN_SERVER_PORT
-webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
+# 你可调用 `IN_COMMON` 获得这些值
+# ip = IN_COMMON.IN_SERVER_IP_ADDRESS
+# port = IN_COMMON.IN_SERVER_PORT
+# webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
 
 
 # 第一次登陆
 in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, ctype, webserver)
 
+
 # 如果之前已启动过 Server, 并登录过, 那么在其它 DCC, 可以不用再登录
 # in_api = InApiClient(in_map_dir, webserver=webserver)
+
 
 # 在不同的 py 文件, 可直接调用 instance
 # in_api = InApiClient.instance()
@@ -92,15 +97,13 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 # -------------------- Examples --------------------
 # projs = in_api.getProjectFiles()
-# printer(projs)    # 只是测试打印, 这个 function 可能存在问题, 可自行 print
+# printer(projs)
 
-
-# proj = in_api.getProject(project_id=88)
+# proj = in_api.getProject(project_id=217)
 # printer(proj)
 
-# files = in_api.listdir(folder_id=12873)
+# files = in_api.listdir(folder_id=12161)
 # printer(files)
-
 
 
 # -------------------- 如何获取 doc --------------------
@@ -123,13 +126,13 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # ------------------------------ Get ------------------------------
 _test_Get = False
 if _test_Get:
-    projs = in_api.getProjectFiles()
+    proj_files = in_api.getProjectFiles()
     projs = in_api.getProjects()
     proj = in_api.getProject(217)    # project_id=72
     files = in_api.listdir(folder_id=13027)
     file = in_api.getFileFromId(file_id=4985)
     file_histories = in_api.getFileHistory(file_id=3650)
-    file_histories = in_api.getFileHistoryList(task_id=1890)    # 1890, 1891, 1896, 2827, 2829, 2841, 2844, 2862, 2889
+    file_histories_b = in_api.getFileHistoryList(task_id=1890)    # 1890, 1891, 1896, 2827, 2829, 2841, 2844, 2862, 2889
     workflow_list = in_api.getWorkFlowTempls(project_id=217, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Shot)
     workflow = in_api.getWorkFlowTempl(workflow_id=2083)
     scenes = in_api.getSceneList(project_id=174)    # 80, 137, 167, 174, 177, 199
@@ -140,10 +143,10 @@ if _test_Get:
     placeholder_list = in_api.getPlaceHolderList()
     shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
     tags = in_api.getTagInfo()    # tag_name="TestTag", tag_object_id=6, resource_id=90
-    resources = in_api.getTagResource(tag_name="BonAssetTag_1")
+    resources = in_api.getTagResource(tag_name="BonAssetTag_2")
     teams_info = in_api.getTeams(department_id=181)    # department_id=0
     team_info = in_api.getTeam(team_id=400)
-    assets = in_api.getAssetsByCondition(project_id=222)    # project_id=72, asset_ids=[435]
+    assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
     asset = in_api.getAssetInfo(asset_id=947)
     departments = in_api.getDepartments()
     department = in_api.getDepartment(department_id=181)
@@ -159,24 +162,26 @@ if _test_Get:
     jobs = in_api.getJobList()
     logs = in_api.getLogs(from_time='2020-4-10 14:13:23')
     storage = in_api.getStorageInfos(project_id=217)
-
     task_workflow = in_api.getWorkFlowInstance(resource_id=947, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
-
-    pass
 
 
 # ------------------------------ Tag ------------------------------
 _test_Tag = False
 if _test_Tag:
 
-    tag_name = 'BonAssetTag_2'
-    resource_id = 947
-    tag_object_id = TagObjectID.Asset    # Folder, Workflow, ...
+    # tag_name, resource_id, tag_object_id = 'BonProjectTag_1', 217, TagObjectID.Project
+    # tag_name, resource_id, tag_object_id = 'BonWorkflowTag_1', 5748, TagObjectID.Workflow
+    # tag_name, resource_id, tag_object_id = 'BonAssetTag_1', 1029, TagObjectID.Asset
+    # tag_name, resource_id, tag_object_id = 'BonShotTag_1', 690, TagObjectID.Shot
+    # tag_name, resource_id, tag_object_id = 'BonTaskTag_1', 6808, TagObjectID.Task
+    # tag_name, resource_id, tag_object_id = 'BonFolderTag_1', 13200, TagObjectID.Folder
+    tag_name, resource_id, tag_object_id = 'BonFileTag_1', 5439, TagObjectID.File
+
 
 
     # ---------- Make Tag ----------
     # result = in_api.makeTag(tag_name="cgfilm", resource_id=90, tag_object_id=TagObjectID.Folder)           # folder
-    result = in_api.makeTag(tag_name=tag_name, resource_id=resource_id, tag_object_id=TagObjectID.Asset)     # asset
+    result = in_api.makeTag(tag_name=tag_name, resource_id=resource_id, tag_object_id=tag_object_id)     # asset
     # result = in_api.makeTag(tag_name="TestTag", resource_id=2031, tag_object_id=TagObjectID.Workflow)      # task
     assert result.code == 1
 
@@ -209,17 +214,16 @@ if _test_Streaming:
 
 
     def testDownload():
-        path = r'I:/BonProject/assets/BonAsset_9/none/12888.jpg'
-        file_id = 5615
-        file_id = 5610
+        path = r'I:/BonProject/assets/BonAsset_9/none/b.jpg'
+        file_id = 5735
         # 不填 dst_path, 则下载到映射路径下
         r = in_api.download(file_id=file_id, dst_path=None, version=None)
         print('download: ', r)
 
 
     def testCheckIn():
-        path = r'I:\demo\assets\s.png'
-        file_id = 5036
+        path = r'C:\Users\admin\Downloads\x.txt'
+        file_id = 5748
         file = in_api.getFileFromId(file_id=file_id)
 
         if file.status != IN_DATA_STRUCTURE.FileStatus.CheckOuted:
@@ -230,7 +234,7 @@ if _test_Streaming:
 
 
     def testCheckOut():
-        file_id = 5036
+        file_id = 5439
         file = in_api.getFileFromId(file_id=file_id)
 
         if file.status != IN_DATA_STRUCTURE.FileStatus.CheckIn:
@@ -286,7 +290,7 @@ if _test_Streaming:
 
 
     def testUploadOutputFile():
-        path = 'I:/BonProject/assets/BonAsset_9/none/a.jpg'
+        path = 'I:/BonProject/assets/BonAsset_9/none/c.jpg'
         task_id = 6622
 
         # 别用这个接口了..., 看看下面的 `addTaskOutputFile`,
@@ -343,7 +347,7 @@ if _test_Streaming:
     # testUpload()
     # testDownload()
     # testCheckIn()
-    # testCheckOut()
+    testCheckOut()
     # testUploadReference()
     # testUploadRequired()
     # testUploadOutputFile()
@@ -360,13 +364,13 @@ if _test_Asset:
     # 创建 Asset 之后, 会按 workflow 自动创建对应数量的任务
     # 如果你想 Assign Task to Person, 你需要自己获取任务 id, 详见下面 `testEditTask`
 
-    i = 9
+    i = 16
     asset_name = 'BonAsset_%s' % i
     project_id, workflow_id, asset_color = 217, 2083, ''
     tags = [ ['my_tag_name', '#ffffff'], ['my_tag_name_2', ''] ] # [ [tag_name, tag_color] ]
 
     asset_id = in_api.createAsset(
-        project_id, workflow_id, asset_name, asset_color,
+        project_id, workflow_id, asset_name, asset_color=asset_color,
         description='Created By Python API', tags=tags)
     print('asset_id:', asset_id)
 
@@ -376,7 +380,6 @@ if _test_Asset:
     # asset_id = 963
     asset = in_api.getAssetInfo(asset_id=asset_id)
     printer(asset)
-
 
     # And
     # assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
@@ -457,7 +460,7 @@ if _test_Task:
     # -------------------- Edit Task Info --------------------
 
     def testEditTask():
-        task_id = 6623
+        task_id = 6808
 
 
         # ----- Edit Task -----
@@ -474,8 +477,11 @@ if _test_Task:
 
         person_id = 20200480
         team_id = 400
-        issue_date = '2020-10-30 00:00:00'
-        due_date = '2020-11-08 00:00:00'
+        issue_date = '2020-11-09 00:00:00'    # 开始时间
+        due_date = '2020-11-30 00:00:00'    # 结束时间
+        privilege_start_time = '2020-11-09 00:00:00'
+        privilege_end_time = '2020-11-30 00:00:00'
+
 
         # -----------------------------------------------------
         # 第一次 Assign Task to Person, `需要至少传入下面这几个参数`
@@ -484,14 +490,24 @@ if _test_Task:
             task_id,
             assignee_team_id=team_id,
             assignee_person_id=person_id,
-            storage_type=storage_list[0].storageType,
-                # e.g. 'hdd', 创建项目时会要求选一个 storage_type, 默认为 None, 会存储在第一个 storage
-            issue_date=issue_date,
-                # 开始时间, 需按照具体格式填写
-            due_date=due_date
-                # 结束时间, 需按照具体格式填写
+            storage_type=storage_list[0].storageType, # e.g. 'hdd', 创建项目时会要求选一个 storage_type, 默认为 None, 会存储在第一个 storage
+            issue_date=issue_date, # 开始时间, 需按照具体格式填写
+            due_date=due_date, # 结束时间, 需按照具体格式填写
+            privilege_start_time=privilege_start_time,
+            privilege_end_time=privilege_end_time,
         )
         print('assign task to person: %s' % r)
+
+
+    def testEditTask_Others():
+        task_ids = [6787, 6788, 6789]
+        assignee = 20200480
+        issue_date = '2020-11-09 00:00:00'    # 开始时间
+        due_date = '2020-11-30 00:00:00'    # 结束时间
+
+        in_api.editTaskAssignee(task_ids, assignee)
+        in_api.editTaskTime(task_ids, issue_date, due_date)
+
 
     # -------------------- Update Task Status --------------------
     # 想要获得任务的流向, 判断任务先后顺序, 需要调用 `getWorkFlowInstance` 接口
@@ -610,10 +626,12 @@ if _test_Task:
         # ----- Task Output & Intermediate File -----
 
         # 你要添加的 OutputFile 路径
-        relpath_n_name = ('/BonProject/assets/GG/geo', 'source.mb')    # e.g. file
+        relpath_n_name = ('/BonProject/assets/BonAsset_100/none', 'a.b.c.mb')    # e.g. file
+        relpath_n_name = ('/BonProject/assets/BonAsset_100/none/a.b.c.d', '')    # e.g. file
+        # relpath_n_name = ('/BonProject/assets/GG/geo', 'source.mb')    # e.g. file
         # relpath_n_name = (r'\BonProject\assets\GG\geo', '')    # e.g. folder
 
-        suffix = 'mb'
+        suffix = 'folder'
         placeholder_file_id = None
 
         # Add
@@ -668,11 +686,12 @@ if _test_Task:
         return True
 
 
-    task_id = 6478
+    task_id = 6545
     file_id = 5213
 
     # testGetTaskInfo(task_id)
-    # testEditTask()
+    testEditTask()
+    # testEditTask_Others()
     # testToWorkInProgress(task_id)
     # testToPendingApproval(task_id)
     # testTaskReferenceFile(task_id, file_id)

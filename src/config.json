@@ -1,0 +1,48 @@
+{
+    "IN_SERVER_IP_ADDRESS": "192.168.17.212",
+    "IN_SERVER_PORT": 7000,
+    "API_SERVER_IP_ADDRESS": "127.0.0.1",
+    "API_SERVER_PORT": 20618,
+    "API_SEGMENT_PORT": 20619,
+    "API_LOGIN_TYPE_DEFAULT": "INSMAYA",
+    "CLIENT_WAIT_SERVER_OVERTIME_NORMAL": 7,
+    "CLIENT_WAIT_SERVER_OVERTIME_IGNORE": 30,
+    "SERVER_PRINT_CLIENT_LIST_INTERVALS_TIME": 10,
+    "SERVER_CLOSE_MORE_STEP": 1,
+    "SERVER_LISTEN_COUNT": 5,
+    "DEBUG_MSG_LENGTH": 64,
+    "API_USING_MODE": 3,
+    "CLIENT_API_CALL_OVERTIME": 15,
+    "SERVER_START_OVERTIME": 10,
+    "USING_PYTHON_LOGGER_MODULE_FOR_STREAM": true,
+    "DISABLE_ALL_OF_STD_STREAM": false,
+    "LOGGER_LEVEL": "info",
+    "LOGGER_STREAM_LEVEL": "info",
+    "LOGGER_FILE_LEVEL": "error",
+    "USING_PYTHON_SUBPROCESS_DW_FLAGS": true,
+    "USING_EXCEPTION_FULL_MSG": false,
+    "USING_PYTHON_STDOUT_STREAM": true,
+    "USING_PYTHON_SUBPROCESS": true,
+    "USING_API_SERVER_MULTIPROCESSING": true,
+    "USING_RECEIVE_BLOCKING": false,
+    "USING_INSIDE_PYTHON_ENV": true,
+    "USING_COLORFUL_CONSOLE_FOR_MESSAGE": false,
+    "SERVICE_PYTHON_VERSION_3": false,
+    "PROJECT_FILE_FORMAT": {
+        "Maya": [
+            "ma",
+            "mb"
+        ],
+        "Houdini": [
+            "hip",
+            "hiplc",
+            "hipnc"
+        ],
+        "Unreal": []
+    },
+    "ENVIRONMENTS_VARIABLES": {
+        "WS_EXTRA_PYTHON_INTERPRETER": "",
+        "WS_IN_MAPPING_DIRECTORY": ""
+    },
+    "VERSION": "beta1.2.1.1"
+}

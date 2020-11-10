@@ -2,7 +2,6 @@ import os
 import sys
 
 import threading
-import IN_API_SERVER_MANAGER
 import IN_API_CLIENT
 import IN_COMMON
 
@@ -18,11 +17,11 @@ root_tmp    = os.path.join(IN_COMMON.ROOT_DIR, 'temp')
 
 def start_in_server():
     """
-    Using IN_API_SERVER_MANAGER
+    Using IN_API_CLIENT
     """
-    IN_COMMON.logger.info("prepare_server: {}".format(IN_API_SERVER_MANAGER.prepare_server(force=True)))
-    IN_COMMON.logger.info("start_server: {}".format(IN_API_SERVER_MANAGER.start_server(only=True)))
-    IN_COMMON.logger.info("check_server: {}".format(IN_API_SERVER_MANAGER.check_server()))
+    IN_COMMON.logger.info("prepare_server: {}".format(IN_API_CLIENT.prepare_server(force=True)))
+    IN_COMMON.logger.info("start_server: {}".format(IN_API_CLIENT.start_server(only=True)))
+    IN_COMMON.logger.info("check_server: {}".format(IN_API_CLIENT.check_server()))
 
 
 def start_in_server_with_new_thread():
@@ -34,11 +33,11 @@ def start_in_server_with_new_thread():
 
 
 def stop_server():
-    IN_COMMON.logger.info(IN_API_SERVER_MANAGER.restart_server())
+    IN_COMMON.logger.info(IN_API_CLIENT.restart_server())
 
 
 def restart_server():
-    IN_COMMON.logger.info(IN_API_SERVER_MANAGER.stop_server())
+    IN_COMMON.logger.info(IN_API_CLIENT.stop_server())
 
 
 def call_api_example():
