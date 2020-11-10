@@ -19,7 +19,6 @@ def start_in_server():
     """
     Using IN_API_CLIENT
     """
-    IN_COMMON.logger.info("prepare_server: {}".format(IN_API_CLIENT.prepare_server(force=True)))
     IN_COMMON.logger.info("start_server: {}".format(IN_API_CLIENT.start_server(only=True)))
     IN_COMMON.logger.info("check_server: {}".format(IN_API_CLIENT.check_server()))
 
@@ -46,8 +45,8 @@ def call_api_example():
     """
     IN_COMMON.logger.info("set_in_common_variables: {}".format(IN_API_CLIENT.api_call("set_in_common_variables", ["WS_IN_MAPPING_DIRECTORY", "I:/your_map_path"], )))
     IN_COMMON.logger.info("login_server: {}".format(IN_API_CLIENT.api_call("login_server", [username, password], )))
-    IN_COMMON.logger.info("get_tasks: {}".format(IN_API_CLIENT.api_call("get_tasks")))
-    IN_COMMON.logger.info("get_projects: {}".format(IN_API_CLIENT.api_call("get_projects")))
+    # IN_COMMON.logger.info("get_tasks: {}".format(IN_API_CLIENT.api_call("get_tasks")))
+    # IN_COMMON.logger.info("get_projects: {}".format(IN_API_CLIENT.api_call("get_projects")))
 
     # IN_COMMON.logger.info("download_file: {}".format(IN_API_CLIENT.api_call("download_file", [file_id, root_tmp])))
 
