@@ -1,0 +1,1 @@
+CreateObject("WScript.Shell").Run "cmd /c @RUN_API_SERVER.BAT@",0
