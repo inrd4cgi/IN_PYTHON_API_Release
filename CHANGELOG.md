@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.4] - 2020-11-11
+### Updated
+  * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
+    * Sequence Create-Time display
+  * **IN_PYTHON_API**
+    * convert all possibly exists the type of `unicode or bytes` to `str` by using `IN_COMMON.make_common_str`
+
 ## [1.2.3] - 2020-11-11
 ### Fixed
   * **IN_PYTHON_API** [`download_file`]
