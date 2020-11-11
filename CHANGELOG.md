@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.5.1] - 2020-11-11
+### Added
+  * **src/test/unittest_functional**
+
 ## [1.2.5] - 2020-11-11
 ### Added
   * **IN_API_CLIENT**
