@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.5] - 2020-11-11
+### Added
+  * **IN_API_CLIENT**
+    * Double-ended support with different python version
+
 ## [1.2.4] - 2020-11-11
 ### Updated
   * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
