@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.6.1] - 2020-11-12
+### Added
+  * python3 six module
+
 ## [1.2.6] - 2020-11-12
 ### Updated
   * **src/script/run_api_server.bat.in** **API_TEMPLATES**
