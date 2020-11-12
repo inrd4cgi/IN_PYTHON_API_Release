@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.6.2] - 2020-11-12
+### Updated
+  * **IN_COMMON**
+    * Start info
+
 ## [1.2.6.1] - 2020-11-12
 ### Added
   * python3 six module
