@@ -87,6 +87,14 @@ ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon',
 in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, ctype, webserver)
 
 
+# import INSPECT_HELPER
+#
+# for k, v in inspect.getmembers(InApiClient):
+#     if k.startswith('_'): continue
+#     if inspect.isroutine(v):
+#         args = INSPECT_HELPER.getargspec(v).args[1: ]
+#         print(k, args)
+
 # 如果之前已启动过 Server, 并登录过, 那么在其它 DCC, 可以不用再登录
 # in_api = InApiClient(in_map_dir, webserver=webserver)
 
@@ -98,10 +106,10 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # -------------------- Examples --------------------
 # projs = in_api.getProjectFiles()
 # printer(projs)
-
+#
 # proj = in_api.getProject(project_id=217)
 # printer(proj)
-
+#
 # files = in_api.listdir(folder_id=12161)
 # printer(files)
 
@@ -120,7 +128,6 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 #         print s
 
 # -----------------------------------------------------------------
-
 
 
 # ------------------------------ Get ------------------------------
@@ -143,7 +150,7 @@ if _test_Get:
     placeholder_list = in_api.getPlaceHolderList()
     shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
     tags = in_api.getTagInfo()    # tag_name="TestTag", tag_object_id=6, resource_id=90
-    resources = in_api.getTagResource(tag_name="BonAssetTag_2")
+    resources = in_api.getTagResource(tag_name="BonAssetTag_1")
     teams_info = in_api.getTeams(department_id=181)    # department_id=0
     team_info = in_api.getTeam(team_id=400)
     assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]

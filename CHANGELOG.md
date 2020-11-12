@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.6] - 2020-11-12
+### Updated
+  * **src/script/run_api_server.bat.in** **API_TEMPLATES**
+  * The service start method
+
 ## [1.2.5.2] - 2020-11-12
 ### Updated
   * **src/setup**
