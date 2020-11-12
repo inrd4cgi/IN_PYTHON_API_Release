@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.7] - 2020-11-12
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * Fixed the problem of relative path
+
 ## [1.2.6.2] - 2020-11-12
 ### Updated
   * **IN_COMMON**
