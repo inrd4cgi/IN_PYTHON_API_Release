@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.5.2] - 2020-11-12
+### Updated
+  * **src/setup**
+  * py2pyd build scripts
+  
 ## [1.2.5.1] - 2020-11-11
 ### Added
   * **src/test/unittest_functional**
