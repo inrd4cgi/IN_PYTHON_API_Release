@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.9.2] - 2020-11-13
+### Fixed
+  * **IN_PYTHON_API**  [`data_flow_change_task_status`]
+    * update the result of function return
+  
 ## [1.2.9.1] - 2020-11-13
 ### Updated
   * rebuild
