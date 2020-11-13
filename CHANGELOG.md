@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.8] - 2020-11-13
+### Fixed
+  * **IN_PYTHON_API** [`upload_file`]
+    * Path problem fix
+
 ## [1.2.7.2] - 2020-11-12
 ### Fixed
   * Stop all services before building to ensure successful build
