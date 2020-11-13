@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.9.1] - 2020-11-13
+### Updated
+  * rebuild
 
 ## [1.2.9.0] - 2020-11-13
 ### Deprecated
