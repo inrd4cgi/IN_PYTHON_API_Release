@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.8.3] - 2020-11-13
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * Simplified message display
+  
 ## [1.2.8.2] - 2020-11-13
 ### Fixed
   * Extra Path problem fix
