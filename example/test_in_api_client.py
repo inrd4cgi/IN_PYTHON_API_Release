@@ -87,6 +87,16 @@ ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon',
 in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, ctype, webserver)
 
 
+# ---------------------------------------------------
+
+# import INSPECT_HELPER
+#
+# for k, v in inspect.getmembers(InApiClient):
+#     if k.startswith('_'): continue
+#     if inspect.isroutine(v):
+#         args = INSPECT_HELPER.getargspec(v).args[1: ]
+#         print(k, args)
+
 # 如果之前已启动过 Server, 并登录过, 那么在其它 DCC, 可以不用再登录
 # in_api = InApiClient(in_map_dir, webserver=webserver)
 
@@ -98,10 +108,10 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # -------------------- Examples --------------------
 # projs = in_api.getProjectFiles()
 # printer(projs)
-
+#
 # proj = in_api.getProject(project_id=217)
 # printer(proj)
-
+#
 # files = in_api.listdir(folder_id=12161)
 # printer(files)
 
@@ -143,7 +153,7 @@ if _test_Get:
     placeholder_list = in_api.getPlaceHolderList()
     shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
     tags = in_api.getTagInfo()    # tag_name="TestTag", tag_object_id=6, resource_id=90
-    resources = in_api.getTagResource(tag_name="BonAssetTag_2")
+    resources = in_api.getTagResource(tag_name="BonAssetTag_1")
     teams_info = in_api.getTeams(department_id=181)    # department_id=0
     team_info = in_api.getTeam(team_id=400)
     assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
@@ -369,11 +379,12 @@ if _test_Asset:
     project_id, workflow_id, asset_color = 217, 2083, ''
     tags = [ ['my_tag_name', '#ffffff'], ['my_tag_name_2', ''] ] # [ [tag_name, tag_color] ]
 
-    asset_id = in_api.createAsset(
+    # result: `INAsset`
+    asset_obj = in_api.createAsset(
         project_id, workflow_id, asset_name, asset_color=asset_color,
         description='Created By Python API', tags=tags)
+    asset_id = asset_obj.assetId
     print('asset_id:', asset_id)
-
 
     # ---------- Get Asset Info ----------
     # assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
@@ -395,30 +406,45 @@ if _test_Asset:
     print('Delete Asset %s: %s' % (asset_id, is_successful))
 
 
-# ------------------------------ Scene ------------------------------
-_test_Scene = False
-if _test_Scene:
-    project_id, scene_number = 217, '1'
-
-    scene_id = in_api.createScene(project_id, scene_number)
-    print('scene_id:', scene_id)
-
-    # e.g. {'scene_id': 'scene_name'}
-    scenes = in_api.getSceneList(project_id=project_id)
-    pprint(scenes)
-    assert scene_id in scenes
-
-
 # ------------------------------ Shot ------------------------------
+# CreateScene 接口已废弃, 全部统一采用 CreateShot
+# 包括, Film/TV 类型
+
 _test_Shot = False
 if _test_Shot:
     # ---------- Create Shot ----------
-    project_id, workflow_id, scene_number, shot_number, shot_color = 217, 2097, '1', '0300', '#ffffff'
+    project_id, workflow_id, scene_number, shot_number, shot_color = 217, 2097, '1', '0400', '#ffffff'
     tags = [ ['my_shot_tag_name', '#ffffff'], ['my_shot_tag_name_2', ''] ]    # [ [tag_name, tag_color] ]
 
-    shot_id = in_api.createShot(
-        project_id, workflow_id, scene_number, shot_number,
-        shot_color=shot_color, description='Created by Python API', tags=tags)
+    # 创建 Film Shot,  不需要传入 type, 因为你创建 project 的时候已经设定了 Film / TV 类型了
+    shot_obj = in_api.createShot(
+        project_id, workflow_id,
+        scene=scene_number,
+        shot=shot_number,
+        shot_color=shot_color,
+        description='Created by Python API',
+        tags=tags)
+    shot_id = shot_obj.shotId
+
+    # ----------------------------------
+
+    # TV Project "CCTV"
+    project_id = 240
+    workflow_id = 2128
+    season_number = '001'
+    episode_number = '001'
+    scene_number = '001'
+    shot_number = '0800'
+
+    # 创建 TV Shot
+    # result: `INShot`
+    shot_obj = in_api.createShot(
+        project_id, workflow_id,
+        season=season_number,
+        episode=episode_number,
+        scene=scene_number,
+        shot=shot_number)
+    shot_id = shot_obj.shotId
 
 
     # ---------- Get Shot Info ----------

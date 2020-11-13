@@ -1,6 +1,86 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.2.9.0] - 2020-11-13
+### Deprecated
+  * **createScene**
+    * Use `createShot` instead
+
+### Modified
+  * **createShot**
+    * Add new argument, "season", "episode"
+    
+## [1.2.8.3] - 2020-11-13
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * Simplified message display
+  
+## [1.2.8.2] - 2020-11-13
+### Fixed
+  * Extra Path problem fix
+  
+## [1.2.8.1] - 2020-11-13
+### Updated
+  * rebuild
+
+## [1.2.8] - 2020-11-13
+### Fixed
+  * **IN_PYTHON_API** [`upload_file`]
+    * Path problem fix
+
+## [1.2.7.2] - 2020-11-12
+### Fixed
+  * Stop all services before building to ensure successful build
+  
+## [1.2.7.1] - 2020-11-12
+### Updated
+  * rebuild
+
+## [1.2.7] - 2020-11-12
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * Fixed the problem of relative path
+
+## [1.2.6.2] - 2020-11-12
+### Updated
+  * **IN_COMMON**
+    * Start info
+
+## [1.2.6.1] - 2020-11-12
+### Added
+  * python3 six module
+
+## [1.2.6] - 2020-11-12
+### Updated
+  * **src/script/run_api_server.bat.in** **API_TEMPLATES**
+  * The service start method
+
+## [1.2.5.2] - 2020-11-12
+### Updated
+  * **src/setup**
+  * py2pyd build scripts
+  
+## [1.2.5.1] - 2020-11-11
+### Added
+  * **src/test/unittest_functional**
+
+## [1.2.5] - 2020-11-11
+### Added
+  * **IN_API_CLIENT**
+    * Double-ended support with different python version
+
+## [1.2.4] - 2020-11-11
+### Updated
+  * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
+    * Sequence Create-Time display
+  * **IN_PYTHON_API**
+    * convert all possibly exists the type of `unicode or bytes` to `str` by using `IN_COMMON.make_common_str`
+
+## [1.2.3] - 2020-11-11
+### Fixed
+  * **IN_PYTHON_API** [`download_file`]
+
 ## [1.2.2] - 2020-11-10
 ### Fixed 
   * **IN_PYTHON_API** [`data_flow_get_task_files_record`]

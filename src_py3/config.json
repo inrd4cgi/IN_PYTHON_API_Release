@@ -20,6 +20,7 @@
     "LOGGER_STREAM_LEVEL": "info",
     "LOGGER_FILE_LEVEL": "error",
     "USING_PYTHON_SUBPROCESS_DW_FLAGS": true,
+    "SOURCE_IS_PYD_MODE": true,
     "USING_EXCEPTION_FULL_MSG": false,
     "USING_PYTHON_STDOUT_STREAM": true,
     "USING_PYTHON_SUBPROCESS": true,
@@ -28,6 +29,8 @@
     "USING_INSIDE_PYTHON_ENV": true,
     "USING_COLORFUL_CONSOLE_FOR_MESSAGE": false,
     "SERVICE_PYTHON_VERSION_3": true,
+    "SERVICE_PYTHON_VERSION_3_PYD_DIR": "src_py3",
+    "USING_FLASK_JSONIFY": false,
     "PROJECT_FILE_FORMAT": {
         "Maya": [
             "ma",
@@ -44,5 +47,5 @@
         "WS_EXTRA_PYTHON_INTERPRETER": "",
         "WS_IN_MAPPING_DIRECTORY": ""
     },
-    "VERSION": "beta1.2.2"
+    "VERSION": "beta1.2.9.0"
 }
