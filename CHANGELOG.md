@@ -1,6 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.2.9.0] - 2020-11-13
+### Deprecated
+  * **createScene**
+    * Use `createShot` instead
+
+### Modified
+  * **createShot**
+    * Add new argument, "season", "episode"
+    
 ## [1.2.8.3] - 2020-11-13
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
