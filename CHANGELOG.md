@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.8.2] - 2020-11-13
+### Updated
+  * rebuild
+  
 ## [1.2.8.1] - 2020-11-13
 ### Updated
   * rebuild
