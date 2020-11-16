@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.9.10] - 2020-11-13
+### Updated
+  * rebuild
+  
 ## [1.2.9.9] - 2020-11-13
 ### Updated
   * using cython 3.0a6
