@@ -131,6 +131,17 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 # -----------------------------------------------------------------
 
+# p_steps = in_api.getPipelineSteps(pipeline_type=0, project_id=217)
+# printer(p_steps)
+
+
+
+# help(tasks[0])
+# for
+
+# workflow_list = in_api.getWorkFlowTempls(project_id=217, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+# printer(workflow_list)
+
 
 
 # ------------------------------ Get ------------------------------

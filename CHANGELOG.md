@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.9.5] - 2020-11-13
+### Updated
+  * rebuild
+  
+## [1.2.9.4] - 2020-11-13
+### Updated
+  * rebuild
+
+## [1.2.9.3] - 2020-11-13
+### Fixed
+  * **IN_PYTHON_API_FUNC** 
+    * shows approvalList, while using `getTasksByConditions`, `getPipelineSteps`
+    
 ## [1.2.9.2] - 2020-11-13
 ### Fixed
   * **IN_PYTHON_API**  [`data_flow_change_task_status`]
