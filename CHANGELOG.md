@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.9.9] - 2020-11-13
+### Updated
+  * using cython 3.0a6
+  
+## [1.2.9.8] - 2020-11-13
+### Updated
+  * rebuild
+  
 ## [1.2.9.7] - 2020-11-13
 ### Updated
   * **IN_PYTHON_API** [`INDownloadFileQWorker`]
