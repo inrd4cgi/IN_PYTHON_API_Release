@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.9.7] - 2020-11-13
+### Updated
+  * **IN_PYTHON_API** [`INDownloadFileQWorker`]
+    * _`deal_transit_signal` change message level from info to debug
+  
 ## [1.2.9.6] - 2020-11-13
 ### Updated
   * rebuild
