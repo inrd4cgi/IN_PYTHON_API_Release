@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.10] - 2020-11-13
+### Fixed
+  * **IN_PYTHON_API** [`_download_file`]
+    * modified from FileVO.version to FileVO.currentVersion
+
 ## [1.2.9.11] - 2020-11-13
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_save_task`]
