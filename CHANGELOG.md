@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.12] - 2020-11-14
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * Update the sequence correctly to the latest version 
+    
+### Added
+  * **IN_PYTHON_API** [`get_sequence_files`]
+    * new interface
+
+### Updated
+  * **IN_PYTHON_API** [`data_flow_update_all_task_files`]
+    * Use the new interface
+    
+### Updated  
+  * **IN_PYTHON_API** [`data_flow_update_task_sequence`]
+     * Rewrite the  
+
 ## [1.2.11] - 2020-11-14
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_update_all_task_files`]
