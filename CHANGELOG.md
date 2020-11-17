@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.11] - 2020-11-14
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_update_all_task_files`]
+    * The sequence of required of the task can be updated for a correct version
+
 ## [1.2.10] - 2020-11-13
 ### Fixed
   * **IN_PYTHON_API** [`_download_file`]
