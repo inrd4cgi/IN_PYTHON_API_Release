@@ -1,7 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.2.13] - 2020-11-17
+## [1.2.13.1] - 2020-11-18
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_save_task`]
+    * Invalid output parameter
+
+## [1.2.13] - 2020-11-18
 ### Updated
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
     * Create a sequence version when change the status of task from Working-In-Progress to Pending-Approval
