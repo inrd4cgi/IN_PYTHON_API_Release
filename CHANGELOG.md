@@ -1,10 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.2.12.1] - 2020-11-14
+## [1.2.13] - 2020-11-17
+### Updated
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * Create a sequence version when change the status of task from Working-In-Progress to Pending-Approval
+  * **IN_PYTHON_API** [`data_flow_save_task`]
+    * Use internal interfaces to streamline data
+  
+## [1.2.12.1] - 2020-11-17
 ### Merged
 
-## [1.2.12] - 2020-11-14
+## [1.2.12] - 2020-11-17
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
     * Update the sequence correctly to the latest version 
@@ -21,7 +28,7 @@ All notable changes to this project will be documented in this file.
   * **IN_PYTHON_API** [`data_flow_update_task_sequence`]
      * Rewrite the  
 
-## [1.2.11] - 2020-11-14
+## [1.2.11] - 2020-11-17
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_update_all_task_files`]
     * The sequence of required of the task can be updated for a correct version
