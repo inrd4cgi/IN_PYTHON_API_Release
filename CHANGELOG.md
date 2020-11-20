@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.13.4] - 2020-11-20
+### Updated
+  * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
+    * method return from [required_file, intermediate_file, output_file] to (task_id, [required_file, intermediate_file, output_file])
+
 ## [1.2.13.3] - 2020-11-20
 ### Updated
   * **IN_PYTHON_API** [`data_flow_task_output_files`]
