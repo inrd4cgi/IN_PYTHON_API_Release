@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.13.2] - 2020-11-20
+### Updated
+  * **IN_API_CLIENT** [`api_call`]
+    * set up false for customize_timeout by default
+
 ## [1.2.13.1] - 2020-11-18
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_save_task`]

@@ -74,7 +74,6 @@ logging.getLogger().setLevel(logging.ERROR)
 in_map_dir = 'I:/'
 
 ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
-ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sheng', '1', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
@@ -107,14 +106,14 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 
 # -------------------- Examples --------------------
-# projs = in_api.getProjectFiles()
-# printer(projs)
-#
-# proj = in_api.getProject(project_id=217)
-# printer(proj)
-#
-# files = in_api.listdir(folder_id=12161)
-# printer(files)
+projs = in_api.getProjectFiles()
+printer(projs)
+
+proj = in_api.getProject(project_id=217)
+printer(proj)
+
+files = in_api.listdir(folder_id=12161)
+printer(files)
 
 
 # -------------------- 如何获取 doc --------------------
@@ -777,7 +776,6 @@ if _test_Variant:
 
 
 # ---------------------------------- My Test ----------------------------------
-
 
 
 if __name__ == '__main__':
