@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.13.3] - 2020-11-20
+### Updated
+  * **IN_PYTHON_API** [`data_flow_task_output_files`]
+    * Filter out intermediate files and folders
+
 ## [1.2.13.2] - 2020-11-20
 ### Updated
   * **IN_API_CLIENT** [`api_call`]
