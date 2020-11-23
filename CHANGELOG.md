@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.14] - 2020-11-23
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_update_all_task_files`]
+    * Sequence files can now be downloaded correctly
+
 ## [1.2.13.4] - 2020-11-20
 ### Updated
   * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
