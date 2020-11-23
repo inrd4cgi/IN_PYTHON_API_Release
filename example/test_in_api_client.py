@@ -368,7 +368,7 @@ if _test_Streaming:
 
 
 # ------------------------------ Asset ------------------------------
-_test_Asset = False
+_test_Asset = True
 if _test_Asset:
 
     # ---------- Create Asset ----------
@@ -377,12 +377,13 @@ if _test_Asset:
 
     i = 16
     asset_name = 'BonAsset_%s' % i
+    alias = asset_name
     project_id, workflow_id, asset_color = 217, 2083, ''
     tags = [ ['my_tag_name', '#ffffff'], ['my_tag_name_2', ''] ] # [ [tag_name, tag_color] ]
 
     # result: `INAsset`
     asset_obj = in_api.createAsset(
-        project_id, workflow_id, asset_name, asset_color=asset_color,
+        project_id, workflow_id, asset_name, alias, asset_color=asset_color,
         description='Created By Python API', tags=tags)
     asset_id = asset_obj.assetId
     print('asset_id:', asset_id)

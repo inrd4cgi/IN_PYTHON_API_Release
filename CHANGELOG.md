@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.14.2] - 2020-11-23
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_save_task`]
+    * fixed the data for check-in and the locally-changed file should now be successfully uploaded
+    * create sequence version after check-in
+
+
 ## [1.2.14.1] - 2020-11-23
 ### Updated
   * **IN_COMMON** [`get_map_path`]
