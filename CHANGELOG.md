@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.14.1] - 2020-11-23
+### Updated
+  * **IN_COMMON** [`get_map_path`]
+    * use python's module pathlib to get HOME directory 
+  * ** README.md**
+    * added How to `Change IN Server`
+
 ## [1.2.14] - 2020-11-23
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_update_all_task_files`]
