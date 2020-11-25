@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.14.3] - 2020-11-25
+### Updated
+  * **IN_PYTHON_API** [`data_flow_task_output_files`]
+    * Change the format of data return from file-name to file-relative-path
+
 ## [1.2.14.2] - 2020-11-23
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_save_task`]
