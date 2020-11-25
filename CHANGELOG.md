@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.14.4] - 2020-11-25
+### Updated
+  * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
+    * If there is a directory in the output file, create it
+
 ## [1.2.14.3] - 2020-11-25
 ### Updated
   * **IN_PYTHON_API** [`data_flow_task_output_files`]
