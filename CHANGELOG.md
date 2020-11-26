@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.15.0] - 2020-11-26
+### Updated
+  * **IN_PYTHON_API** [`data_flow_add_file2output_file`]
+    * new added `pre_check` parameter, check the file if already uploaded, the file will be ignored if already uploaded
+  * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
+    * new added directory data for output files
+
 ## [1.2.14.4] - 2020-11-25
 ### Updated
   * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
