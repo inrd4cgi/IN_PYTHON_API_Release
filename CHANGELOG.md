@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.17.0] - 2020-11-27
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * Correctly subtract the uploaded files
+  
+
 ## [1.2.16.0] - 2020-11-27
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
