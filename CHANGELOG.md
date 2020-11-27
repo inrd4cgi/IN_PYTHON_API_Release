@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.16.0] - 2020-11-27
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * upload all files of directory of task output when change the task status from Working-In-Progress to Pending-Approval
+
 ## [1.2.15.0] - 2020-11-26
 ### Updated
   * **IN_PYTHON_API** [`data_flow_add_file2output_file`]
