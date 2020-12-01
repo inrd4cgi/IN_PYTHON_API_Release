@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.17.2] - 2020-12-1
+### Updated
+  * **IN_PYTHON_API** [`data_flow_get_task_list`]
+    * return `project` and `pipelineStep` 
+
 ## [1.2.17.1] - 2020-12-1
 ### Updated
   * **IN_COMMON** [`get_map_path`]
