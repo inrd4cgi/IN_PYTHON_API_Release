@@ -73,8 +73,9 @@ logging.getLogger().setLevel(logging.ERROR)
 
 in_map_dir = 'I:/'
 
-ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
+# ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 # ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sheng', '1', 'DCC', "http://127.0.0.1:20618"
+ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
@@ -82,6 +83,7 @@ ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon',
 # ip = IN_COMMON.IN_SERVER_IP_ADDRESS
 # port = IN_COMMON.IN_SERVER_PORT
 # webserver = 'http://%s:%s' % (IN_COMMON.API_SERVER_IP_ADDRESS, IN_COMMON.API_SERVER_PORT)
+
 
 
 # 第一次登陆
@@ -173,7 +175,7 @@ if _test_Get:
     jobs = in_api.getJobList()
     logs = in_api.getLogs(from_time='2020-4-10 14:13:23')
     storage = in_api.getStorageInfos(project_id=217)
-    task_workflow = in_api.getWorkFlowInstance(resource_id=947, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+    task_workflow = in_api.getWorkFlowInstance(resource_id=1057, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
 
 
 # ------------------------------ Tag ------------------------------
@@ -368,7 +370,7 @@ if _test_Streaming:
 
 
 # ------------------------------ Asset ------------------------------
-_test_Asset = True
+_test_Asset = False
 if _test_Asset:
 
     # ---------- Create Asset ----------

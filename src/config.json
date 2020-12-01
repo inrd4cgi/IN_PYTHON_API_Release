@@ -46,7 +46,8 @@
     },
     "ENVIRONMENTS_VARIABLES": {
         "WS_EXTRA_PYTHON_INTERPRETER": "",
-        "WS_IN_MAPPING_DIRECTORY": ""
+        "WS_IN_MAPPING_DIRECTORY": "",
+        "USER_HOME_DIRECTORY": ""
     },
-    "VERSION": "beta1.2.17.0"
+    "VERSION": "beta1.2.17.1"
 }

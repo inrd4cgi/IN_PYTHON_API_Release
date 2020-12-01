@@ -1,16 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.17.1] - 2020-12-1
+### Updated
+  * **IN_COMMON** [`get_map_path`]
+    * function updated
+
 ## [1.2.17.0] - 2020-11-27
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
     * Correctly subtract the uploaded files
-  
 
 ## [1.2.16.0] - 2020-11-27
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
     * upload all files of directory of task output when change the task status from Working-In-Progress to Pending-Approval
+
+## [1.2.15.1] - 2020-11-23
+### Updated
+  * **IN_API_CLIENT** [`createAsset`]
+    * add new argument "alias" 
 
 ## [1.2.15.0] - 2020-11-26
 ### Updated
@@ -34,7 +43,6 @@ All notable changes to this project will be documented in this file.
   * **IN_PYTHON_API** [`data_flow_save_task`]
     * fixed the data for check-in and the locally-changed file should now be successfully uploaded
     * create sequence version after check-in
-
 
 ## [1.2.14.1] - 2020-11-23
 ### Updated
