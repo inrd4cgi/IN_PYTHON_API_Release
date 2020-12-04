@@ -1,6 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.18.1] - 2020-12-4
+### Updated
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * save_task when task status from WIP->Any or Any->WIP
+
+## [1.2.18.0] - 2020-12-1
+### Updated
+  * Split `IN_PYTHON_CLIENT.py` `IN_PYTHON_SERVER.py` To `IN_PYTHON_CLIENT_B.py`, `IN_PYTHON_SERVER_B.py`
+
 ## [1.2.17.2] - 2020-12-1
 ### Updated
   * **IN_PYTHON_API** [`data_flow_get_task_list`]

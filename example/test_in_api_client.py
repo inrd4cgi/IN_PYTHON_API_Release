@@ -12,15 +12,14 @@ import unittest
 
 
 # IN Python Module
-from IN_API_CLIENT import InApiClient
-from IN_API_CLIENT import printer
+from IN_API_CLIENT_B import InApiClient
+from IN_API_CLIENT_B import printer
 import IN_DATA_STRUCTURE
 import IN_STREAMING
-import IN_COMMON
+
 
 # 你可能用到的一些 Enum 的结构体
 from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus, CommentType, TaskStatus, PipelineType
-
 
 
 
@@ -73,9 +72,9 @@ logging.getLogger().setLevel(logging.ERROR)
 
 in_map_dir = 'I:/'
 
-# ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
+ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20818"
 # ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sheng', '1', 'DCC', "http://127.0.0.1:20618"
-ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
+# ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
@@ -109,8 +108,8 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 
 # -------------------- Examples --------------------
-# projs = in_api.getProjectFiles()
-# printer(projs)
+projs = in_api.getProjectFiles()
+printer(projs)
 #
 # proj = in_api.getProject(project_id=217)
 # printer(proj)
@@ -133,6 +132,7 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 #         print s
 
 # -----------------------------------------------------------------
+
 
 
 
