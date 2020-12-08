@@ -1,6 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.20.0] - 2020-12-8
+### Updated
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * Supported customize output directory for task
+
+## [1.2.19.0] - 2020-12-7
+### Updated
+  * **IN_PYTHON_API** [`data_flow_get_task_list`]
+    * return `type`
+
 ## [1.2.18.1] - 2020-12-4
 ### Updated
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
