@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.21.0] - 2020-12-10
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_add_file2output_file`]
+    * use in_api_client interface to add a file to task output
+
 ## [1.2.20.0] - 2020-12-8
 ### Updated
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
