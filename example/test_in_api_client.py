@@ -137,7 +137,7 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 
 # ------------------------------ Get ------------------------------
-_test_Get = False
+_test_Get = True
 if _test_Get:
     proj_files = in_api.getProjectFiles()
     projs = in_api.getProjects()

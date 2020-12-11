@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.2.22.0] - 2020-12-11
+### Update
+  * Update Python API 1211 
+    
 ## [1.2.21.3] - 2020-12-11
 ### Updated
   * rebuild
