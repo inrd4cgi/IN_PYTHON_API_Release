@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.21.2] - 2020-12-11
+### Updated
+  * **IN_PYTHON_API** [`data_flow_add_file2output_file`]
+    * Using `upload_files` interface by default
+
 ## [1.2.21.1] - 2020-12-10
 ### Fixed
   * **IN_API_CLIENT_B** [`checkin`]
