@@ -63,4 +63,9 @@ namespace INS
 	{
 		m_transferType = 0x00010006;
     }
+
+	INSUploadSequenceTaskFile::INSUploadSequenceTaskFile(const FileVO & fileBase, qint32 taskId, const QString & absolutePath)
+		: INSUploadRequiredFile(fileBase, taskId, absolutePath) {
+		m_transferType = 0x00010009;
+	}
 };

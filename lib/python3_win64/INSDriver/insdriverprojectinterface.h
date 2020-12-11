@@ -49,6 +49,9 @@ namespace INS_INTERFACE
 	//插入标签
 	INSDRIVER_EXPORT MessageInfo BatchMakeTags(const QList<TagParam>& tagParams);
 
+	//根据条件获取标签
+	INSDRIVER_EXPORT MessageInfo GetTagByCondition(QList<TagInfoVO> &tagInfoVOs, const SearchTagParam &searchTagParam);
+
 	//移除标签
 	INSDRIVER_EXPORT MessageInfo RemoveTag(const TagParam& tagParam);
 

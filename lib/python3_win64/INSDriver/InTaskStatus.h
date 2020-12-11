@@ -4,7 +4,7 @@
 #include <QString>
 
 #define FinalINTaskStatusObj INTaskStatus::OnHold
-#define GetTaskStatusCount ((int)FinalINTaskStatusObj - (int)INTaskStatus::None + 1)
+#define GetTaskStatusCount ((int)FinalINTaskStatusObj - (int)INTaskStatus::ToDo + 1)
 
 #define FinalINAssetStatusObj INAssetStatus::noWorkflow
 #define GetAssetStatusCount ((int)FinalINAssetStatusObj - (int)INAssetStatus::noWorkflow+1)
@@ -18,7 +18,6 @@
 namespace INS
 {
 	enum class INTaskStatus {
-		None = 0,
 		ToDo = 1,
 		WorkInProgress = 2,
 		PendingApproval = 3,
@@ -39,7 +38,11 @@ namespace INS
 			int n_count = GetTaskStatusCount;
 			QList<INTaskStatus> status;
 			for (int i = 0; i < n_count - 1; ++i)
+			{
+				if(4 == i)
+					continue;
 				status.push_back(INTaskStatus((int)INTaskStatus::ToDo + i));
+			}
 			return status;
 		}
 
@@ -79,11 +82,10 @@ namespace INS
 				auto addToMap = [](const int &statusId, const QString& statusName) {
 					taskMap.insert(statusId, statusName);
 				};
-				addToMap((qint32)(INTaskStatus::None), GetINTaskStausString(INTaskStatus::None));
 				addToMap((qint32)(INTaskStatus::ToDo), GetINTaskStausString(INTaskStatus::ToDo));
 				addToMap((qint32)(INTaskStatus::WorkInProgress), GetINTaskStausString(INTaskStatus::WorkInProgress));
 				addToMap((qint32)(INTaskStatus::PendingApproval), GetINTaskStausString(INTaskStatus::PendingApproval));
-				addToMap((qint32)(INTaskStatus::PendingPanelReview), GetINTaskStausString(INTaskStatus::PendingPanelReview));
+				//addToMap((qint32)(INTaskStatus::PendingPanelReview), GetINTaskStausString(INTaskStatus::PendingPanelReview));
 				addToMap((qint32)(INTaskStatus::Reopened), GetINTaskStausString(INTaskStatus::Reopened));
 				addToMap((qint32)(INTaskStatus::PendingValidation), GetINTaskStausString(INTaskStatus::PendingValidation));
 				addToMap((qint32)(INTaskStatus::Approved), GetINTaskStausString(INTaskStatus::Approved));
@@ -103,7 +105,6 @@ namespace INS
 				auto addToMap = [](const QPair<int, QString>& taskType, const QColor& typeColor) {
 					taskMap.insert(taskType.first, {taskType.second, typeColor});
 				};
-				addToMap(ToIntAndQstring(INTaskStatus::None), QColor("transparent"));
 				addToMap(ToIntAndQstring(INTaskStatus::ToDo), QColor("#5eceff"));
 				addToMap(ToIntAndQstring(INTaskStatus::WorkInProgress), QColor("#2888F7"));
 				addToMap(ToIntAndQstring(INTaskStatus::PendingApproval), QColor("#ffaa40"));

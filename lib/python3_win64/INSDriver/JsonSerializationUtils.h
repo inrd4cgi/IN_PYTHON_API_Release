@@ -44,6 +44,7 @@ namespace INS {
 		}
 	};
 };
+Q_DECLARE_METATYPE(INS::IdName)
 using INS::IdName;
 
 #define ARG_EXPAND(...) __VA_ARGS__

@@ -63,6 +63,7 @@ namespace INS
 		PROJ_ADD_MEMBER = 1214,//添加项目成员
 		PROJ_RM_MEMBER = 1215,//移除项目成员
 		PROJ_DEL = 1216,//删除项目
+        PROJ_EDIT_ROOT_DIR = 1217,//修改项目根路径
 		PILN_REASSIG = 1284,//pipeline step的重新分配
 		PERM_TEMPL_ADD = 1221,//添加项目权限模板
 		PERM_TEMPL_EDIT = 1222,//编辑项目的权限模板

@@ -54,13 +54,6 @@ namespace INS_INTERFACE {
         return commonRequest.m_return_value;
     }
 
-    //INSDRIVER_EXPORT MessageInfo GetTaskBindedTeamList(QMap<qint32, qint32> &taskBindTeams) {
-    //	INSCommonRequest<QMap<qint32, qint32>, int> commonRequest(588, 0);
-    //	commonRequest.WaitForFinished();
-    //	taskBindTeams = commonRequest.retData;
-    //	return commonRequest.m_return_value;
-    //}
-
     //获取下一个可显示的状态
     INSDRIVER_EXPORT MessageInfo GetTaskNextAvailableStatus(QList<qint32> &taskStatus, int taskId) {
         INSCommonRequest<QList<qint32>, int> commonRequest(587, taskId);
@@ -130,9 +123,10 @@ namespace INS_INTERFACE {
         return commonRequest.m_return_value;
     }
 
-    INSDRIVER_EXPORT MessageInfo EditTaskAssignee(const QSet<qint32> &taskIds, qint32 assignee) {
-        INSCommonRequest<qint32, QSet<qint32>, qint32> commonRequest(528, taskIds, assignee);
+    INSDRIVER_EXPORT MessageInfo EditTaskAssignee(const QSet<qint32> &taskIds, qint32 assignee, QMap<QString, QString> &failTasks) {
+        INSCommonRequest<QMap<QString, QString>, QSet<qint32>, qint32> commonRequest(528, taskIds, assignee);
         commonRequest.WaitForFinished();
+        failTasks = commonRequest.retData;
         return commonRequest.m_return_value;
     }
 

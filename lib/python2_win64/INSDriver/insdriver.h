@@ -98,11 +98,19 @@ namespace INS_INTERFACE
 	INSDRIVER_EXPORT qint32 GetWorklogById(qint32 publisherId, const QDateTime& startTime, const QDateTime& endTime, QList<SimpleWorklog>& worklogs);
 
 	// Notification 部分 
-	INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id, Notification& no);
+	//INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id, Notification& no);
+	INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id);
 
-	INSDRIVER_EXPORT qint32 SendUserNofitication(Notification& no);
+	//INSDRIVER_EXPORT qint32 SendUserNofitication(Notification& no);
+		//INSDRIVER_EXPORT qint32 SendUserNofitication(Notification& no);
 
-	INSDRIVER_EXPORT qint32 GetInboxNofitication(qint32 recipient_id, qint32 beg, qint32 offset, QList<Notification>& nos);
+	INSDRIVER_EXPORT qint32 GetNofitications(
+		qint32 recipient_id, 
+		QList<NotificationMessage>& nos, 
+		qint32 category,
+		qint32 notificationID = 0);
+
+	INSDRIVER_EXPORT qint32 GetNofiticationOverview(qint32 recipient_id, QMap<qint32, qint32>& data);
 
 	//Holiday
 	INSDRIVER_EXPORT MessageInfo CreateHolidayTemplate(INQHolidayTemplate& holidayTemplate);

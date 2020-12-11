@@ -173,7 +173,7 @@ namespace INS_INTERFACE {
     //获取场景列表
     INSDRIVER_EXPORT MessageInfo GetSceneList(int projectId, QMap<qint32, INSceneVO> &scenes) {
 
-        INSCommonRequestRetInt<QMap<qint32, INSceneVO>, int> commonRequest(568, projectId);
+		INSCommonRequest<QMap<qint32, INSceneVO>, int> commonRequest(568, projectId);
         commonRequest.WaitForFinished();
         scenes = commonRequest.retData;
         return commonRequest.m_return_value;

@@ -54,7 +54,7 @@ namespace INS_INTERFACE
 	INSDRIVER_EXPORT qint32 GetPlaceHolderList(QList<FileVO>& placeholderlist);
 
 	//创建任务
-	INSDRIVER_EXPORT qint32 CreateTask(INTask& newtask);
+	INSDRIVER_EXPORT MessageInfo CreateTask(INTask& newtask, QList<TaskFileRelationEditParam>& taskFileRelationEditParam = QList<TaskFileRelationEditParam>());
 
 	//编辑任务信息
     INSDRIVER_EXPORT MessageInfo EditTask(INTask& etask);
@@ -63,7 +63,7 @@ namespace INS_INTERFACE
     INSDRIVER_EXPORT MessageInfo EditTaskTime(const QSet<qint32> &, const QDateTime &, const QDateTime &);
 
     //批量设置任务的assignee，taskIds:任务的id集合，
-    INSDRIVER_EXPORT MessageInfo EditTaskAssignee(const QSet<qint32> &taskIds, qint32 assignee);
+    INSDRIVER_EXPORT MessageInfo EditTaskAssignee(const QSet<qint32> &taskIds, qint32 assignee, QMap<QString, QString> &failTasks);
 
     //编辑任务审批流程信息
     INSDRIVER_EXPORT MessageInfo EditTaskApproval(QList<TaskApproval> &approvalList);

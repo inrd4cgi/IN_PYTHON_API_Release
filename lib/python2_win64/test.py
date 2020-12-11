@@ -142,13 +142,28 @@ def test_edit_task_assignee():
     jstr = "[[2842,2843], 20200437]"
     pp = INI.jsonRequest(528, jstr)
     print(pp.encode("utf-8"))
+    
+def test_get_scene_list():
+    jstr = "[72]"
+    pp = INI.jsonRequest(568, jstr)
+    print(pp.encode("utf-8"))
+    
+def test_getTagByCondition():
+    jstr = "[{\"projectId\":72, \"objectIds\":[4,5]}]"
+    pp = INI.jsonRequest(607, jstr)
+    print(pp.encode("utf-8"))
+    
+def test_getFileUploadResult():
+    jstr = "[1739]"
+    pp = INI.jsonRequest(302, jstr)
+    print(pp.encode("utf-8"))
 
 def conn_test(j):
     app = INI.initApp()
     ipAddr = "192.168.17.25"
     port = 6060
     INI.ConnectToServer(ipAddr, port)
-    ret = INI.Login("root", "wsrnd", True, str(j))
+    ret = INI.Login("ddw67", "1", True, str(j))
     if ret != 1:
         print "log in error"
         return
@@ -156,7 +171,7 @@ def conn_test(j):
     #time.sleep(1);
     times = 1
     for i in range(times):
-        test_edit_task_assignee()
+        test_getFileUploadResult()
     
     
     #通过调节接口调用次数来给服务器压力

@@ -4,6 +4,7 @@
 #ifdef INSDRIVER_PYTHON
 	#include <qglobal.h>
 	#define INS_INTERFACE INI
+	#define INS_CLIENT_PREFIX "IN"
 
 	#ifdef INSDRIVER_PYTHON
 		#define INSDRIVER_EXPORT __declspec(dllexport)
@@ -14,6 +15,8 @@
 #else
 	#include <QtCore/qglobal.h>
     #define INS_INTERFACE INS
+	#define INS_CLIENT_PREFIX "DCC"
+
 	#ifndef BUILD_STATIC
 		# if defined(INSDRIVER_LIB)
 			#  define INSDRIVER_EXPORT Q_DECL_EXPORT

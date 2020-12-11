@@ -27,8 +27,9 @@ namespace INS
 	Description:构造函数。用户名[username]和密码[password]。密码在这里用md5加密。[type]为登录类型，例如：
 	INSJIM,INSMAYA,INSUE4
 	**************************************************************************************************/
-	INSLogin::INSLogin(const QString & username, const QString & password, const QString & type)
+	INSLogin::INSLogin(const QString & username, const QString & password, const QString & typ)
 	{
+		QString type = INS_CLIENT_PREFIX + QString(":") + typ;//加个前缀，你江哥加的
 		QString password_encrypted = QCryptographicHash::hash(password.toLatin1(), QCryptographicHash::Md5).toHex();
 		SaveCurrentLoginInfo(username, password, type);
         QString jsonStr = JsonMessageUtils::dataToJson(username, password_encrypted, type);

@@ -53,8 +53,12 @@ struct TypeConvert {
         return *value;
     }
 
-    static QMap <QString, QString> get(QMap <QString, QString> *value) {
-        return *value;
+    static QMap <QString*, QString> get(QMap <QString, QString> *value) {
+        QMap <QString*, QString> ret;
+        for (auto &k : value->keys()) {
+            ret.insert(&k, value->value(k));
+        }
+        return ret;
     }
 
     template<typename T>

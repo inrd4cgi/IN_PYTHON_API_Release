@@ -4,7 +4,7 @@
 #include <QString>
 
 #define FinalINTaskStatusObj INTaskStatus::OnHold
-#define GetTaskStatusCount ((int)FinalINTaskStatusObj - (int)INTaskStatus::None + 1)
+#define GetTaskStatusCount ((int)FinalINTaskStatusObj - (int)INTaskStatus::ToDo + 1)
 
 #define FinalINAssetStatusObj INAssetStatus::noWorkflow
 #define GetAssetStatusCount ((int)FinalINAssetStatusObj - (int)INAssetStatus::noWorkflow+1)
@@ -18,7 +18,6 @@
 namespace INS
 {
 	enum class INTaskStatus {
-		None = 0,
 		ToDo = 1,
 		WorkInProgress = 2,
 		PendingApproval = 3,
@@ -38,10 +37,29 @@ namespace INS
 		{
 			int n_count = GetTaskStatusCount;
 			QList<INTaskStatus> status;
-			for (int i = 0; i < n_count - 1; ++i)
-				status.push_back(INTaskStatus((int)INTaskStatus::ToDo + i));
+			for (int i = 1; i <= n_count; ++i)
+			{
+                ///索引3是指PendingPanelReview，现在不用这个状态，跳过
+                if(3 == i)
+					continue;
+				status.push_back(INTaskStatus(i));
+			}
 			return status;
 		}
+
+        static QStringList GetTaskStatusStringList()
+        {
+            static QStringList statusString;
+            if(statusString.isEmpty())
+            {
+                QList<INTaskStatus> statusList = GetTaskStatusList();
+                auto taskMap = GetINTaskStatus();
+                for(const auto & status : statusList)
+                    statusString.append(taskMap.value(int(status)).name);
+            }
+            return statusString;
+        }
+
 
         class StatusNameAndColor
         {
@@ -79,15 +97,14 @@ namespace INS
 				auto addToMap = [](const int &statusId, const QString& statusName) {
 					taskMap.insert(statusId, statusName);
 				};
-				addToMap((qint32)(INTaskStatus::None), GetINTaskStausString(INTaskStatus::None));
 				addToMap((qint32)(INTaskStatus::ToDo), GetINTaskStausString(INTaskStatus::ToDo));
 				addToMap((qint32)(INTaskStatus::WorkInProgress), GetINTaskStausString(INTaskStatus::WorkInProgress));
 				addToMap((qint32)(INTaskStatus::PendingApproval), GetINTaskStausString(INTaskStatus::PendingApproval));
-				addToMap((qint32)(INTaskStatus::PendingPanelReview), GetINTaskStausString(INTaskStatus::PendingPanelReview));
+				//addToMap((qint32)(INTaskStatus::PendingPanelReview), GetINTaskStausString(INTaskStatus::PendingPanelReview));
 				addToMap((qint32)(INTaskStatus::Reopened), GetINTaskStausString(INTaskStatus::Reopened));
 				addToMap((qint32)(INTaskStatus::PendingValidation), GetINTaskStausString(INTaskStatus::PendingValidation));
 				addToMap((qint32)(INTaskStatus::Approved), GetINTaskStausString(INTaskStatus::Approved));
-				addToMap((qint32)(INTaskStatus::Paused), GetINTaskStausString(INTaskStatus::Paused));
+                addToMap((qint32)(INTaskStatus::Paused),"Paused by System");
 				addToMap((qint32)(INTaskStatus::Deprecated), GetINTaskStausString(INTaskStatus::Deprecated));
 				addToMap((qint32)(INTaskStatus::OnHold), GetINTaskStausString(INTaskStatus::OnHold));
 			}
@@ -103,7 +120,6 @@ namespace INS
 				auto addToMap = [](const QPair<int, QString>& taskType, const QColor& typeColor) {
 					taskMap.insert(taskType.first, {taskType.second, typeColor});
 				};
-				addToMap(ToIntAndQstring(INTaskStatus::None), QColor("transparent"));
 				addToMap(ToIntAndQstring(INTaskStatus::ToDo), QColor("#5eceff"));
 				addToMap(ToIntAndQstring(INTaskStatus::WorkInProgress), QColor("#2888F7"));
 				addToMap(ToIntAndQstring(INTaskStatus::PendingApproval), QColor("#ffaa40"));
@@ -111,7 +127,7 @@ namespace INS
 				addToMap(ToIntAndQstring(INTaskStatus::Reopened), QColor("#f23333"));
 				addToMap(ToIntAndQstring(INTaskStatus::PendingValidation), QColor("#cc7ee0"));
 				addToMap(ToIntAndQstring(INTaskStatus::Approved), QColor("#7ad975"));
-				addToMap(ToIntAndQstring(INTaskStatus::Paused), QColor("#B15EFF"));
+                addToMap(qMakePair(int(INTaskStatus::Paused),QString("Paused by System")), QColor("#B15EFF"));
 				addToMap(ToIntAndQstring(INTaskStatus::Deprecated), QColor("#8b8b8b"));
 				addToMap(ToIntAndQstring(INTaskStatus::OnHold), QColor("#8080C0"));
 			}

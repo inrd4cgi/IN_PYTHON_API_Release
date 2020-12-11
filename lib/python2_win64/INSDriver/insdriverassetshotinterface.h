@@ -6,7 +6,32 @@
 
 namespace INS_INTERFACE
 {
+	INSDRIVER_EXPORT MessageInfo SetTaskToValidate(qint32 taskId,qint32 toValidate);
 
+	INSDRIVER_EXPORT MessageInfo AddPipelineStepMatchedGroup(const PipelineStepMappingEditParam &mappingEditParam);
+
+	INSDRIVER_EXPORT MessageInfo EditPipelineStepMatchedGroup(qint32 mappingId, const QSet<qint32> &newPathIds);
+
+	INSDRIVER_EXPORT MessageInfo
+		GetPipelineStepMatchedGroupByProjectId(QMap<qint32, PipelineStepMappingVO>& retRsult,qint32 projectId);
+
+	INSDRIVER_EXPORT MessageInfo DeletePipelineStepMatchedGroupByMappingId(qint32 mappingId);
+
+	//使用篇///////////////////////////////////////////////////////////////////////////////
+	INSDRIVER_EXPORT MessageInfo AddAsset2Shot(qint32 shotId, qint32 assetId, qint32 variantId);
+
+	INSDRIVER_EXPORT MessageInfo DeleteAssetInShot(qint32 shotId, qint32 assetId, qint32 variantId);
+
+	//first assetId second variantId
+	INSDRIVER_EXPORT MessageInfo DeleteAssetsInShot(qint32 shotId,const QSet<QPair<qint32, qint32>>& assetVariants);
+
+	INSDRIVER_EXPORT MessageInfo GetShotMatchedState(QList<TaskPipelineStepMappingStateVO>& retRsult,qint32 shotId, qint32 assetId, qint32 variantId);
+
+	INSDRIVER_EXPORT MessageInfo IgnoreWarning(qint32 shotId, qint32 assetId, qint32 variantId);
+
+	INSDRIVER_EXPORT MessageInfo GetShotAssetMappingView(QMap<qint32, ShotAssetMappingView>& retResult,ShotFilterParam shotFilterParam);
+
+	// 到此为止 ////
 	INSDRIVER_EXPORT MessageInfo GetAssetOrShotReferenceFiles(QMap<qint32,FileVO>& files, qint32 objectId, bool isAsset = true);
 
 	//////variant//////
@@ -74,7 +99,7 @@ namespace INS_INTERFACE
 	INSDRIVER_EXPORT qint32 GetShotInfo(INShot& shotinfo);
 
 	//asset/shot/task回收站部分
-	INSDRIVER_EXPORT qint32 GetBusRecycleBinList(QList<RecycleInfo> &recyclebinList);
+	INSDRIVER_EXPORT qint32 GetBusRecycleBinList(int projectId, QList<RecycleInfo> &recyclebinList);
 
     //删除回收站某一条记录
     INSDRIVER_EXPORT qint32 DeleteObjectInRecordBin(qint32 recordId);

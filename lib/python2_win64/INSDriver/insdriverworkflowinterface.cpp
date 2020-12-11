@@ -17,7 +17,7 @@ namespace INS_INTERFACE {
         return commonRequest.m_return_value;
     }
 
-    //获取workFlow列表
+    //获取workFlow列表 pipelineType为1表示asset，2表示shot，3表示sequence
     INSDRIVER_EXPORT MessageInfo
     GetWorkFlowTempls(QList<INQWorkFlowVO> &workFlowVOs, qint32 projectId, qint32 pipelineType) {
         INSCommonRequest<QList<INQWorkFlowVO>, qint32, qint32> commonRequest(5517, projectId, pipelineType);

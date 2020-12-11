@@ -2,6 +2,13 @@
 #include "insrequest.h"
 #include "JsonMessageUtils.h"
 
+#define WAITFORFINISHEDTHENRETURN commonRequest.WaitForFinished();\
+return commonRequest.m_return_value;
+
+#define WAITFORFINISHEDANDGETVALUETHENRETURN(dataContainer) commonRequest.WaitForFinished();\
+dataContainer = commonRequest.retData;\
+return commonRequest.m_return_value;
+
 namespace INS
 {
 

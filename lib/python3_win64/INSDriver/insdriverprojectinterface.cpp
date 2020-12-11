@@ -85,6 +85,13 @@ namespace INS_INTERFACE
 		return commonRequest.m_return_value;
 	}
 
+    INSDRIVER_EXPORT MessageInfo GetTagByCondition(QList<TagInfoVO> &tagInfoVOs, const SearchTagParam &searchTagParam) {
+        INSCommonRequest<QList<TagInfoVO>, SearchTagParam> commonRequest(607, searchTagParam);
+        commonRequest.WaitForFinished();
+        tagInfoVOs = commonRequest.retData;
+        return commonRequest.m_return_value;
+    }
+
     //移除标签
     INSDRIVER_EXPORT MessageInfo RemoveTag(const TagParam &tagParam)
     {
