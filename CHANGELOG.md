@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.21.3] - 2020-12-11
+### Updated
+  * rebuild
+
 ## [1.2.21.2] - 2020-12-11
 ### Updated
   * **IN_PYTHON_API** [`data_flow_add_file2output_file`]
