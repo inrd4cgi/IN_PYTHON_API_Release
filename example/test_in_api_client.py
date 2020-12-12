@@ -63,6 +63,7 @@ from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus
 # print("stop: {}".format(IN_API_CLIENT.stop_server()))
 
 
+
 # 打印信息太多, 请调用
 import logging
 logging.getLogger().setLevel(logging.ERROR)
@@ -137,7 +138,7 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 
 # ------------------------------ Get ------------------------------
-_test_Get = True
+_test_Get = False
 if _test_Get:
     proj_files = in_api.getProjectFiles()
     projs = in_api.getProjects()
@@ -306,10 +307,6 @@ if _test_Streaming:
         path = 'I:/BonProject/assets/BonAsset_9/none/c.jpg'
         task_id = 6622
 
-        # 别用这个接口了..., 看看下面的 `addTaskOutputFile`,
-        # 调用 `addTaskOutputFile`, 添加 output file 路径
-        # 然后调 `checkout(file_id, download=False)`
-        # 最后调 `checkin` 就能解决问题了
         r = in_api.uploadOutputFile(task_id=task_id, src_path=path)
         assert r is True
 

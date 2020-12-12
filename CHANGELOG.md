@@ -2,6 +2,50 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.2.23.0] - 2020-12-12
+### Added
+  * **IN_DATA_STRUCTURE.py** 
+    * Add Structure `SearchTagParam`
+    * Modify Attributes
+        ```
+        AssetFilterParam
+            New Attributes:
+            ['tagNames']
+        
+        FileTransferInfo
+            New Attributes:
+            ['transferRecordId']
+        
+        INQProjectVO
+            New Attributes:
+            ['rootDir']
+        
+        INQWorkFlowDetail
+            New Attributes:
+            ['alias']
+        
+        INShot
+            New Attributes:
+            ['projectType']
+        
+        INTask
+            New Attributes:
+            ['objectAlias', 'alias']
+        
+        SearchTagParam
+            New Attributes:
+            ['objectIds', 'projectId', 'sceneIds']
+        
+        TaskFilterParam
+            New Attributes:
+            ['alias', 'types']
+            Deprecated Attributes:
+            ['type']
+        ```
+### Modified
+  * **IN_API_CLIENT_B.py** [`getBusRecycleBinList`]
+    * add argument "project_id"
+
 ## [1.2.22.0] - 2020-12-11
 ### Update
   * Update Python API 1211 
