@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.23.1] - 2020-12-15
+### Updated
+  * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
+    * doesn't call IN_API if the task id is invalid
 
 ## [1.2.23.0] - 2020-12-12
 ### Added
