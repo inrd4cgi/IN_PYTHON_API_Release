@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.23.2] - 2020-12-16
+### Fixed
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+    * repath from assets to asset 
+
 ## [1.2.23.1] - 2020-12-15
 ### Updated
   * **IN_PYTHON_API** [`data_flow_get_task_files_record`]
