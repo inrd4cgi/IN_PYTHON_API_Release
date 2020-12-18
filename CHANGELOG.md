@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.23.3] - 2020-12-18
+### Updated
+  * **IN_PYTHON_API** [`data_flow_change_task_status`]
+  * message optimize
+
 ## [1.2.23.2] - 2020-12-16
 ### Fixed
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
