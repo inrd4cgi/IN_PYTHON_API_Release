@@ -33,6 +33,8 @@
     "SERVICE_PYTHON_VERSION_3_PYD_DIR": "src_py3",
     "USING_FLASK_JSONIFY": false,
     "VALIDATION_SCRIPTS_DIR": "C:\\test_3rd_party_plugins\\maya\\2019\\scripts\\IN_Dcc_Client\\Dcc_Scripts\\Validation_scripts",
+    "LP_CONFIG_DIR": "C:\\test_3rd_party_plugins\\maya\\2019\\scripts\\IN_Dcc_Client\\Config",
+    "FIXED_MAPPING_PATH": "",
     "PROJECT_FILE_FORMAT": {
         "Maya": [
             "ma",
@@ -47,8 +49,7 @@
     },
     "ENVIRONMENTS_VARIABLES": {
         "WS_EXTRA_PYTHON_INTERPRETER": "",
-        "WS_IN_MAPPING_DIRECTORY": "",
         "USER_HOME_DIRECTORY": ""
     },
-    "VERSION": "beta1.2.23.3"
+    "VERSION": "beta1.3.0.0"
 }

@@ -119,6 +119,7 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # printer(files)
 
 
+
 # -------------------- 如何获取 doc --------------------
 # 在其它地方可直接 help(InApiClient)
 
@@ -153,7 +154,7 @@ if _test_Get:
     shot = in_api.getShotInfo(shot_id=122)
     person = in_api.getPerson(person_id=20200425)
     people = in_api.getPersonList(department_id=99, team_id=0, filter=0)
-    p_steps = in_api.getPipelineSteps(pipeline_type=0, project_id=0)
+    p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=0)
     placeholder_list = in_api.getPlaceHolderList()
     shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
     tags = in_api.getTagInfo()    # tag_name="TestTag", tag_object_id=6, resource_id=90
@@ -366,6 +367,55 @@ if _test_Streaming:
     # testUploadPlaceHolders()
 
 
+
+# ------------------------------ Project ------------------------------
+_test_Project = False
+if _test_Project:
+    # ---------- Create Project ----------
+
+    """
+    ----------StorageInfo----------
+    basePath       /mnt/wd_hdd_4t/data
+    freeSpace      2905481093465
+    groupName      hdd_group_00
+    instanceId     hdd_group_00_01
+    ip           192.168.17.212
+    port           6000
+    storageType    hdd
+    totalSpace     3998831599616
+    """
+
+    # 从 StorageInfo 里拿到 storageType
+    storage_list = in_api.getStorageInfos()
+    # file_server_root = storage_list[0].storageType
+    # printer(storage_list)
+    file_server_root = 'hdd'
+
+    index = 5
+    project_name = 'PythonAPIProject_%s' % index
+
+    proj = in_api.createProject(
+        project_name=project_name,
+        type=IN_DATA_STRUCTURE.ProjectType.FILM,
+        file_server_root=file_server_root,
+        department_id=181,
+        project_root_id=20200478,
+        issue_date='2020-12-22 00:00:00',
+        due_date='2020-12-31 00:00:00',
+        root_dir='I:',
+        description='Created by Python API',
+        color='#ffffff'
+    )
+
+    print(proj.projectId)
+
+
+# ------------------------------ PipelineStep ------------------------------
+_test_PipelineStep = False
+if _test_PipelineStep:
+    pass
+
+
 # ------------------------------ Asset ------------------------------
 _test_Asset = False
 if _test_Asset:
@@ -408,11 +458,11 @@ if _test_Asset:
 
 
 # ------------------------------ Shot ------------------------------
-# CreateScene 接口已废弃, 全部统一采用 CreateShot
-# 包括, Film/TV 类型
-
 _test_Shot = False
 if _test_Shot:
+    # CreateScene 接口已废弃, 全部统一采用 CreateShot
+    # 包括, Film/TV 类型
+
     # ---------- Create Shot ----------
     project_id, workflow_id, scene_number, shot_number, shot_color = 217, 2097, '1', '0400', '#ffffff'
     tags = [ ['my_shot_tag_name', '#ffffff'], ['my_shot_tag_name_2', ''] ]    # [ [tag_name, tag_color] ]
@@ -746,9 +796,22 @@ if _test_Variant:
     variants = in_api.getVariantByAssetId(asset_id=asset_id)
     for variant in variants:
         print(variant.variantId, variant.variantName)
-        if variant.variantName == variant_name:
-            for task_file in variant.taskFiles:
-                printer(task_file.files)
+        if variant.variantId != 91: continue
+
+        # variant.taskFiles:    `FileTaskVO`
+        for file_task_vo in variant.taskFiles:
+            # 假设名字是这个,
+            # <Task>: <file_name>
+            # Grooming: bianfu_patch.abc
+
+            # 能看到文件属于哪个 Task
+            # file_task_vo.task:    `INTask`
+            print(file_task_vo.task)
+
+            # 最终的 Files
+            # file_task_vo.files:    list of `FileVO`
+            for file in file_task_vo.files:
+                print(file.fileId, file.name)
 
 
     # ----- Edit Variant -----

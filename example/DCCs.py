@@ -43,7 +43,6 @@ def call_api_example():
     """
     Using IN_API_CLIENT
     """
-    IN_COMMON.logger.info("set_in_common_variables: {}".format(IN_API_CLIENT.api_call("set_in_common_variables", ["WS_IN_MAPPING_DIRECTORY", "I:/your_map_path"], )))
     IN_COMMON.logger.info("login_server: {}".format(IN_API_CLIENT.api_call("login_server", [username, password], )))
     # IN_COMMON.logger.info("get_tasks: {}".format(IN_API_CLIENT.api_call("get_tasks")))
     # IN_COMMON.logger.info("get_projects: {}".format(IN_API_CLIENT.api_call("get_projects")))
@@ -52,7 +51,7 @@ def call_api_example():
 
 
 def call_native_api():
-    api_client = IN_API_CLIENT.InApiClient.connectAndLogin(IN_COMMON.WS_IN_MAPPING_DIRECTORY, ip, port, username, password, ctype, webserver)
+    api_client = IN_API_CLIENT.InApiClient.connectAndLogin("Z:/", ip, port, username, password, ctype, webserver)
     IN_COMMON.logger.info("getProjects: {}".format(api_client.getProjects()))
 
 

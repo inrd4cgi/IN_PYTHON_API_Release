@@ -1,6 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.1.0] - 2020-12-24
+### Fixed
+  * Fix 
+  * **IN_PYTHON_API_FUNC** [`getVariantByAssetId`]
+
+## [1.3.0.0] - 2020-12-24
+### Updated
+  * Use the mapping path following the project
+
 ## [1.2.23.3] - 2020-12-18
 ### Updated
   * **IN_PYTHON_API** [`data_flow_change_task_status`]
