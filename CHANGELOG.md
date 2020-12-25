@@ -1,6 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.4.0.0] - 2020-12-24
+### Updated
+  * Add Methods
+    ```
+    createProject
+    createPipelineStep
+    createWorkFlowTempl
+    ```
+
 ## [1.3.1.0] - 2020-12-24
 ### Fixed
   * Fix 

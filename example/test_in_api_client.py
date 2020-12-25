@@ -154,7 +154,7 @@ if _test_Get:
     shot = in_api.getShotInfo(shot_id=122)
     person = in_api.getPerson(person_id=20200425)
     people = in_api.getPersonList(department_id=99, team_id=0, filter=0)
-    p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=0)
+    p_steps = in_api.getPipelineSteps(project_id=0, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
     placeholder_list = in_api.getPlaceHolderList()
     shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
     tags = in_api.getTagInfo()    # tag_name="TestTag", tag_object_id=6, resource_id=90
@@ -391,9 +391,10 @@ if _test_Project:
     # printer(storage_list)
     file_server_root = 'hdd'
 
-    index = 5
+    index = 12
     project_name = 'PythonAPIProject_%s' % index
 
+    # result: `INQProjectVO`
     proj = in_api.createProject(
         project_name=project_name,
         type=IN_DATA_STRUCTURE.ProjectType.FILM,
@@ -404,15 +405,133 @@ if _test_Project:
         due_date='2020-12-31 00:00:00',
         root_dir='I:',
         description='Created by Python API',
-        color='#ffffff'
+        color='#ffffff',
     )
-
-    print(proj.projectId)
+    print('Create Project: %s' % proj.projectId)
 
 
 # ------------------------------ PipelineStep ------------------------------
 _test_PipelineStep = False
 if _test_PipelineStep:
+
+    project_id = 217
+    pipeline_name = 'PythonPipelineStep'
+
+
+    # ---------- Delete PipelineStep ----------
+    p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=217)
+    for p_step in p_steps:
+        if p_step.pipelineName == pipeline_name:
+            is_successful = in_api.deletePipelineStep(pipeline_id=p_step.pipelineId)
+            print('Delete Workflow %s: %s' % (workflow.workFlowId, is_successful))
+            break
+
+
+    # ---------- Create PipelineStep ----------
+    # Method 1: [ [file_path, file_name, placeholder_id], ... ]
+    # output_files = [['/geo', 'source.mb', 12767], ]
+    # output_files = [['/geo/rig', '', -1], ]
+
+    # Method 2: [ file_path, ... ]
+    output_files = ['/geo/source.mb', '/geo/fx', '/geo/rig']
+
+    pipeline_type = IN_DATA_STRUCTURE.PipelineType.Asset
+    coordinator_id = 20200478
+    approval_list = [20200478]    # personId
+    description = 'Created by Python API'
+    to_validate = False
+    loader_script = ''
+    validation_script = ''
+
+    # result: `INPipelineStep`
+    pipeline = in_api.createPipelineStep(
+        project_id=project_id,
+        pipeline_name=pipeline_name,
+        pipeline_type=pipeline_type ,
+        coordinator_id=coordinator_id,
+        approval_list=approval_list,
+        output_files=output_files,
+        description=description,
+        to_validate=to_validate,
+        loader_script=loader_script,
+        validation_script=validation_script,
+    )
+    print('Create Pipeline: %s' % pipeline.pipelineId)
+
+
+    # ---------- Update PipelineStep ----------
+
+
+
+# ------------------------------ Workflow Template ------------------------------
+_test_WorkflowTemplate = True
+if _test_WorkflowTemplate:
+
+    project_id = 217
+    index = 2
+    workflow_name = 'PythonWorkflow_%s' % index
+
+
+    # ---------- Delete WorkflowTemplate ----------
+    workflow_list = in_api.getWorkFlowTempls(project_id=project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+    for workflow in workflow_list:
+        if workflow.workFlowName == workflow_name:
+            is_successful = in_api.deleteWorkFlowTempl(workflow_id=workflow.workFlowId)
+            print('Delete Workflow %s: %s' % (workflow.workFlowId, is_successful))
+            break
+
+
+    # ---------- Create WorkflowTemplate ----------
+
+    # ---------- Test 1 ----------
+    # 注意 parents 是一个 list
+    p1_1 = IN_DATA_STRUCTURE.PipelineNode(id=1183, alias='s1_alias_name')
+    p1_2 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
+    p1_3 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
+    p1_4 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
+    p1_5 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
+    p2_1 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
+    p2_2 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
+    p2_3 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
+    p2_4 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_2])
+    p2_5 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_2])
+    p3_1 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_1, p2_2])
+    p3_2 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p1_4, p2_2])
+    p3_3 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_2])
+    p3_4 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_3])
+    p4_1 = IN_DATA_STRUCTURE.PipelineNode(id=1197, parents=[p3_1])
+    p5_1 = IN_DATA_STRUCTURE.PipelineNode(id=1198, parents=[p4_1])
+    pipeline_nodes = [p1_1, p1_2, p1_3, p1_4, p1_5, p2_1, p2_2, p2_3, p2_4, p2_5, p3_1, p3_2, p4_1, p5_1]
+
+
+    # ---------- Test 2 ----------
+    column_count = 6
+    pipelines_id = [1183, 1184, 1193, 1197, 1198]
+    pipeline_nodes = []
+
+    for row, pipeline_id in enumerate(pipelines_id):
+        for _ in range(column_count):
+            # 注意 parents 是一个 list
+            parents = []
+            parent_index = len(pipeline_nodes) - column_count
+            if parent_index >= 0:
+                parents = [pipeline_nodes[parent_index]]
+
+            pipeline_nodes.append(IN_DATA_STRUCTURE.PipelineNode(pipeline_id, parents=parents))
+
+
+    # ----- Create -----
+    # result: `INQWorkFlowVO`
+    workflow = in_api.createWorkFlowTempl(
+        project_id=project_id,
+        workflow_name=workflow_name,
+        pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset,
+        pipeline_nodes=pipeline_nodes)
+    print('Create Workflow: %s' % workflow.workFlowId)
+
+
+    # ---------- Update WorkflowTemplate ----------
+
     pass
 
 
@@ -435,7 +554,7 @@ if _test_Asset:
         project_id, workflow_id, asset_name, alias, asset_color=asset_color,
         description='Created By Python API', tags=tags)
     asset_id = asset_obj.assetId
-    print('asset_id:', asset_id)
+    print('Create Asset: %s' % asset_id)
 
     # ---------- Get Asset Info ----------
     # assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
@@ -448,7 +567,7 @@ if _test_Asset:
 
     # ---------- Edit Asset ----------
     r = in_api.editAsset(asset_id=asset_id, color='#000000', description='Edit Asset by Python API')
-    print('edit asset:', r)
+    print('Edit Asset: %s' % r)
 
 
     # ---------- Delete Asset ----------
@@ -476,6 +595,8 @@ if _test_Shot:
         description='Created by Python API',
         tags=tags)
     shot_id = shot_obj.shotId
+    print('Create Shot: %s' % shot_id)
+
 
     # ----------------------------------
 
@@ -496,6 +617,7 @@ if _test_Shot:
         scene=scene_number,
         shot=shot_number)
     shot_id = shot_obj.shotId
+    print('Create Shot: %s' % shot_id)
 
 
     # ---------- Get Shot Info ----------
@@ -514,12 +636,12 @@ if _test_Shot:
 
     # ---------- Edit Shot ----------
     r = in_api.editShot(shot_id=shot_id, color='#000000', description='Edit Asset by Python API')
-    print('edit shot:', r)
+    print('Edit Shot: %s' % r)
 
 
     # ---------- Delete Shot ----------
     r = in_api.deleteShot(shot_id)
-    print('delete shot:', r)
+    print('Delete Shot: %s' % r)
 
     pass
 
@@ -789,7 +911,7 @@ if _test_Variant:
 
     # ----- Create Variant -----
     variant_id = in_api.createVariant(asset_id, variant_name, file_ids=None)
-    print('created variant. id:', variant_id)
+    print('Created Variant: %s' % variant_id)
 
 
     # ----- Get Asset Variant -----
@@ -817,7 +939,7 @@ if _test_Variant:
     # ----- Edit Variant -----
     variant_name = 'My Variant Edited by Python API'
     r = in_api.editVariant(variant_name)
-    print('edit variant:', r)
+    print('Edit Variant: %s' % r)
 
 
     # ----- Get Asset Variant Record/Usage -----
@@ -827,7 +949,7 @@ if _test_Variant:
 
     # ----- Delete Variant -----
     r = in_api.deleteVariantById(variant_id)
-    print('delete variant:', r)
+    print('Delete Variant: %s' % r)
 
 
 
