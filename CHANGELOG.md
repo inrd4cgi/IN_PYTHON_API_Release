@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.4.0.4] - 2020-12-28
+### Updated
+  * build script
+
+## [1.4.0.3] - 2020-12-28
+### Updated
+  * config.json
+
 ## [1.4.0.2] - 2020-12-28
   * Rebuild
 

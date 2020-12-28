@@ -21,7 +21,7 @@
     "LOGGER_STREAM_LEVEL": "debug",
     "LOGGER_FILE_LEVEL": "error",
     "USING_PYTHON_SUBPROCESS_DW_FLAGS": true,
-    "SOURCE_IS_PYD_MODE": true,
+    "SOURCE_IS_PYD_MODE": false,
     "USING_EXCEPTION_FULL_MSG": false,
     "USING_PYTHON_STDOUT_STREAM": true,
     "USING_PYTHON_SUBPROCESS": true,
@@ -36,19 +36,12 @@
     "LP_CONFIG_DIR": "C:\\test_3rd_party_plugins\\maya\\2019\\scripts\\IN_Dcc_Client\\Config",
     "FIXED_MAPPING_PATH": "",
     "PROJECT_FILE_FORMAT": {
-        "Maya": [
-            "ma",
-            "mb"
-        ],
-        "Houdini": [
-            "hip",
-            "hiplc",
-            "hipnc"
-        ],
+        "Maya": ["ma", "mb"],
+        "Houdini": ["hip", "hiplc", "hipnc"],
         "Unreal": []
     },
     "ENVIRONMENTS_VARIABLES": {
         "WS_EXTRA_PYTHON_INTERPRETER": ""
     },
-    "VERSION": "beta1.4.0.2"
+    "VERSION": "beta1.4.0.4"
 }
