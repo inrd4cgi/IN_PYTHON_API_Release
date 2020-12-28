@@ -17,8 +17,8 @@
     "SERVER_START_OVERTIME": 10,
     "USING_PYTHON_LOGGER_MODULE_FOR_STREAM": true,
     "DISABLE_ALL_OF_STD_STREAM": false,
-    "LOGGER_LEVEL": "info",
-    "LOGGER_STREAM_LEVEL": "info",
+    "LOGGER_LEVEL": "debug",
+    "LOGGER_STREAM_LEVEL": "debug",
     "LOGGER_FILE_LEVEL": "error",
     "USING_PYTHON_SUBPROCESS_DW_FLAGS": true,
     "SOURCE_IS_PYD_MODE": true,
@@ -48,8 +48,7 @@
         "Unreal": []
     },
     "ENVIRONMENTS_VARIABLES": {
-        "WS_EXTRA_PYTHON_INTERPRETER": "",
-        "USER_HOME_DIRECTORY": ""
+        "WS_EXTRA_PYTHON_INTERPRETER": ""
     },
     "VERSION": "beta1.4.0.2"
 }
