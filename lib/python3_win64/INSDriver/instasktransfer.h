@@ -109,4 +109,15 @@ namespace INS
 		INSUploadOutputFile(const FileVO& fileBase, qint32 taskId, const QString& absolutePath);
 	};
 
+	/*!
+	 * \class INSUploadSequenceTaskFile
+	 * \ingroup businessAPI_fileModule
+     * \brief 上传sequence file的类
+	 */
+	class INSDRIVER_EXPORT INSUploadSequenceTaskFile : public INSUploadRequiredFile {
+		Q_OBJECT;
+
+	public:
+		INSUploadSequenceTaskFile(const FileVO& fileBase, qint32 taskId, const QString& absolutePath);
+	};
 };

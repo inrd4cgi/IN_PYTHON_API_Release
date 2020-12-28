@@ -27,8 +27,9 @@ namespace INS
 	Description:构造函数。用户名[username]和密码[password]。密码在这里用md5加密。[type]为登录类型，例如：
 	INSJIM,INSMAYA,INSUE4
 	**************************************************************************************************/
-	INSLogin::INSLogin(const QString & username, const QString & password, const QString & type)
+	INSLogin::INSLogin(const QString & username, const QString & password, const QString & typ)
 	{
+		const static QString type = INS_CLIENT_PREFIX + QString(":") + typ;//加个前缀，你江哥加的
 		QString password_encrypted = QCryptographicHash::hash(password.toLatin1(), QCryptographicHash::Md5).toHex();
 		SaveCurrentLoginInfo(username, password, type);
         QString jsonStr = JsonMessageUtils::dataToJson(username, password_encrypted, type);
@@ -165,5 +166,31 @@ namespace INS
         JsonMessageUtils::jsonToData(jsonStr, m_return_value);
 		m_finished = true;
 		return;
+	}
+
+
+	//INSLoginConflictListener
+	//**************************************************************************************
+	INSLoginConflictListener::INSLoginConflictListener()
+			: INSRequest(-1011){
+		m_lock.unlock();
+	}
+
+	void INSLoginConflictListener::SetCallbackFunc(std::function<void(QString)> p_func) {
+		m_loginConflictCallback = p_func;
+	}
+
+	void INSLoginConflictListener::Process(const QByteArray &byteArray) {
+		//在python api下，这个成员可能为空。
+		if (m_loginConflictCallback) {
+			m_data = byteArray;
+			mp_in->device()->seek(0);
+			QString jsonStr;
+			*mp_in >> jsonStr;
+
+			QString msg;
+			JsonMessageUtils::jsonToData(jsonStr, msg);
+			m_loginConflictCallback(msg);
+		}
 	}
 };

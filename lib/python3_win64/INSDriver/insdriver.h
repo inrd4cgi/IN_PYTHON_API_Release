@@ -11,6 +11,7 @@
 #include "PyContainerWapper.h"
 #include "insdatastructure.h"
 
+
 namespace INS_INTERFACE
 {
     INSDRIVER_EXPORT QString jsonRequest(int serviceId, QString &queryParam);
@@ -18,8 +19,9 @@ namespace INS_INTERFACE
     //获取客户端更新文件的服务器路径
     INSDRIVER_EXPORT MessageInfo GetClientUpdateServerPath(QString& path);
 
-
 	INSDRIVER_EXPORT void SetNotificationCallback(std::function<void(const QByteArray&)> p_callback);
+
+	INSDRIVER_EXPORT void SetLoginConfilctCallback(std::function<void(QString)> p_callback);
 
 
 	//日志业务
@@ -98,11 +100,21 @@ namespace INS_INTERFACE
 	INSDRIVER_EXPORT qint32 GetWorklogById(qint32 publisherId, const QDateTime& startTime, const QDateTime& endTime, QList<SimpleWorklog>& worklogs);
 
 	// Notification 部分 
-	INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id, Notification& no);
+	//INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id, Notification& no);
+	INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id);
 
-	INSDRIVER_EXPORT qint32 SendUserNofitication(Notification& no);
+	//INSDRIVER_EXPORT qint32 SendUserNofitication(Notification& no);
+		//INSDRIVER_EXPORT qint32 SendUserNofitication(Notification& no);
 
-	INSDRIVER_EXPORT qint32 GetInboxNofitication(qint32 recipient_id, qint32 beg, qint32 offset, QList<Notification>& nos);
+	INSDRIVER_EXPORT qint32 GetNofitications(
+		qint32 recipient_id, 
+		QList<NotificationMessage>& nos, 
+		qint32 category,
+		qint32 notificationID = 0);
+
+	INSDRIVER_EXPORT qint32 GetNofiticationOverview(qint32 recipient_id, QMap<qint32, qint32>& data);
+
+    INSDRIVER_EXPORT MessageInfo GetUnreadMsgAmount(qint32 &amount);
 
 	//Holiday
 	INSDRIVER_EXPORT MessageInfo CreateHolidayTemplate(INQHolidayTemplate& holidayTemplate);

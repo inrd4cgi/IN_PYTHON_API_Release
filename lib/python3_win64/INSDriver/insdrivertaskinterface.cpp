@@ -102,9 +102,11 @@ namespace INS_INTERFACE {
     }
 
     //创建任务
-    INSDRIVER_EXPORT qint32 CreateTask(INTask &newtask) {
-        INSCommonRequestRetInt<qint32, INTask> commonRequest(522, newtask);
+    INSDRIVER_EXPORT MessageInfo
+    CreateTask(INTask &newTask) {
+        INSCommonRequest<INTask, INTask> commonRequest(5210, newTask);
         commonRequest.WaitForFinished();
+        newTask = commonRequest.retData;
         return commonRequest.m_return_value;
     }
 

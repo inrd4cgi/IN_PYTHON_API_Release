@@ -25,6 +25,11 @@ namespace INS_INTERFACE {
         notificationListener.SetCallbackFunc(p_callback);
     }
 
+    void SetLoginConfilctCallback(std::function<void(QString)> p_callback)
+    {
+        static INSLoginConflictListener loginConflictListener;
+        loginConflictListener.SetCallbackFunc(p_callback);
+    }
 
     //日志业务 通过查询参数查询日志
     INSDRIVER_EXPORT MessageInfo GetLogs(QList<LogInfoVO> &logs, LogBusParams &logParams) {
@@ -172,31 +177,70 @@ namespace INS_INTERFACE {
     }
 
 
-    INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id, Notification &no) {
-        INSCommonRequestRetInt<Notification, qint32, Notification>
-                request(760, recv_id, no);
+    //INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id, Notification &no) {
+    //    INSCommonRequestRetInt<Notification, qint32, Notification>
+    //            request(760, recv_id, no);
+    //    request.WaitForFinished();
+    //    no = request.retData;
+    //    return request.m_return_value;
+    //}
+
+	INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id) 
+	{
+		INSCommonRequestRetInt<NotificationMessage, qint32>
+			request(760, recv_id);
+		request.WaitForFinished();
+		return request.m_return_value;
+	}
+
+
+    //INSDRIVER_EXPORT qint32 GetInboxNofitication(qint32 recipient_id, qint32 beg, qint32 offset,
+    //                                             QList<Notification> &nos) {
+    //    INSCommonRequestRetInt<QList<Notification>, qint32, qint32, qint32>
+    //            request(761, recipient_id, beg, offset);
+    //    request.WaitForFinished();
+    //    nos = request.retData;
+    //    return request.m_return_value;
+    //}
+
+	INSDRIVER_EXPORT qint32 GetNofitications(
+		qint32 recipient_id, 
+		QList<NotificationMessage>& nos, 
+		qint32 category,
+		qint32 notificationID) 
+	{
+		INSCommonRequestRetInt<QList<NotificationMessage>, qint32, qint32, qint32>
+			request(761, recipient_id, category, notificationID);
+		request.WaitForFinished();
+		nos = request.retData;
+		return request.m_return_value;
+	}
+
+	INSDRIVER_EXPORT qint32 GetNofiticationOverview(
+		qint32 recipient_id, 
+		QMap<qint32, qint32>& data)
+	{
+		INSCommonRequestRetInt<QMap<qint32, qint32>, qint32>
+			request(762, recipient_id);
+		request.WaitForFinished();
+		//request.m_lock.lock();
+		data = request.retData;
+		return request.m_return_value;
+	}
+
+    INSDRIVER_EXPORT MessageInfo GetUnreadMsgAmount(qint32 &amount) {
+        INSCommonRequest<qint32, qint32> request(763, 0);
         request.WaitForFinished();
-        no = request.retData;
+        amount = request.retData;
         return request.m_return_value;
     }
 
-
-    INSDRIVER_EXPORT qint32 GetInboxNofitication(qint32 recipient_id, qint32 beg, qint32 offset,
-                                                 QList<Notification> &nos) {
-        INSCommonRequestRetInt<QList<Notification>, qint32, qint32, qint32>
-                request(761, recipient_id, beg, offset);
-        request.WaitForFinished();
-        nos = request.retData;
-        return request.m_return_value;
-    }
-
-
-    INSDRIVER_EXPORT qint32 SendUserNofitication(Notification &no) {
-        INSCommonRequestRetInt<Notification, Notification> request(762, no);
-        request.WaitForFinished();
-        no = request.retData;
-        return request.m_return_value;
-    }
+    //INSDRIVER_EXPORT qint32 SendUserNofitication(Notification &no) {
+    //    INSCommonRequestRetInt<Notification, Notification> request(762, no);
+    //    request.WaitForFinished();
+    //    no = request.retData;
+    //    return request.m_return_value;
+    //}
 
     //holiday
     MessageInfo CreateHolidayTemplate(INQHolidayTemplate &holidayTemplate) {
@@ -232,5 +276,4 @@ namespace INS_INTERFACE {
         request.WaitForFinished();
         return request.m_return_value;
     }
-
 };

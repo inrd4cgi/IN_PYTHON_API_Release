@@ -54,7 +54,7 @@ namespace INS_INTERFACE
 	INSDRIVER_EXPORT qint32 GetPlaceHolderList(QList<FileVO>& placeholderlist);
 
 	//创建任务
-	INSDRIVER_EXPORT qint32 CreateTask(INTask& newtask);
+	INSDRIVER_EXPORT MessageInfo CreateTask(INTask& newtask);
 
 	//编辑任务信息
     INSDRIVER_EXPORT MessageInfo EditTask(INTask& etask);

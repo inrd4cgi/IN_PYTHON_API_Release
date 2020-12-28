@@ -77,6 +77,13 @@ namespace INS_INTERFACE {
         return commonRequest.m_return_value;
     }
 
+    INSDRIVER_EXPORT MessageInfo GetRoleAccessibleSequence(QList<IdName> &sequences, qint32 projectId, qint32 roleId) {
+        INSCommonRequest<QList<IdName>, qint32, qint32> commonRequest(255, projectId, roleId);
+        commonRequest.WaitForFinished();
+        sequences = commonRequest.retData;
+        return commonRequest.m_return_value;
+    }
+
     INSDRIVER_EXPORT MessageInfo UpdateRoleAccessibleAsset(qint32 roleId, QList<DataAuthVO> &assets) {
         INSCommonRequest<qint32, qint32, QList<DataAuthVO>> commonRequest(253, roleId, assets);
         commonRequest.WaitForFinished();
@@ -85,6 +92,12 @@ namespace INS_INTERFACE {
 
     INSDRIVER_EXPORT MessageInfo UpdateRoleAccessibleShot(qint32 roleId, QList<DataAuthVO> &shots) {
         INSCommonRequest<qint32, qint32, QList<DataAuthVO>> commonRequest(254, roleId, shots);
+        commonRequest.WaitForFinished();
+        return commonRequest.m_return_value;
+    }
+
+    INSDRIVER_EXPORT MessageInfo UpdateRoleAccessibleSequence(qint32 roleId, QList<DataAuthVO> &sequence) {
+        INSCommonRequest<qint32, qint32, QList<DataAuthVO>> commonRequest(256, roleId, sequence);
         commonRequest.WaitForFinished();
         return commonRequest.m_return_value;
     }

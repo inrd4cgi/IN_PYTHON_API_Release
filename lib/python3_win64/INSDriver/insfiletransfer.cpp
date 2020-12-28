@@ -700,7 +700,12 @@ namespace INS
 			m_file.directory = m_fileRepoInfo.clientInfo.directory;
 		if (m_file.name.isEmpty())
 			m_file.name = m_fileRepoInfo.clientInfo.name;
-		InitFileHandle(true);
+
+		if (!InitFileHandle(true))
+		{
+			SetFinished((int)(ClientTransMsg::enumInfoFileOpenFailed), "Open file failed.");
+			return;
+		}
 
 		if (m_fileRecorder == nullptr)
 			m_fileRecorder = new FileTransferRecorder(m_fileAbsolutePath);

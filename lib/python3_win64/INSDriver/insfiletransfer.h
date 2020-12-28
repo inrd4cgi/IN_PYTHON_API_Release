@@ -52,9 +52,11 @@ namespace INS
 	{
 		Q_OBJECT;
 	public:
+
 		enum class ClientTransMsg
 		{
-			enumInfoAbort = 10000, enumInfoTimeout
+			enumInfoAbort = 10000,
+			enumInfoTimeout = 20000, enumInfoFileOpenFailed
 		};
 
 		friend class TransferOperatorAbstract;

@@ -165,4 +165,11 @@ namespace INS_INTERFACE {
         fileBase.directory = strDirectory;
         return new INSUploadLibraryFile(fileBase, absolutePath);
     }
+
+	INSDRIVER_EXPORT INSUploadSequenceTaskFile *
+		UploadSequenceTaskFile(const QString &filename, qint32 taskId, const QString& absolutePath) {
+		FileVO fileBase;
+		fileBase.name = filename;
+		return new INSUploadSequenceTaskFile(fileBase, taskId, absolutePath);
+	}
 };

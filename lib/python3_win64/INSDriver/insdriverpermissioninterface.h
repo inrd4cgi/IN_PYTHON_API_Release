@@ -29,6 +29,8 @@ namespace INS_INTERFACE
 
     INSDRIVER_EXPORT MessageInfo GetRoleAccessibleShot(QList<IdName> &shots, qint32 projectId, qint32 roleId);
 
+    INSDRIVER_EXPORT MessageInfo GetRoleAccessibleSequence(QList<IdName> &sequences, qint32 projectId, qint32 roleId);
+
     /*!
      * \brief 更新可看的资产和镜头
      * \details
@@ -42,6 +44,8 @@ namespace INS_INTERFACE
     INSDRIVER_EXPORT MessageInfo UpdateRoleAccessibleAsset(qint32 roleId, QList<DataAuthVO> &assets);
 
     INSDRIVER_EXPORT MessageInfo UpdateRoleAccessibleShot(qint32 roleId, QList<DataAuthVO> &shots);
+
+    INSDRIVER_EXPORT MessageInfo UpdateRoleAccessibleSequence(qint32 roleId, QList<DataAuthVO> &sequence);
 
 
     /*!

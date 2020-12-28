@@ -359,9 +359,10 @@ namespace INS {
 		ProjectData projectData;//项目统计数据
         QList<IdName> tags;
         qint32 type = 0;        //项目类型, film:1,tv:2
+        QString rootDir;        //项目映射根路径
 
         Serialization(IN_PROJECT_BASE_PROPERTY ,fileServerRoot, projectRoot, department,
-                      projectData, tags, type)
+                      projectData, tags, type, rootDir)
 	};
 
     //获取项目业务的参数过滤类
@@ -385,36 +386,6 @@ namespace INS {
         Serialization(fetchData, projectIds, startTime, dueTime, isNeededDetails, teamId, projectName)
     };
 
-    struct INQWorkPath;
-    struct PipeLineStepApproval;
-	struct INPipelineStep {
-
-		qint32 pipelineId = 0;      //pipeline的id
-		qint32 pipelineType = 0;    //pipeline的类型
-		QString pipelineName = "";  //pipeline的名称
-		qint32 projectId = 0;       //项目id
-		QPair<qint32, QString> coordinator;//由谁分配任务
-		QPair<qint32, QString> supervisor; //审核人id,姓名
-		QString description = "";
-        QList<INQWorkPath> outputFileList;//输出文件列表
-        QList<PipeLineStepApproval> approvalList;//审批员列表
-        IdName creator;//pipeline step 的创建者
-
-        Serialization(pipelineId, pipelineType, pipelineName, projectId, coordinator,
-                supervisor, description, outputFileList, approvalList, creator);
-	};
-
-	struct INQWorkPath {
-		qint32 pathId = 0;
-		qint32 pipelineId = 0;
-		QString filePath = "";
-		qint32 fileType = 0;
-		qint32 fileID = 0;
-		QString fileName = "";
-
-		Serialization(pathId, pipelineId, filePath, fileType, fileID, fileName);
-	};
-
     struct PipeLineStepApproval
     {
         qint32  pstApprovalId           = 0;    //审批流程ID
@@ -431,11 +402,43 @@ namespace INS {
         Serialization(pstApprovalId,projectId, pipelineId, personId, name,avatar,parentPstApprovalId,operation,createTime,updateTime);
     };
 
+    struct INQWorkPath {
+        qint32 pathId = 0;
+        qint32 pipelineId = 0;
+        QString filePath = "";
+        qint32 fileType = 0;
+        qint32 fileID = 0;
+        QString fileName = "";
+
+        Serialization(pathId, pipelineId, filePath, fileType, fileID, fileName);
+    };
+
+	struct INPipelineStep {
+
+		qint32 pipelineId = 0;      //pipeline的id
+		qint32 pipelineType = 0;    //pipeline的类型
+		QString pipelineName = "";  //pipeline的名称
+		qint32 projectId = 0;       //项目id
+		QPair<qint32, QString> coordinator;//由谁分配任务
+		QPair<qint32, QString> supervisor; //审核人id,姓名
+		QString description = "";
+        QList<INQWorkPath> outputFileList;//输出文件列表
+        QList<PipeLineStepApproval> approvalList;//审批员列表
+        IdName creator;//pipeline step 的创建者
+        bool toValidate = false;//require technical validation
+        QString loaderScript = "";
+        QString validationScript = "";
+
+        Serialization(pipelineId, pipelineType, pipelineName, projectId, coordinator,
+                supervisor, description, outputFileList, approvalList, creator,toValidate,loaderScript,validationScript);
+	};
+
 	//work-flow详情
 	struct WorkFlowDetlFile;
 	struct INQWorkFlowDetail {
 		qint32 workFlowStepId = 0;      //工作流每一步的id
 		QString workFlowStepName = "";  //工作流每一步的名称
+		QString alias;
 		qint32 workFlowId = 0;          //工作流模板的id
 		QList<qint32> parentStepIds;    //工作流父亲节点的id集合
 		QString color = "#FFFFFF";      //描述颜色
@@ -445,7 +448,7 @@ namespace INS {
 		qint32 containerId = 0;
 		QList<WorkFlowDetlFile> wfdFileList;
 
-		Serialization(workFlowStepId, workFlowStepName, workFlowId,
+		Serialization(workFlowStepId, workFlowStepName, alias, workFlowId,
 					  parentStepIds, color, pipelineStep, position, wftype, containerId, wfdFileList)
 	};
 
@@ -523,7 +526,9 @@ namespace INS {
 		qint32 taskId{ 0 };					//任务id
 		qint32 objectId{ 0 };				//Asset/shotid
 		QString objectName;					//Asset/shot名称
+		QString objectAlias;                //asset/shot的别名
 		QString taskName;				    //任务名
+		QString alias;                      //别名
 		qint32 assigneeTeamId{ 0 };			//任务执行人所属组id
 		QString assigneeTeam;			    //任务执行人所属组
 		qint32 assigneePersonId{ 0 };		//任务执行人id
@@ -546,6 +551,11 @@ namespace INS {
         qint32 taskApprovalId{0};           //当前审批列表ID
         QList<TaskApproval> approvalList;   //审批员列表，用于查看。
         QList<IdName> tags;
+        IdName scene;
+
+		qint32 toValidate = 0;//是否需要科技验证
+		QString loaderScript = "";
+		QString validationScript = "";
 
 		//taskId,projectId,containerName,taskName,pipelineStep,supervisor,organizer,color,status,type不能为空
 		bool checkTaskParam() {
@@ -557,10 +567,11 @@ namespace INS {
 		}
 
 		Serialization(projectId, project, issueDate, dueDate, actual_start_time, actual_end_time, privilege_start_time, privilege_end_time, createdTime,
-					  description, color, pos, status, taskId, objectId, objectName, taskName, assigneeTeamId, assigneeTeam,
+					  description, color, pos, status, taskId, objectId, objectName, taskName, alias, assigneeTeamId, assigneeTeam,
 					  assigneePersonId, assigneePerson, pipelineStepId, pipelineStep, supervisorId, supervisor,
 					  coordinatorId, coordinator, organizerId, organizer, reminderId, difficulty, type, wftype, workFlowStepId,
-                      containerId, storageType,taskApprovalId,approvalList, tags)
+                      containerId, storageType,taskApprovalId,approvalList, tags, toValidate,
+					  loaderScript, validationScript)
 	};
 
     ///任务审批结构体
@@ -619,9 +630,12 @@ namespace INS {
         QList<qint32> audioIds;
         QList<qint32> videoIds;
         QList<qint32> pixmapIds;
+        qint32 isApprover = 0;  /// 提交此评论是否为任务审批者标志位 0 否 1 是
+        qint32 taskStatus = 0;  /// 提交评论时，该任务的状态
+        QDateTime statusDate;   /// 提交评论时，该任务的状态变更时间
 
         Serialization(commentId, person, taskId, taskStateId, submitDate, text, audioIds, videoIds,
-                      pixmapIds)
+                      pixmapIds,isApprover,taskStatus,statusDate)
 	};
 
 	//资产的结构体
@@ -667,7 +681,102 @@ namespace INS {
 	};
 	//**************************************************************************************************
 
-	/*!
+	//INSequence
+    //**************************************************************************************************
+    struct INSequence : public INProjectBaseObj
+    {
+        qint32 sequenceId       = 0;    //主键id
+        qint32 seasonId         = 0;    //季 ID
+        QString seasonName      = "";   //季名称
+        qint32 episodeId        = 0;    //剧集ID
+        QString episodeName     = "";   //剧集名称
+        qint32 sceneId          = 0;    //场次id
+        QString sceneName       = "";   //场次名
+        qint32 workflowId       = 0;
+        QString workflowName    = "";
+        QList<INTask> taskList;	        //任务列表
+        IdName creator;                 //创建者id和名字
+        QList<IdName> tags;
+        qint32 projectType  = 0;        //镜头所属的项目类型。1： film，2: tv
+
+        Serialization(IN_PROJECT_BASE_PROPERTY, sequenceId, seasonId, seasonName,episodeId,episodeName,sceneId, sceneName,
+                workflowId, workflowName, taskList, creator, tags, projectType)
+    };
+
+	//镜头文件
+	struct INSequenceShotFile {
+		qint32  shotGroupId     = 0;    //镜头组ID
+		qint32  shotNum         = 0;    //镜头号码 从1开始递增
+		qint32  fileId          = 0;    //文件ID
+		qint32  fileVersion     = 0;    //文件版本号
+        QString filePath        = "";   //文件路径
+        QString fileName        = "";   //文件名
+        QString checkCode       = "";   //文件校验码
+		qint32  duration        = 0;    //影片时长，单位：帧
+		qint32  sequenceNum     = 0;    //文件序列号 从1开始递增
+		qint32  isSelected      = 0;    //是否使用 0 否  1是
+		qint32  version         = 0;    //镜头组版本
+		qint32  operation       = 0;    //0 默认；1 新增；2 删除；3 恢复
+		QList<QString> freqContentList;  //视频标签数据列表
+
+        Serialization(shotGroupId,shotNum,fileId,fileVersion,filePath,fileName,checkCode,duration,
+				sequenceNum,isSelected,version,operation,freqContentList)
+	};
+
+	//镜头组审批数据
+	struct INSequenceShotGroupReview {
+		qint32 taskId           = 0;    //任务id
+		qint32 shotGroupId      = 0;    //镜头组id
+		qint32 version          = 0;    //镜头组版本
+		qint32 fileId           = 0;    //文件id
+		qint32 fileVersion      = 0;    //文件版本
+		QString freqContent     = "";   //视频标签数据
+		QString text            = "";   //review内容
+
+		Serialization(taskId,shotGroupId,version,fileId,fileVersion,freqContent,text)
+	};
+
+
+	//镜头组
+    struct INSequenceShotGroup {
+        qint32  shotGroupId             = 0;    //镜头组ID
+        qint32  projectId               = 0;    //*项目ID
+        qint32  sequenceId              = 0;    //*sequenceId
+        qint32  taskId                  = 0;    //*任务ID
+        QString groupName               = "";   //*名称
+        QString description             = "";   //描述
+        qint32  version                 = 0;    //镜头组版本
+        qint32  isDefault               = 0;    //是否为默认列表 0 否 1是
+	    qint32  isApproved              = 0;    //是否审批通过 0否 1是
+	    qint32  shotCount               = 0;    //镜头数量
+        qint32  totalDuration           = 0;    //当前镜头总时长 单位：秒
+        qint32  totalFreq               = 0;    //当前镜头总修改意见次数
+        IdName  creator;                        //创建者id和名字
+        QDateTime   createTime;                 //创建时间
+        QDateTime   updateTime;                 //更新时间
+        QMap<qint32,QList<INSequenceShotFile>>  shotFileMap; //镜头列表 key 镜头号码 value 文件列表
+
+        Serialization(shotGroupId, projectId, sequenceId, taskId,groupName,
+                description,version,isDefault, isApproved,shotCount,totalDuration,totalFreq,
+                creator,createTime, updateTime,shotFileMap)
+    };
+
+    //镜头文件回收站
+    struct INSequenceShotFileRecycle {
+        qint32 shotFileRecycleId    = 0;    //镜头组文件回收站id
+        qint32 shotGroupId          = 0;    //镜头组表ID
+        qint32 fileId               = 0;    //文件id
+        qint32  fileVersion         = 0;    //文件版本号
+        QString fileName            = "";   //文件名
+        IdName  creator;                    //创建者id和名字
+        QDateTime createTime;               //创建时间
+
+        Serialization(shotFileRecycleId,shotGroupId,fileId,fileVersion,fileName,creator,createTime)
+    };
+    //**************************************************************************************************
+
+
+    /*!
 	 * \brief The RequiredFileStruct struct Required文件描述结构体
 	 */
 	struct RequiredFileStruct {
@@ -733,7 +842,8 @@ namespace INS {
 	};
 
 	//项目的里程碑
-	struct ProjectMilestone {
+	struct ProjectMilestone 
+	{
 		int milestoneId = 0;//里程碑id
 		int projectId = 0;//项目id
 		QDateTime timePoint;//时间点
@@ -744,51 +854,125 @@ namespace INS {
 		Serialization(milestoneId, projectId, timePoint, description, color, createTime, milestoneName)
 	};
 
-	// 分类的消息
-	class Recipient {
+	enum class NotificationHierarchy
+	{
+		UNKNOWN = 0,
+		USR_ACTIVATED = 1,
+		SYS_GENERATED = 2
+	};
+
+	enum class NotificationCategory
+	{
+		UNKNOWN = 0,
+		PROJECT = 1,
+		ASSET = 2,
+		SHOT = 4,
+		ACCOUNT_LOGIN = 8,
+	};
+
+	class NotificationRecipient
+	{
 	public:
-		qint64 recv_id{ -1 };
-		qint32 recipient_id{ -1 }; // recipient folderId
-		QString recipient_name; // recipient name
-		bool read{false }; // status
+		NotificationRecipient() = default;
+		NotificationRecipient(qint32 userID, QString userName) :
+			recipientID(userID), recipientName(userName) {}
 
-		Recipient() = default;
+	public:
+		qint64 receiveID { 0 };
 
-		Recipient(qint32 rid, const QString &rname) {
-			recipient_id = rid;
-			recipient_name = rname;
+		qint32 recipientID { 0 }; 
+
+		QString recipientName; 
+
+		bool received { false }; 
+
+		Serialization(receiveID, recipientID, recipientName, received);
+	};
+
+	class Header
+	{
+	public:
+		Header() = default;
+		Header(qint32 userID, QString userName, NotificationHierarchy hierarchy, NotificationCategory category) :
+			senderID(userID), 
+			senderName(userName)
+		{
+			this->hierarchy = (qint32)hierarchy;
+			this->category = (qint32)category;
 		}
 
-        Serialization(recv_id, recipient_id, recipient_name, read);
-	};
-
-	class NotificationHeader {
 	public:
-		qint64 notification_id{-1 }; // notification folderId
-		qint32 sender_id{-1 }; // sender folderId
-		QString sender_name; // sender name
-		QDateTime timestamp; // notification creation
-		qint32 type{ -1 };
+		qint64 notificationID{ 0 }; // notification id
 
-		NotificationHeader() = default;
-		NotificationHeader(qint32 sid, const QString& sname) : sender_id(sid), sender_name(sname) {}
+		qint32 senderID{ 0 }; // sender id
 
-		friend QDataStream& operator<<(QDataStream& out, const NotificationHeader& header) {
-			out << header.notification_id << header.sender_id << header.sender_name << header.timestamp << header.type;
-			return out;
-		}
+		QString senderName; // sender name
 
-        Serialization(notification_id, sender_id, sender_name, timestamp, type);
+		qint32 hierarchy { (qint32)NotificationHierarchy::UNKNOWN };
+
+		qint32 category { (qint32)NotificationCategory::UNKNOWN };
+
+		QDateTime timestamp; // notification creation time
+
+		QList<NotificationRecipient> recipients;
+
+		Serialization(notificationID, senderID, senderName, hierarchy, category, timestamp, recipients);
 	};
 
-	class Notification {
+	class NotificationMessage
+	{
 	public:
-		NotificationHeader header;
-		QString msg;
-		QVector<Recipient> recipients;
+		Header header;
+		QString payload;
 
-        Serialization(header, msg, recipients);
+		Serialization(header, payload);
 	};
+
+	//// 分类的消息
+	//class Recipient {
+	//public:
+	//	qint64 recv_id{ -1 };
+	//	qint32 recipient_id{ -1 }; // recipient folderId
+	//	QString recipient_name; // recipient name
+	//	bool read{false }; // status
+
+	//	Recipient() = default;
+
+	//	Recipient(qint32 rid, const QString &rname) {
+	//		recipient_id = rid;
+	//		recipient_name = rname;
+	//	}
+
+ //       Serialization(recv_id, recipient_id, recipient_name, read);
+	//};
+
+	//class NotificationHeader {
+	//public:
+	//	qint64 notification_id{-1 }; // notification folderId
+	//	qint32 sender_id{-1 }; // sender folderId
+	//	QString sender_name; // sender name
+	//	QDateTime timestamp; // notification creation
+	//	qint32 type{ -1 };
+
+	//	NotificationHeader() = default;
+	//	NotificationHeader(qint32 sid, const QString& sname) : sender_id(sid), sender_name(sname) {}
+
+	//	friend QDataStream& operator<<(QDataStream& out, const NotificationHeader& header) {
+	//		out << header.notification_id << header.sender_id << header.sender_name << header.timestamp << header.type;
+	//		return out;
+	//	}
+
+ //       Serialization(notification_id, sender_id, sender_name, timestamp, type);
+	//};
+
+	//class Notification {
+	//public:
+	//	NotificationHeader header;
+	//	QString msg;
+	//	QVector<Recipient> recipients;
+
+ //       Serialization(header, msg, recipients);
+	//};
 
 	struct Avatar {
 		qint32 personId;
@@ -845,6 +1029,8 @@ namespace INS {
 
 		QSet<QString> tagNames;//标签条件搜索
 
+		QString alias;          //别名
+
 		bool operator==(const TaskFilterParam& other)
 		{
 			if(fetchData != other.fetchData)
@@ -875,6 +1061,8 @@ namespace INS {
 				return false;
 			if(tagNames != other.tagNames)
 				return false;
+			if (alias != other.alias)
+                return false;
             return true;
 		}
 
@@ -884,7 +1072,7 @@ namespace INS {
 		}
 
 		Serialization(fetchData, projectId, objectIds, types, status, assignTeamId, assigneeIds, supervisorIds, issueTime,
-					  dueTime, isUnassigned, taskIds, pipelineStepIds, isPendingAppend, tagNames)
+					  dueTime, isUnassigned, taskIds, pipelineStepIds, isPendingAppend, tagNames, alias)
 	};
 
 	//资产过滤参数
@@ -945,6 +1133,35 @@ namespace INS {
 
         Serialization(fetchData, projectId, shotIds, seasonId, episodeId, sceneIds, shotName, status,
                       workFlowId, issueTime, dueTime, searchKey, tagNames, taskFilterParam)
+    };
+
+    //sequence过滤参数
+    struct SequenceFilterParam {
+        enum FetchEnum {
+            Basic = 1,
+            ObjectName = 2,
+            Task = 3,
+            Tag = 4
+        };
+
+        QSet<qint32> fetchData = {};//请求号,用于指定获取的数据丰富程度
+        qint32 projectId = 0;//根据项目id查询
+        QSet<qint32> sequenceIds;//根据项目的sequenceId查询
+        qint32 seasonId = 0;//TV 项目根据season获取
+        qint32 episodeId = 0;//TV 项目，根据episode获取
+        QSet<qint32> sceneIds;//根据场景ID来查找
+
+        qint32 workFlowId = 0;//workFlowId
+        QDateTime issueTime;//根据sequence的发布时间查询
+        QDateTime dueTime;//根据sequence的截至时间查询
+        QString searchKey = "";//场景号关键词查找
+
+        QSet<QString> tagNames;//标签条件搜索
+
+        TaskFilterParam taskFilterParam;//镜头过滤条件下有任务的过滤条件
+
+        Serialization(fetchData, projectId,sequenceIds,seasonId, episodeId, sceneIds,
+                workFlowId, issueTime, dueTime, searchKey, tagNames, taskFilterParam)
     };
 
 	/*!
@@ -1351,6 +1568,7 @@ namespace INS {
     {
         qint32 taskId = 0; // 任务ID
         QString taskName; // 任务名
+		QString alias; //别名
         QString color; // 节点颜色
         QPair<QPoint, QPoint> position; // 节点位置
         QList<qint32> parentTaskIdList; // 父亲节点列表
@@ -1361,7 +1579,7 @@ namespace INS {
         qint32 operation = 0; // 用户操作 -1 - 删除 0-默认 1-新增
         qint32 pipelineStepId = 0;
 
-        Serialization(taskId, taskName, color, position, parentTaskIdList, status,
+        Serialization(taskId, taskName, alias, color, position, parentTaskIdList, status,
                       taskType, containerId, taskFileList, operation, pipelineStepId);
     };
 
@@ -1381,6 +1599,7 @@ namespace INS {
         qint32 totalScenes = 0;
         qint32 totalAsset = 0;
         qint32 totalShot = 0;
+        qint32 totalSequence = 0;
         qint32 totalTask = 0;
         qint32 taskToDo = 0;
         qint32 taskWIP = 0;
@@ -1393,7 +1612,7 @@ namespace INS {
         qint32 taskOnHold = 0;
         qint32 taskUnassigned = 0;
 
-        Serialization(totalTask, totalAsset, totalShot, totalScenes, taskToDo, taskWIP, taskPendingApproval, taskReopened,
+        Serialization(totalTask, totalAsset, totalShot, totalSequence, totalScenes, taskToDo, taskWIP, taskPendingApproval, taskReopened,
                       taskPendingValidation, taskApproved, taskPaused, taskDeprecated, taskOnHold, taskUnassigned)
     };
 
@@ -1431,4 +1650,113 @@ namespace INS {
 //            FILE = 7
 //        };
     };
+
+
+	/*!
+	 * \struct
+	 * \ingroup
+	 * \brief 路径
+	 */
+	struct PipelineStepPathMappingVO {
+
+		enum {
+			SELECTED = 0,//被选中的
+			UNSELECTED = 1,//未被选中的
+			DELETED = 2//被删除的
+		};
+
+		qint32 pathId = 0;
+		QString path = "";
+		QString fileName = "";
+		qint32 pipelineStepId = 0;
+
+		qint32 flag = SELECTED;//标志，被选中，未被选择，被删除
+
+		Serialization(pathId, path, fileName, pipelineStepId, flag)
+	};
+
+	/*!
+	 * \struct
+	 * \ingroup
+	 * \brief 匹配
+	 */
+	struct PipelineStepMappingVO {
+
+		qint32 mappingId = 0;//映射的id
+		QString mappingName = "";//映射名
+		bool isValid = true;//是否有效
+		QString message = "";//错误信息
+
+		QPair<qint32, QString> pipelineStep;//左边的pipelinestep
+
+		QPair<qint32, QString> createBy;
+		QDateTime createTime;
+
+		QMap<qint32, QString> matchedPipelineStep;//匹配的对应的pipelinestep key: pipelinestepId, value: pipelineName
+
+		QList<PipelineStepPathMappingVO> matchedPipelineStepPaths;//匹配到的pipelinestep路径
+
+		Serialization(mappingId, mappingName, isValid, message, pipelineStep, createBy, createTime, matchedPipelineStep,
+					  matchedPipelineStepPaths)
+	};
+
+	/*!
+	 * \struct
+	 * \ingroup
+	 * \brief 编辑参数
+	 */
+	struct PipelineStepMappingEditParam {
+
+		qint32 pipelineStepId = 0;//当前pipelinestep的id
+		QSet<qint32> matchedPipelineStepPathIds;//pipelineStep的路径的id
+		QSet<qint32> matchedPipelineStepIds;//匹配的pipelinestep的id
+
+		Serialization(pipelineStepId, matchedPipelineStepPathIds, matchedPipelineStepIds)
+	};
+
+	struct TaskPipelineStepVO {
+		qint32 taskId = 0;
+		QString taskName = "";
+		qint32 pipelineStepId = 0;
+		QString pipelineName = "";
+
+		Serialization(taskId, taskName, pipelineStepId, pipelineName)
+	};
+
+	struct TaskPipelineStepMappingStateVO {
+		enum {
+			NORMAL = 1,
+			MATCHED = 2,
+			MIS_MATCHED = 4,
+			DUPLICATE_MATCHED = 8
+		};
+
+		TaskPipelineStepVO shotTaskPipelineStep;
+
+		//key 匹配情况枚举，value 涉及到的任务
+		QMap<qint32, QList<TaskPipelineStepVO>> assetTaskPipelineStepState;
+
+		qint32 matchedState = 0;//总体来说的匹配情况
+
+		Serialization(shotTaskPipelineStep, assetTaskPipelineStepState, matchedState)
+	};
+
+	struct AssetVariantSimpleInfoVO {
+		qint32 variantId = 0;
+		QString variantName = "";//variant名字
+		qint32 assetId = 0;
+		QString assetName = "";//资产名
+
+		Serialization(variantId, variantName, assetId, assetName)
+	};
+
+	struct ShotAssetMappingView {
+		qint32 shotId = 0;//镜头id
+		QString shotName = "";//镜头名字
+
+		QList<QPair<AssetVariantSimpleInfoVO, qint32>> variantMatchedPairs;//variant简单匹配信息
+
+		Serialization(shotId, shotName, variantMatchedPairs)
+	};
+
 };

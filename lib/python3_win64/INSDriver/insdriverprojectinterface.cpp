@@ -169,6 +169,7 @@ namespace INS_INTERFACE
         return commonRequest.m_return_value;
     }
 
+    //type: 1是团队，2是资产，3是镜头, 4是sequence
     INSDRIVER_EXPORT MessageInfo
     getProjectStatisticsData(ProjectStatisticsData &projectStatisticsData, qint32 type, qint32 projectId)
     {

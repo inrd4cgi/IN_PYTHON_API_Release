@@ -215,6 +215,14 @@ namespace INS_INTERFACE
 	 */
 	extern "C" INSDRIVER_EXPORT INSUploadLibraryFile *UploadLibraryFile(const QString &filename, const QString& strDirectory, const QString& absolutePath);
 
-
+	/*!
+	 * \brief 上传sequence file的函数
+	 * \details
+	 * \param[in] filename 为该文件被记录的名字
+	 * \param[in] taskId 为该文件所属的task
+	 * \param[in] absolutePath 为该文件在本地存放的绝对路径
+	 * \return 返回INSUploadRequiredFile对象，调用start启动上传业务。业务结束后，需要手动删除。
+	 */
+	extern "C" INSDRIVER_EXPORT INSUploadSequenceTaskFile *UploadSequenceTaskFile(const QString &filename, qint32 taskId, const QString& absolutePath);
 
 };

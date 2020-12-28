@@ -63,6 +63,7 @@ namespace INS
 		PROJ_ADD_MEMBER = 1214,//添加项目成员
 		PROJ_RM_MEMBER = 1215,//移除项目成员
 		PROJ_DEL = 1216,//删除项目
+        PROJ_EDIT_ROOT_DIR = 1217,//修改项目根路径
 		PILN_REASSIG = 1284,//pipeline step的重新分配
 		PERM_TEMPL_ADD = 1221,//添加项目权限模板
 		PERM_TEMPL_EDIT = 1222,//编辑项目的权限模板
@@ -74,6 +75,8 @@ namespace INS
 		ASSO_DEL = 1234,//删除asset和shot
         ASSO_ASSET_ACCESS = 1235,//可以看到项目中所有的资产
         ASSO_SHOT_ACCESS = 1236,//可以看到项目中所有的镜头
+		ASSO_SEQUENCE_ACCESS = 1237,//可以看到项目中所有的SEQ
+		EDIT_SEQUENCE_SHOT = 1238, //编辑sequenceShot权限
 		TASK_ALTER_ASSIGNEE = 1251,//修改任务的assignee
 		TASK_CHECK_IN_OUT_FILE = 1252,//checkin/out task的output file
 		TASK_ADD_REQUIRED_FILE = 1253,//添加task的requiredFile
