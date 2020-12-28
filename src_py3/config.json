@@ -48,8 +48,7 @@
         "Unreal": []
     },
     "ENVIRONMENTS_VARIABLES": {
-        "WS_EXTRA_PYTHON_INTERPRETER": "",
-        "USER_HOME_DIRECTORY": ""
+        "WS_EXTRA_PYTHON_INTERPRETER": ""
     },
-    "VERSION": "beta1.4.0.1"
+    "VERSION": "beta1.4.0.2"
 }

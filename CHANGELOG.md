@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.4.0.2] - 2020-12-28
+  * Rebuild
+
 ## [1.4.0.1] - 2020-12-28
 ### Updated
   * README.md
