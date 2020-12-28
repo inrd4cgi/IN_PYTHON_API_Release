@@ -138,6 +138,7 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 
 
+
 # ------------------------------ Get ------------------------------
 _test_Get = False
 if _test_Get:
@@ -464,7 +465,7 @@ if _test_PipelineStep:
 
 
 # ------------------------------ Workflow Template ------------------------------
-_test_WorkflowTemplate = True
+_test_WorkflowTemplate = False
 if _test_WorkflowTemplate:
 
     project_id = 217
@@ -652,6 +653,7 @@ if _test_Task:
 
     # -------------------- Get Task Info --------------------
     def testGetTaskInfo(task_id):
+        # result: `INTask`
         task = in_api.getTaskFromID(task_id)
         # printer(task)
         print('Task:', task.taskId, task.taskName)
@@ -659,16 +661,58 @@ if _test_Task:
         # And
         # tasks = in_api.getTasksByConditions(project_id=217)    # object_ids=[644, 659], task_ids=[5217, 5319, 5320], project_id=72
 
+    def testCreateTask():
+        pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset,
+        project_id = 217
+        object_id = 1117    # object_id 为 Asset/Shot/Sequence ID, 取决于 pipeline_type
+        pipeline_step_id = 867    # Pipeline Step ID, 可通过 `getPipelineSteps` 获取
+        alias = 'Python API Task Alias 2'
+        assignee_team_id = 400    # Assignee 给某Team
+        assignee_person_id = 20200478    # Assignee 给某人
+        issue_date = '2020-12-28 00:00:00'
+        due_date = '2020-12-28 00:00:00'
+        privilege_start_time = '2020-12-28 00:00:00'
+        privilege_end_time = '2020-12-28 00:00:00'
+        storage_type = 'hdd'    # storage_type 需要调用 `getStorageInfos` 获取, 若传入None则默认存在第一个 Server
+        color = '#ff0000'
+        description = 'Created by Python API `createTask`'
+
+        task = in_api.createTask(
+            pipeline_type=pipeline_type,
+            project_id=project_id,
+            object_id=object_id,
+            pipeline_step_id=pipeline_step_id,
+            alias=alias,
+            assignee_team_id=assignee_team_id,
+            assignee_person_id=assignee_person_id,
+            storage_type=storage_type,
+            issue_date=issue_date,
+            due_date=due_date,
+            privilege_start_time=privilege_start_time,
+            privilege_end_time=privilege_end_time,
+            color=color,
+            description=description,
+        )
+        print('Create Task: %s' % task.taskId)
+
     # -------------------- Edit Task Info --------------------
 
     def testEditTask():
-        task_id = 6808
 
+        task_id = 11497
+
+        # Test
+        to_validate=False
+        loader_script='loader_script.py'
+        validation_script='validation_script.py'
 
         # ----- Edit Task -----
         # 能传入任意参数编辑 Task, 包括 Assign 给某人
-        r = in_api.editTask(task_id, color='#ffffff', description='Edited by Python API')
-        print('edit task: %s' % r)
+        r = in_api.editTask(task_id, color='#ffffff', description='Edited by Python API',
+            to_validate=to_validate,
+            loader_script=loader_script,
+            validation_script=validation_script,)
+        print('Edit Task: %s' % r)
 
 
         # ----- Assign Task to Person -----
@@ -892,6 +936,7 @@ if _test_Task:
     file_id = 5213
 
     # testGetTaskInfo(task_id)
+    # testCreateTask()
     testEditTask()
     # testEditTask_Others()
     # testToWorkInProgress(task_id)
@@ -950,6 +995,55 @@ if _test_Variant:
     # ----- Delete Variant -----
     r = in_api.deleteVariantById(variant_id)
     print('Delete Variant: %s' % r)
+
+
+
+# ------------------------------ Super Search ------------------------------
+_test_superSearch = True
+if _test_superSearch:
+
+    regex = 'shot=shot0100'
+    regex = 'shot=shot0100&&pro=BonProject'
+    regex = 'pro=bon*&asset=*20*'
+    regex = 'asset=*&&pro=BonProject'
+    regex = 'asset=BonAsset*'
+    regex = 'pro=BonProject&&file=*'
+    regex = 'file=D.jpg'
+    regex = 'file=source.mb'
+    regex = 'folder=library'
+    regex = 'folder=*BonAsset_20*'
+    regex = 'folder=/BonProject/assets'
+    regex = 'folder=/BonProject/assets/BonAsset_31/*||file=/BonProject/assets/BonAsset_31/*'
+    regex = 'file=/BonProject/assets/BonAsset_31/geo/source.mb'
+    regex = 'file=/BonProject/assets/BonAsset_31/geo/*'
+    regex = 'file=/BonProject/assets/BonAsset_31/*'
+    regex = 'file=D.jpg||folder=*components*'
+
+
+    # 列出所有 tag==char 的 object
+    regex = 'tag=char'
+    # 列出所有 tag==char 的 object, 如果 shot / task / file... 也带有 char, 都会列出
+    regex = 'tag=char&&pro=BonProject'
+    # 如果只要 asset, 不要其它
+    regex = 'tag=char&&pro=BonProject&&asset=Bon*'
+    # 这里和上面有些区别, 这里只是单纯找 project
+    # 先找到所有 Bon* Project, 然后检查它们的 Attribute, tag == char
+    regex = 'pro=Bon*&&pro.tag=char'
+
+    # 先获取所有 tag == char 的 Asset. 然后, && 检查它们的 Attribute, project == tvtest2
+    regex = 'asset.tag=char&&pro=tvtest2'
+
+    """
+    result: {'assets': [INAsset, ...],
+             'files': [FileVO, ...],
+             'folders': [FolderVO, ...],
+             'projects': [INQProjectVO, ...],
+             'shots': [INShot, ...],
+             'tasks': [INTask, ...]}
+    """
+    # 更多 Example / Introduction, 请 help(in_api.superSearch)
+    _dict = in_api.superSearch(regex)
+    pprint(_dict)
 
 
 

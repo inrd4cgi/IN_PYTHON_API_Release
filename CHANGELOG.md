@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.5.0.0] - 2020-12-28
+### Updated
+  * Add Methods
+    ```
+    createTask
+    superSearch
+    ```
+
 ## [1.4.0.4] - 2020-12-28
 ### Updated
   * build script
