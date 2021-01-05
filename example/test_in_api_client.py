@@ -112,7 +112,7 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # projs = in_api.getProjectFiles()
 # printer(projs)
 
-# proj = in_api.getProject(project_id=217)
+# proj = in_api.getProject()
 # printer(proj)
 
 # files = in_api.listdir(folder_id=12161)
@@ -136,7 +136,8 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # -----------------------------------------------------------------
 
 
-
+# p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=217)
+# printer(p_steps)
 
 
 # ------------------------------ Get ------------------------------
@@ -420,7 +421,7 @@ if _test_PipelineStep:
 
 
     # ---------- Delete PipelineStep ----------
-    p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=217)
+    p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=project_id)
     for p_step in p_steps:
         if p_step.pipelineName == pipeline_name:
             is_successful = in_api.deletePipelineStep(pipeline_id=p_step.pipelineId)
