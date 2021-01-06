@@ -74,8 +74,8 @@ logging.getLogger().setLevel(logging.ERROR)
 in_map_dir = 'I:/'
 
 ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
+# ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'Bon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 # ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sheng', '1', 'DCC', "http://127.0.0.1:20618"
-# ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
@@ -135,9 +135,6 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 # -----------------------------------------------------------------
 
-
-# p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=217)
-# printer(p_steps)
 
 
 # ------------------------------ Get ------------------------------
@@ -415,54 +412,92 @@ if _test_Project:
 # ------------------------------ PipelineStep ------------------------------
 _test_PipelineStep = False
 if _test_PipelineStep:
+    project_id, _coordinator_id = 217, 20200478
+    # _project_id, _coordinator_id = 120, 20200502
+    pipeline_name = 'PythonPipeline_1'
 
-    project_id = 217
-    pipeline_name = 'PythonPipelineStep'
+    def createPipelineStep():
 
-
-    # ---------- Delete PipelineStep ----------
-    p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=project_id)
-    for p_step in p_steps:
-        if p_step.pipelineName == pipeline_name:
-            is_successful = in_api.deletePipelineStep(pipeline_id=p_step.pipelineId)
-            print('Delete Workflow %s: %s' % (workflow.workFlowId, is_successful))
-            break
-
-
-    # ---------- Create PipelineStep ----------
-    # Method 1: [ [file_path, file_name, placeholder_id], ... ]
-    # output_files = [['/geo', 'source.mb', 12767], ]
-    # output_files = [['/geo/rig', '', -1], ]
-
-    # Method 2: [ file_path, ... ]
-    output_files = ['/geo/source.mb', '/geo/fx', '/geo/rig']
-
-    pipeline_type = IN_DATA_STRUCTURE.PipelineType.Asset
-    coordinator_id = 20200478
-    approval_list = [20200478]    # personId
-    description = 'Created by Python API'
-    to_validate = False
-    loader_script = ''
-    validation_script = ''
-
-    # result: `INPipelineStep`
-    pipeline = in_api.createPipelineStep(
-        project_id=project_id,
-        pipeline_name=pipeline_name,
-        pipeline_type=pipeline_type ,
-        coordinator_id=coordinator_id,
-        approval_list=approval_list,
-        output_files=output_files,
-        description=description,
-        to_validate=to_validate,
-        loader_script=loader_script,
-        validation_script=validation_script,
-    )
-    print('Create Pipeline: %s' % pipeline.pipelineId)
+        # ---------- Delete PipelineStep ----------
+        p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=project_id)
+        for p_step in p_steps:
+            if p_step.pipelineName == pipeline_name:
+                is_successful = in_api.deletePipelineStep(pipeline_id=p_step.pipelineId)
+                print('Delete Workflow %s: %s' % (workflow.workFlowId, is_successful))
+                break
 
 
-    # ---------- Update PipelineStep ----------
+        # ---------- Create PipelineStep ----------
+        # Method 1: [ [file_path, file_name, placeholder_id], ... ]
+        # output_files = [['/geo', 'source.mb', 12767], ]
+        # output_files = [['/geo/rig', '', -1], ]
 
+        # Method 2: [ file_path, ... ]
+        output_files = ['/geo/source.mb', '/geo/fx', '/geo/rig', '<asset_name>/geo']
+
+        pipeline_type = IN_DATA_STRUCTURE.PipelineType.Asset
+        coordinator_id = _coordinator_id
+        approval_list = [_coordinator_id]    # personId
+        description = 'Created by Python API'
+        to_validate = False
+        loader_script = ''
+        validation_script = ''
+
+        # result: `INPipelineStep`
+        pipeline = in_api.createPipelineStep(
+            project_id=_project_id,
+            pipeline_name=pipeline_name,
+            pipeline_type=pipeline_type ,
+            coordinator_id=coordinator_id,
+            approval_list=approval_list,
+            output_files=output_files,
+            description=description,
+            to_validate=to_validate,
+            loader_script=loader_script,
+            validation_script=validation_script,
+        )
+        print('Create Pipeline: %s' % pipeline.pipelineId)
+
+
+    def updatePipelineStep():
+        # ---------- Update PipelineStep ----------
+
+        # name: 'PythonPipelineStep', id: 1266
+        p_steps = in_api.getPipelineSteps(project_id=_project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+        # printer(p_steps)
+
+        output_files = ['<asset_name>/geo']
+
+        project_id = _project_id
+        pipeline_id = 1266
+        pipeline_name = 'PythonPipelineStep'
+        pipeline_type = IN_DATA_STRUCTURE.PipelineType.Asset
+        coordinator_id = _coordinator_id
+        approval_list = [_coordinator_id]    # personId
+        description = 'Created by Python API Modified'
+        to_validate = False
+        loader_script = ''
+        validation_script = ''
+
+
+        pipeline = in_api.updatePipelineStep(
+            project_id=project_id,
+            pipeline_id=pipeline_id,
+            pipeline_name=pipeline_name,
+            pipeline_type=pipeline_type,
+            approval_list=approval_list,
+            output_files=output_files,
+            coordinator_id=coordinator_id,
+            description=description,
+            to_validate=to_validate,
+            loader_script=loader_script,
+            validation_script=validation_script,
+        )
+        print('Update Pipeline: %s' % pipeline.pipelineId)
+        
+
+    # createPipelineStep()
+    # updatePipelineStep()
 
 
 # ------------------------------ Workflow Template ------------------------------
@@ -522,7 +557,7 @@ if _test_WorkflowTemplate:
             pipeline_nodes.append(IN_DATA_STRUCTURE.PipelineNode(pipeline_id, parents=parents))
 
 
-    # ----- Create -----
+    # ---------- Create WorkflowTemplate ----------
     # result: `INQWorkFlowVO`
     workflow = in_api.createWorkFlowTempl(
         project_id=project_id,
@@ -1000,7 +1035,7 @@ if _test_Variant:
 
 
 # ------------------------------ Super Search ------------------------------
-_test_superSearch = True
+_test_superSearch = False
 if _test_superSearch:
 
     regex = 'shot=shot0100'

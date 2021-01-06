@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.6.0.0] - 2021-1-5
+### Updated
+  * Add Method `updatePipelineStep`
+
 ## [1.5.0.1] - 2021-1-5
 ### Fixed
   * Fix `connectToServer`
