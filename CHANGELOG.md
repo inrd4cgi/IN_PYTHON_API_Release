@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.7.0.0] - 2021-1-5
+### Updated
+  * Add Method `updatePipelineStep, updateWorkFlowTempl`
+
 ## [1.6.0.0] - 2021-1-5
 ### Updated
   * Add Method `updatePipelineStep`

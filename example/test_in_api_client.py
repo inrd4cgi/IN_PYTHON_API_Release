@@ -16,7 +16,7 @@ from IN_API_CLIENT_B import InApiClient
 from IN_API_CLIENT_B import printer
 import IN_DATA_STRUCTURE
 import IN_STREAMING
-
+import IN_PYTHON_API_LIB
 
 # 你可能用到的一些 Enum 的结构体
 from IN_DATA_STRUCTURE import TagObjectID, BusFileType, TaskFileType, FileStatus, CommentType, TaskStatus, PipelineType
@@ -412,11 +412,11 @@ if _test_Project:
 # ------------------------------ PipelineStep ------------------------------
 _test_PipelineStep = False
 if _test_PipelineStep:
-    project_id, _coordinator_id = 217, 20200478
-    # _project_id, _coordinator_id = 120, 20200502
-    pipeline_name = 'PythonPipeline_1'
 
     def createPipelineStep():
+        project_id = 217
+        pipeline_name = 'PythonPipelineStep'
+        coordinator_id = 20200478
 
         # ---------- Delete PipelineStep ----------
         p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=project_id)
@@ -436,8 +436,8 @@ if _test_PipelineStep:
         output_files = ['/geo/source.mb', '/geo/fx', '/geo/rig', '<asset_name>/geo']
 
         pipeline_type = IN_DATA_STRUCTURE.PipelineType.Asset
-        coordinator_id = _coordinator_id
-        approval_list = [_coordinator_id]    # personId
+        coordinator_id = coordinator_id
+        approval_list = [coordinator_id]    # personId
         description = 'Created by Python API'
         to_validate = False
         loader_script = ''
@@ -445,7 +445,7 @@ if _test_PipelineStep:
 
         # result: `INPipelineStep`
         pipeline = in_api.createPipelineStep(
-            project_id=_project_id,
+            project_id=project_id,
             pipeline_name=pipeline_name,
             pipeline_type=pipeline_type ,
             coordinator_id=coordinator_id,
@@ -459,21 +459,29 @@ if _test_PipelineStep:
         print('Create Pipeline: %s' % pipeline.pipelineId)
 
 
-    def updatePipelineStep():
+    def updatePipelineStep_1():
         # ---------- Update PipelineStep ----------
 
+        project_id = 217
+        coordinator_id = 20200478
+        pipeline_name = 'PythonPipelineStep'
+
         # name: 'PythonPipelineStep', id: 1266
-        p_steps = in_api.getPipelineSteps(project_id=_project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+        p_steps = in_api.getPipelineSteps(project_id=project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
         # printer(p_steps)
+
+        # 用名字获得 Pipeline ID
+        pipeline = list(filter(lambda p_step: p_step.pipelineName == pipeline_name, p_steps))
+        if not pipeline: raise ValueError('There are not Pipeline')
+        pipeline_id = pipeline[0].pipelineId
 
         output_files = ['<asset_name>/geo']
 
-        project_id = _project_id
-        pipeline_id = 1266
-        pipeline_name = 'PythonPipelineStep'
+        new_pipeline_name = pipeline_name
+
         pipeline_type = IN_DATA_STRUCTURE.PipelineType.Asset
-        coordinator_id = _coordinator_id
-        approval_list = [_coordinator_id]    # personId
+        coordinator_id = coordinator_id
+        approval_list = [coordinator_id]    # personId
         description = 'Created by Python API Modified'
         to_validate = False
         loader_script = ''
@@ -483,7 +491,7 @@ if _test_PipelineStep:
         pipeline = in_api.updatePipelineStep(
             project_id=project_id,
             pipeline_id=pipeline_id,
-            pipeline_name=pipeline_name,
+            pipeline_name=new_pipeline_name,
             pipeline_type=pipeline_type,
             approval_list=approval_list,
             output_files=output_files,
@@ -494,10 +502,39 @@ if _test_PipelineStep:
             validation_script=validation_script,
         )
         print('Update Pipeline: %s' % pipeline.pipelineId)
-        
+
+
+    def updatePipelineStep_2():
+        # ---------- Update PipelineStep ----------
+
+        # 由于 update pipeline 之后,
+        # 如果以前有路径  '/old_path/xxx/', 但现在没有, 则原有的 WorkflowTempalte 连接就会断开
+        # 此时, 你可以先 `getWorkFlowTempl`, 记录原有的关系
+        # 之后调用 `updateWorkFlowTempl`, 将会自动连上所有 OutputFile
+
+        workflow_id = 2243    # Test
+        pipeline_id = 1230    # PythonPipelineStep
+        output_files = ['<project_name>/<asset_name>/source.mb']
+
+        # Get old Workflow
+        workflow_vo = in_api.getWorkFlowTempl(workflow_id=workflow_id)
+
+        # build PipelineNodes
+        pipeline_nodes = IN_PYTHON_API_LIB._rebuildWorkflowPipelineNodes(workflow_vo)
+
+        # Update Pipeline
+        pipeline = in_api.updatePipelineStep(pipeline_id=pipeline_id, output_files=output_files)
+        print('Update Pipeline: %s' % pipeline.pipelineId)
+
+        # Reset Workflow relationship
+        workflow = in_api.updateWorkFlowTempl(workflow_id=workflow_id, pipeline_nodes=pipeline_nodes)
+
+        print('Update Workflow: %s' % workflow.workFlowId)
+
 
     # createPipelineStep()
-    # updatePipelineStep()
+    # updatePipelineStep_1()
+    # updatePipelineStep_2()
 
 
 # ------------------------------ Workflow Template ------------------------------
@@ -508,66 +545,70 @@ if _test_WorkflowTemplate:
     index = 2
     workflow_name = 'PythonWorkflow_%s' % index
 
+    def createWorkflow():
 
-    # ---------- Delete WorkflowTemplate ----------
-    workflow_list = in_api.getWorkFlowTempls(project_id=project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
-    for workflow in workflow_list:
-        if workflow.workFlowName == workflow_name:
-            is_successful = in_api.deleteWorkFlowTempl(workflow_id=workflow.workFlowId)
-            print('Delete Workflow %s: %s' % (workflow.workFlowId, is_successful))
-            break
-
-
-    # ---------- Create WorkflowTemplate ----------
-
-    # ---------- Test 1 ----------
-    # 注意 parents 是一个 list
-    p1_1 = IN_DATA_STRUCTURE.PipelineNode(id=1183, alias='s1_alias_name')
-    p1_2 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
-    p1_3 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
-    p1_4 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
-    p1_5 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
-    p2_1 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
-    p2_2 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
-    p2_3 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
-    p2_4 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_2])
-    p2_5 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_2])
-    p3_1 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_1, p2_2])
-    p3_2 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p1_4, p2_2])
-    p3_3 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_2])
-    p3_4 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_3])
-    p4_1 = IN_DATA_STRUCTURE.PipelineNode(id=1197, parents=[p3_1])
-    p5_1 = IN_DATA_STRUCTURE.PipelineNode(id=1198, parents=[p4_1])
-    pipeline_nodes = [p1_1, p1_2, p1_3, p1_4, p1_5, p2_1, p2_2, p2_3, p2_4, p2_5, p3_1, p3_2, p4_1, p5_1]
+        # ---------- Delete WorkflowTemplate ----------
+        workflow_list = in_api.getWorkFlowTempls(project_id=project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+        for workflow in workflow_list:
+            if workflow.workFlowName == workflow_name:
+                is_successful = in_api.deleteWorkFlowTempl(workflow_id=workflow.workFlowId)
+                print('Delete Workflow %s: %s' % (workflow.workFlowId, is_successful))
+                break
 
 
-    # ---------- Test 2 ----------
-    column_count = 6
-    pipelines_id = [1183, 1184, 1193, 1197, 1198]
-    pipeline_nodes = []
+        # ---------- Create WorkflowTemplate ----------
 
-    for row, pipeline_id in enumerate(pipelines_id):
-        for _ in range(column_count):
-            # 注意 parents 是一个 list
-            parents = []
-            parent_index = len(pipeline_nodes) - column_count
-            if parent_index >= 0:
-                parents = [pipeline_nodes[parent_index]]
-
-            pipeline_nodes.append(IN_DATA_STRUCTURE.PipelineNode(pipeline_id, parents=parents))
-
-
-    # ---------- Create WorkflowTemplate ----------
-    # result: `INQWorkFlowVO`
-    workflow = in_api.createWorkFlowTempl(
-        project_id=project_id,
-        workflow_name=workflow_name,
-        pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset,
-        pipeline_nodes=pipeline_nodes)
-    print('Create Workflow: %s' % workflow.workFlowId)
+        # ---------- Test 1 ----------
+        # 注意 parents 是一个 list
+        p1_1 = IN_DATA_STRUCTURE.PipelineNode(id=1183, alias='s1_alias_name')
+        p1_2 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
+        p1_3 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
+        p1_4 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
+        p1_5 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
+        p2_1 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
+        p2_2 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
+        p2_3 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
+        p2_4 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_2])
+        p2_5 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_2])
+        p3_1 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_1, p2_2])
+        p3_2 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p1_4, p2_2])
+        p3_3 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_2])
+        p3_4 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_3])
+        p4_1 = IN_DATA_STRUCTURE.PipelineNode(id=1197, parents=[p3_1])
+        p5_1 = IN_DATA_STRUCTURE.PipelineNode(id=1198, parents=[p4_1])
+        pipeline_nodes = [p1_1, p1_2, p1_3, p1_4, p1_5, p2_1, p2_2, p2_3, p2_4, p2_5, p3_1, p3_2, p4_1, p5_1]
 
 
-    # ---------- Update WorkflowTemplate ----------
+        # ---------- Test 2 ----------
+        column_count = 6
+        pipelines_id = [1183, 1184, 1193, 1197, 1198]
+        pipeline_nodes = []
+
+        for row, pipeline_id in enumerate(pipelines_id):
+            for _ in range(column_count):
+                # 注意 parents 是一个 list
+                parents = []
+                parent_index = len(pipeline_nodes) - column_count
+                if parent_index >= 0:
+                    parents = [pipeline_nodes[parent_index]]
+
+                pipeline_nodes.append(IN_DATA_STRUCTURE.PipelineNode(pipeline_id, parents=parents))
+
+
+        # ---------- Create WorkflowTemplate ----------
+        # result: `INQWorkFlowVO`
+        workflow = in_api.createWorkFlowTempl(
+            project_id=project_id,
+            workflow_name=workflow_name,
+            pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset,
+            pipeline_nodes=pipeline_nodes)
+        print('Create Workflow: %s' % workflow.workFlowId)
+
+
+    def updateWorkflow():
+        # ---------- Update WorkflowTemplate ----------
+        pass
+
 
     pass
 
