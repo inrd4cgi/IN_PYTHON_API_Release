@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.7.0.3] - 2021-1-7
+### Fixed
+  * Fix `getBusRecycleBinList` return code
+  
 ## [1.7.0.2] - 2021-1-7
 ### Fixed
   * Fix connectToServer port Type

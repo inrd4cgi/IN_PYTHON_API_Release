@@ -171,12 +171,13 @@ if _test_Get:
     file_task_vos = in_api.getTaskFileUsageRecord(task_id=6479, project_id=217, file_type=TaskFileType.All)
     tasks = in_api.getTaskListPersonal(person_id=20200111)
     files = in_api.getTaskRelatedFiles(task_id=6478, file_type=TaskFileType.All)    # return dict: {FileType: `TaskFileVO`}
-    # # comments = in_api.getTaskComment(task_id=691)        # TODO: GetTaskComment 的 jsonRequest 返回结果无法解释, 由于IN前端填了错误信息进数据库
+    # comments = in_api.getTaskComment(task_id=1885)        # TODO: GetTaskComment 的 jsonRequest 返回结果无法解释, 由于IN前端填了错误信息进数据库
     person = in_api.getOneself()
     jobs = in_api.getJobList()
     logs = in_api.getLogs(from_time='2020-4-10 14:13:23')
     storage = in_api.getStorageInfos(project_id=217)
     task_workflow = in_api.getWorkFlowInstance(resource_id=1057, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+
 
 
 # ------------------------------ Tag ------------------------------
