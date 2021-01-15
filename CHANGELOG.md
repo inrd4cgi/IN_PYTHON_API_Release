@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.8.0.0] - 2021-1-15
+### Updated
+  * data_flow_change_task_status, skip download output file when it's already existed in the required file
+
 ## [1.7.0.4] - 2021-1-11
 ### Fixed
   * Fix `RecycleBin` return code
