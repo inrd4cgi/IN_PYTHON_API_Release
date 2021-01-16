@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.8.1.2] - 2021-1-15
+### Fixed
+  * Comment out logging
+
 ## [1.8.1.1] - 2021-1-15
 ### Fixed
   * Fix `updatePipeline` invalid param
