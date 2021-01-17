@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.8.2.0] - 2021-1-17
+### Updated
+  * `data_flow_get_task_list` return data
+
+## [1.8.1.2] - 2021-1-15
+### Fixed
+  * Comment out logging
+
+## [1.8.1.1] - 2021-1-15
+### Fixed
+  * Fix `updatePipeline` invalid param
+
 ## [1.8.1.0] - 2021-1-15
 ### Updated
   * data_flow_update_all_task_files, reordered the order of download, before [ref-req-int-out-don] now [ref-int-out-don-req]
