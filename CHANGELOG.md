@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.8.3.0] - 2021-1-17
+### Rebuild
+
+## [1.8.2.0] - 2021-1-17
+### Updated
+  * `data_flow_get_task_list` return data
+
 ## [1.8.1.2] - 2021-1-15
 ### Fixed
   * Comment out logging
