@@ -15,11 +15,11 @@ namespace INS {
          * \param[in] p_func 回调函数的函数指针
          * \return
          */
-        void SetCallbackFunc(std::function<void(const QByteArray &)> p_func);
+        void SetCallbackFunc(std::function<void(QString)> p_func);
 
-        void Process(const QByteArray &) override;
+        void Process(const QByteArray &byteArray) override;
 
     protected:
-        std::function<void(const QByteArray &)> m_notificationCallback{nullptr};
+        std::function<void(QString)> m_notificationCallback {nullptr};
     };
 }

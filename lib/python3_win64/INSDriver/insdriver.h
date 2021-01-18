@@ -19,7 +19,7 @@ namespace INS_INTERFACE
     //获取客户端更新文件的服务器路径
     INSDRIVER_EXPORT MessageInfo GetClientUpdateServerPath(QString& path);
 
-	INSDRIVER_EXPORT void SetNotificationCallback(std::function<void(const QByteArray&)> p_callback);
+	INSDRIVER_EXPORT void SetNotificationCallback(std::function<void(QString)> p_callback);
 
 	INSDRIVER_EXPORT void SetLoginConfilctCallback(std::function<void(QString)> p_callback);
 
@@ -39,18 +39,8 @@ namespace INS_INTERFACE
 	//更改dashboard信息
 	INSDRIVER_EXPORT qint32 UpdateAvatarInfo(const Avatar Uavatar);
 
-	//根据projectId获取相关所有task
-	INSDRIVER_EXPORT qint32 GetTaskInfoFromProID(ProjectTaskInfo& pti);
-
-	//根据projectId获取所有task并分析状态
-	INSDRIVER_EXPORT qint32 GetTaskStatusFromProID(ProjectTaskInfo& pti);
-
-	//根据ProjectId找到的task找回对应团队
-	INSDRIVER_EXPORT qint32 GetTeamInfoFromProID(ProjectTaskInfo& pti);
-
-	//根据ProjectId找到的task着回对应团队的人员负责人
-	INSDRIVER_EXPORT qint32 GetMenFormProID(ProjectTaskInfo& pti);
-
+	//根据projectId获取信息
+	INSDRIVER_EXPORT qint32 GetProjectTaskDateByProjectId(qint32 projectId, ProjectTaskInfo& pti);
 
 	//使用IP地址[hostaddress]和端口[port]连接到服务器。IP和端口在配置文件中都有默认值。
 	//返回说明：连接成功返回true,连接失败返回false。失败时会debug出失败原因。

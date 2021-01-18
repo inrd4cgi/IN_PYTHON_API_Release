@@ -1,42 +1,54 @@
 ﻿//
-// Created by jiangsiyong on 2020/9/25.
+// Created by Jsiyong on 2021-01-14.
 //
 
-#ifndef IN_JSONMESSAGEUTILS_H
-#define IN_JSONMESSAGEUTILS_H
+#ifndef INTELLIGENT_NODE_JSONMESSAGEUTILS_H
+#define INTELLIGENT_NODE_JSONMESSAGEUTILS_H
 
 #include "JsonSerializationUtils.h"
-#include <QDebug>
 
 class JsonMessageUtils {
 private:
 
-    template<typename T>
-    static void appendData2JsonList(QStringList &jsonListItem, T t) {
-        jsonListItem.append(JsonHelper::toJsonItem("", t, false));
-    }
+	template<typename T>
+	static void appendData2JsonArray(QJsonArray &jsonArray, const T &t) {
+		jsonArray.append(JsonHelper::toJsonValue(t));
+	}
 
-    template<typename T>
-    void static getRequestDataInner(const QJsonArray &jsonArray, int idx, T &t) {
-        JsonHelper::setValueByJson(&t, jsonArray[idx]);
-    }
+	template<typename T>
+	void static getRequestDataInner(const QJsonArray &jsonArray, int idx, T &t) {
+		JsonHelper::setValueByJson(&t, jsonArray[idx]);
+	}
 
 public:
 
-    template<typename... Dt>
-    QString static dataToJson(const Dt &... dt) {
-        QStringList jsonList;
-        std::initializer_list<int32_t>{((appendData2JsonList(jsonList, dt)), 0)...};
-        QString jsonString = "[" + jsonList.join(",") + "]";
-        return jsonString;
-    }
+	template<typename... Dt>
+	QJsonArray static dataToJsonArray(const Dt &... dt) {
+		QJsonArray jsonArray;
+		std::initializer_list<int32_t>{((appendData2JsonArray(jsonArray, dt)), 0)...};
 
-    template<typename... Dt>
-    void static jsonToData(const QString &data, Dt &... dt) {
-        QJsonArray jsonArray = QJsonDocument::fromJson(data.toUtf8()).array();
-        int i = 0;
-        std::initializer_list<int32_t>{((getRequestDataInner(jsonArray, i++, dt)), 0)...};
-    }
+		return jsonArray;
+	}
+
+	template<typename... Dt>
+	void static jsonArrayToData(const QJsonArray &jsonArray, Dt &... dt) {
+
+		int i = 0;
+		std::initializer_list<int32_t>{((getRequestDataInner(jsonArray, i++, dt)), 0)...};
+	}
+
+	template<typename... Dt>
+	QByteArray static dataToJsonArrayBinaryData(const Dt &... dt) {
+		QJsonArray jsonArray = dataToJsonArray(dt...);
+		return QJsonDocument(jsonArray).toBinaryData();
+	}
+
+	template<typename... Dt>
+	void static jsonArrayBinaryDataToData(const QByteArray &jsonByteArray, Dt &... dt) {
+		QJsonArray jsonArray = QJsonDocument::fromBinaryData(jsonByteArray).array();
+		jsonArrayToData(jsonArray, dt...);
+	}
+
 };
 
-#endif //IN_JSONMESSAGEUTILS_H
+#endif //INTELLIGENT_NODE_JSONMESSAGEUTILS_H

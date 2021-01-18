@@ -10,10 +10,10 @@
 
 namespace INS_INTERFACE {
     INSDRIVER_EXPORT qint32 GetFileFromId(FileVO &fileBase, qint32 fileId) {
-        INSCommonRequest<FileVO, qint32> commonRequest(325, fileId);
+        INSCommonRequest<FileVO> commonRequest(325, fileId);
         commonRequest.WaitForFinished();
-        fileBase = commonRequest.retData;
-        return commonRequest.m_return_value.code;
+        fileBase = commonRequest.getRecvData();
+        return commonRequest.getRetValue().code;
     }
 
     INSDRIVER_EXPORT qint32 GetFilePathFromId(const qint32 fileId, QString &filePath) {
@@ -26,17 +26,17 @@ namespace INS_INTERFACE {
     }
 
     INSDRIVER_EXPORT qint32 GetProjectFiles(QList<ProjectRootFolderVO> &projects) {
-        INSCommonRequest<QList<ProjectRootFolderVO>, int> commonRequest(312, 0);
+        INSCommonRequest<QList<ProjectRootFolderVO>> commonRequest(312, 0);
         commonRequest.WaitForFinished();
-        projects = commonRequest.retData;
-        return commonRequest.m_return_value.code;
+        projects = commonRequest.getRecvData();
+        return commonRequest.getRetValue().code;
     }
 
     INSDRIVER_EXPORT MessageInfo GetFolderByParams(FolderVO &folderbase, FolderSearchParam &param) {
-        INSCommonRequest<FolderVO, FolderSearchParam> commonRequest(303, param);
+        INSCommonRequest<FolderVO> commonRequest(303, param);
         commonRequest.WaitForFinished();
-        folderbase = commonRequest.retData;
-        return commonRequest.m_return_value;
+        folderbase = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
     }
 
     INSDRIVER_EXPORT qint32 GetFolder(FolderVO &folderbase, QMap<qint32, FileVO> &files) {
@@ -61,10 +61,10 @@ namespace INS_INTERFACE {
     INSDRIVER_EXPORT qint32 ComfirmDelete(const qint32 &ok, const qint32 &code) { return 0; }
 
     INSDRIVER_EXPORT MessageInfo CreateFolderOrEdit(FolderVO &folder) {
-        INSCommonRequest<FolderVO, qint32, QString> commonRequest(309, folder.parentId, folder.folderName);
+        INSCommonRequest<FolderVO> commonRequest(309, folder.parentId, folder.folderName);
         commonRequest.WaitForFinished();
-        folder = commonRequest.retData;
-        return commonRequest.m_return_value;
+        folder = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
     }
 
     INSDRIVER_EXPORT qint32 CreateFolder(FolderVO &folder) {

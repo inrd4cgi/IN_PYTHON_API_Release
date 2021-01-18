@@ -58,9 +58,68 @@ namespace INS {
 
 		Serialization(folderId, projectId, path)
 	};
-	struct FileVO;
-	//文件夹类的基类
-	//***********************************************************************************************************************************************
+
+    //文件历史信息
+    //*********************************************************************************************************
+    struct FileVersionVO {
+        qint32 fileId = -1;					//文件id
+        qint32 projectId = 0;				//文件所属的项目
+        qint32 version = 0;					//文件版本0
+        qint32 authorId = 0;				//文件作者的id值
+        QString authorName = "";			//作者名字
+        QString comment = "";				//对文件最新上传时的评论
+        QDateTime lastModifyTime = QDateTime();         //文件最后一次修改时间
+        qint32 action = 1;					//产生该版本的动作
+        qint64 size = 0;					//文件大小，字节
+        QString checkCode;//校验码
+
+    Serialization(fileId, projectId, version, authorId, authorName, comment, lastModifyTime, action, size, checkCode)
+    };
+    //*********************************************************************************************************
+
+	//文件类的基类
+	//**********************************************************************************************************************************************
+	struct FileVO
+	{
+		qint32 fileId = 0;             //文件id0
+		QString name = "";              //文件名（包含后缀)
+		qint32 projectId = 0;           //文件所属的项目
+		qint32 folderId = 0;            //所在文件夹id
+		QString directory = "";         //文件相对于项目的路径,"/proj/xxx/yyy"
+
+		QString checkCode = "";         //文件的md5值-1QString md5 = "";
+		qint64 size = 0;                //文件大小，字节(上传需要)
+		qint32 previewId = 0;           //预览文件id-1
+
+		QDateTime createTime = QDateTime();         //文件创建时间
+		QDateTime lastModifyTime = QDateTime();     //文件最后一次修改时间(上传需要)
+
+		qint32 creatorId = 0;            //文件作者的id值
+		QString creatorName = "";        //作者名字
+
+		qint32 currentVersion = 0;                //文件版本0
+		QMap<qint32, FileVersionVO> fileVersions;    //文件版本列表，已排好序
+
+		QString comment = "";            //对文件最新上传时的评论
+		qint32 status = 0;               //1=check in,2=check out.
+		qint32 type = 0;                 //文件的类型 -1=empty folder
+		QPair<qint32, QString> actionBy;    //最后check out这个文件的人0
+
+		QList<IdName> tags;     //标签
+
+		QDateTime checkoutTime;//checkout的时间
+		QPair<qint32, QString> lastModifiedBy;//文件最后的修改者
+		QPair<qint32, QString> checkoutBy;//被谁checkout的
+		qint32 isIntermediate = 0; //是否为中间文件 0否 1是
+		qint32 isReview = 0;  //是否需要审批 0否 1是
+
+		Serialization(fileId, name, projectId, folderId, directory, checkCode, size, previewId, createTime,
+			lastModifyTime, creatorId, creatorName, currentVersion, fileVersions, comment, status,
+			actionBy, type, tags, isIntermediate, isReview)
+	};
+
+    //文件夹类的基类
+    //***********************************************************************************************************************************************
     struct FolderVO {
         qint32 folderId = -1;    //文件夹id
         qint32 projectId = 0;   //项目id
@@ -71,43 +130,8 @@ namespace INS {
         QMap<qint32, FileVO> files;     //子文件的信息
         QList<IdName> tags;     //标签信息
 
-    Serialization(folderId, projectId, directory, folderName, parentId, folders, files, tags)
+        Serialization(folderId, projectId, directory, folderName, parentId, folders, files, tags)
     };
-	struct FileVersionVO;
-
-	//文件类的基类
-	//**********************************************************************************************************************************************
-	struct FileVO {
-		qint32 fileId = -1;				//文件id0
-        QString name = "";				//文件名（包含后缀)
-		qint32 projectId = 0;			//文件所属的项目
-        qint32 folderId = 0;			//所在文件夹id
-        QString directory = "";			//文件相对于项目的路径,"/proj/xxx/yyy"
-
-        QString checkCode = "";				//文件的md5值-1QString md5 = "";
-        qint64 size = 0;				//文件大小，字节(上传需要)
-        qint32 previewId = 0;		    //预览文件id-1
-
-        QDateTime createTime = QDateTime();         //文件创建时间
-        QDateTime lastModifyTime = QDateTime();     //文件最后一次修改时间(上传需要)
-
-		qint32 creatorId = 0;			//文件作者的id值
-		QString creatorName = "";		//作者名字
-
-		qint32 currentVersion = 0;				//文件版本0
-		QMap<qint32, FileVersionVO> fileVersions;	//文件版本列表，已排好序
-
-        QString comment = "";			//对文件最新上传时的评论
-		qint32 status = 0;				//1=check in,2=check out.
-        qint32 type = 0;				//文件的类型 -1=empty folder
-		QPair<qint32, QString> actionBy;	//最后check out这个文件的人0
-
-        QList<IdName> tags;     //标签
-
-		Serialization(fileId, name, projectId, folderId, directory, checkCode, size, previewId, createTime,
-                      lastModifyTime, creatorId, creatorName, currentVersion, fileVersions, comment, status,
-                      actionBy, type, tags)
-	};
 
 	/*******************************************************************
 	Description:用户信息
@@ -178,24 +202,6 @@ namespace INS {
 		LOCKED = 5				//锁定的文件，不可编辑。
 	};
 	//*********************************************************************************************************************************************
-
-	//文件历史信息
-	//*********************************************************************************************************
-	struct FileVersionVO {
-		qint32 fileId = -1;					//文件id
-		qint32 projectId = 0;				//文件所属的项目
-		qint32 version = 0;					//文件版本0
-		qint32 authorId = 0;				//文件作者的id值
-		QString authorName = "";			//作者名字
-		QString comment = "";				//对文件最新上传时的评论
-		QDateTime lastModifyTime = QDateTime();         //文件最后一次修改时间
-		qint32 action = 1;					//产生该版本的动作
-		qint64 size = 0;					//文件大小，字节
-		QString checkCode;//校验码
-
-		Serialization(fileId, projectId, version, authorId, authorName, comment, lastModifyTime, action, size, checkCode)
-	};
-	//*********************************************************************************************************
 
 	//回收站数据
 	//*********************************************************************************************************
@@ -382,8 +388,9 @@ namespace INS {
         bool isNeededDetails = false;
         qint32 teamId = 0;//团队id
         QString projectName = "";
+		qint32 isDeleted = 0; //-1 全部，0 未删除，1 已经删除 默认查询未删除的项目
 
-        Serialization(fetchData, projectIds, startTime, dueTime, isNeededDetails, teamId, projectName)
+        Serialization(fetchData, projectIds, startTime, dueTime, isNeededDetails, teamId, projectName, isDeleted)
     };
 
     struct PipeLineStepApproval
@@ -402,16 +409,18 @@ namespace INS {
         Serialization(pstApprovalId,projectId, pipelineId, personId, name,avatar,parentPstApprovalId,operation,createTime,updateTime);
     };
 
-    struct INQWorkPath {
-        qint32 pathId = 0;
-        qint32 pipelineId = 0;
-        QString filePath = "";
-        qint32 fileType = 0;
-        qint32 fileID = 0;
+	struct INQWorkPath {
+		qint32 pathId = 0;
+		qint32 pipelineId = 0;
+		QString filePath = "";
+		qint32 fileType = 0;
+		qint32 fileID = 0;
         QString fileName = "";
+        qint32 isIntermediate = 0; /// 是否为中间文件 0否 1是
+        qint32 isReview = 0; /// 是否为审批文件 0否 1是
 
-        Serialization(pathId, pipelineId, filePath, fileType, fileID, fileName);
-    };
+        Serialization(pathId, pipelineId, filePath, fileType, fileID, fileName,isIntermediate,isReview);
+	};
 
 	struct INPipelineStep {
 
@@ -432,6 +441,35 @@ namespace INS {
         Serialization(pipelineId, pipelineType, pipelineName, projectId, coordinator,
                 supervisor, description, outputFileList, approvalList, creator,toValidate,loaderScript,validationScript);
 	};
+
+	//struct INQWorkPath {
+	//	qint32 pathId = 0; //主键
+	//	qint32 pipelineId = 0; //pstId
+	//	QString filePath = "";//路径
+	//	qint32 fileType = 0; //文件类型 0 文件夹 1文件
+	//	qint32 fileID = 0; //文件id
+	//	QString fileName = "";//文件名
+	//	qint32 isIntermediate = 0; //是否为中间文件 0否 1是
+	//	qint32 isReview = 0; //是否为审批文件 0否 1是
+
+	//	Serialization(pathId, pipelineId, filePath, fileType, fileID, fileName, isIntermediate, isReview)
+	//};
+
+    //struct PipeLineStepApproval
+    //{
+    //    qint32  pstApprovalId           = 0;    //审批流程ID
+    //    qint32  projectId               = 0;    //项目ID
+    //    qint32  pipelineId              = 0;    //pipeline step表主键
+    //    qint32  personId                = 0;    //审批员ID
+    //    QString name                    = "";   //审批员姓名
+    //    qint32  avatar                  = 0;    //审批员头像ID
+    //    qint32  parentPstApprovalId     = 0;    //父节点审批流程ID
+    //    qint32 operation                = 0;    //用户操作，-1 删除；0 默认；1 新增
+    //    QDateTime   createTime;
+    //    QDateTime   updateTime;
+
+    //    Serialization(pstApprovalId,projectId, pipelineId, personId, name,avatar,parentPstApprovalId,operation,createTime,updateTime);
+    //};
 
 	//work-flow详情
 	struct WorkFlowDetlFile;
@@ -519,9 +557,29 @@ namespace INS {
 		qint32 status = 0;             //状态
 	};
 
+    ///任务审批结构体
+    struct TaskApproval
+    {
+        qint32  taskApprovalId          = 0;    //审批流程ID
+        qint32  projectId               = 0;    //项目ID
+        qint32  taskId                  = 0;    //任务id
+        qint32  personId                = 0;    //审批员ID
+        QString name                    = "";   //审批员姓名
+        qint32  avatar                  = 0;    //审批员头像ID
+        qint32  parentTaskApprovalId    = 0;    //父节点审批流程ID
+        qint32  isCurrent               = 0;    //任务当前审批人 0 否；1 是
+        qint32  type                    = 0;    // 0 普通；1加急
+        qint32  status                  = 0;    // 0 未审批；1已审批；2重新审批
+        qint32  operation               = 0;    //用户操作, -1 删除；0 默认；1 新增
+        QDateTime   createTime;
+        QDateTime   updateTime;
+
+        Serialization(taskApprovalId,projectId, taskId, personId, name,avatar,
+                      parentTaskApprovalId,isCurrent,type,status,operation,createTime,updateTime)
+    };
+
 	//人员的任务的结构体
 	//**************************************************************************************************
-    struct TaskApproval;
     struct INTask : public INTaskBaseObj {
 		qint32 taskId{ 0 };					//任务id
 		qint32 objectId{ 0 };				//Asset/shotid
@@ -574,26 +632,16 @@ namespace INS {
 					  loaderScript, validationScript)
 	};
 
-    ///任务审批结构体
-    struct TaskApproval
+    //
+    struct TaskApprovalWorkFlow
     {
-        qint32  taskApprovalId          = 0;    //审批流程ID
-        qint32  projectId               = 0;    //项目ID
-        qint32  taskId                  = 0;    //任务id
-        qint32  personId                = 0;    //审批员ID
-        QString name                    = "";   //审批员姓名
-        qint32  avatar                  = 0;    //审批员头像ID
-        qint32  parentTaskApprovalId    = 0;    //父节点审批流程ID
-        qint32  isCurrent               = 0;    //任务当前审批人 0 否；1 是
-        qint32  type                    = 0;    // 0 普通；1加急
-        qint32  status                  = 0;    // 0 未审批；1已审批；2重新审批
-        qint32  operation               = 0;    //用户操作, -1 删除；0 默认；1 新增
-        QDateTime   createTime;
-        QDateTime   updateTime;
+        qint32 projectId = 0; // 项目ID
+        qint32 taskId = 0; // 任务ID
+        QList<qint32> personList; // 审批人员ID列表
 
-        Serialization(taskApprovalId,projectId, taskId, personId, name,avatar,
-                parentTaskApprovalId,isCurrent,type,status,operation,createTime,updateTime)
+        Serialization(projectId, taskId, personList);
     };
+
 
 	//**************************************************************************************************
 
@@ -842,7 +890,7 @@ namespace INS {
 	};
 
 	//项目的里程碑
-	struct ProjectMilestone 
+	struct ProjectMilestone
 	{
 		int milestoneId = 0;//里程碑id
 		int projectId = 0;//项目id
@@ -880,11 +928,11 @@ namespace INS {
 	public:
 		qint64 receiveID { 0 };
 
-		qint32 recipientID { 0 }; 
+		qint32 recipientID { 0 };
 
-		QString recipientName; 
+		QString recipientName;
 
-		bool received { false }; 
+		bool received { false };
 
 		Serialization(receiveID, recipientID, recipientName, received);
 	};
@@ -894,7 +942,7 @@ namespace INS {
 	public:
 		Header() = default;
 		Header(qint32 userID, QString userName, NotificationHierarchy hierarchy, NotificationCategory category) :
-			senderID(userID), 
+			senderID(userID),
 			senderName(userName)
 		{
 			this->hierarchy = (qint32)hierarchy;
@@ -1031,6 +1079,8 @@ namespace INS {
 
 		QString alias;          //别名
 
+
+
 		bool operator==(const TaskFilterParam& other)
 		{
 			if(fetchData != other.fetchData)
@@ -1097,11 +1147,12 @@ namespace INS {
         QString searchKey = "";//资产名关键词查找
 
 		QSet<QString> tagNames;//标签条件搜索
+		qint32 tagSearchAndOr = 0; //搜索条件的逻辑关系。1 == and, 2 == or
 
         TaskFilterParam taskFilterParam;//资产过滤条件下有任务的过滤条件
 
         Serialization(fetchData, projectId, assetIds, status, workFlowId, issueTime, dueTime, assetName,alias,
-                      searchKey, tagNames, taskFilterParam)
+                      searchKey, tagNames, tagSearchAndOr, taskFilterParam)
     };
 
     //镜头过滤参数
@@ -1128,11 +1179,12 @@ namespace INS {
         QString searchKey = "";//镜头名关键词查找
 
         QSet<QString> tagNames;//标签条件搜索
+		qint32 tagSearchAndOr = 0; //搜索条件的逻辑关系。1 == and, 2 == or
 
         TaskFilterParam taskFilterParam;//镜头过滤条件下有任务的过滤条件
 
         Serialization(fetchData, projectId, shotIds, seasonId, episodeId, sceneIds, shotName, status,
-                      workFlowId, issueTime, dueTime, searchKey, tagNames, taskFilterParam)
+                      workFlowId, issueTime, dueTime, searchKey, tagNames, tagSearchAndOr, taskFilterParam)
     };
 
     //sequence过滤参数
@@ -1157,11 +1209,12 @@ namespace INS {
         QString searchKey = "";//场景号关键词查找
 
         QSet<QString> tagNames;//标签条件搜索
+		qint32 tagSearchAndOr = 0; //搜索条件的逻辑关系。1 == and, 2 == or
 
         TaskFilterParam taskFilterParam;//镜头过滤条件下有任务的过滤条件
 
         Serialization(fetchData, projectId,sequenceIds,seasonId, episodeId, sceneIds,
-                workFlowId, issueTime, dueTime, searchKey, tagNames, taskFilterParam)
+                workFlowId, issueTime, dueTime, searchKey, tagNames, tagSearchAndOr, taskFilterParam)
     };
 
 	/*!
@@ -1169,7 +1222,9 @@ namespace INS {
 	 * \ingroup project
 	 * \brief 任务文件关系编辑接口
 	 */
-	struct TaskFileRelationEditParam {
+	struct TaskFileRelationEditParam
+	{
+
 		qint32 operationType = 0;//0：删除，1：添加， 2：编辑
 		qint32 taskId = 0;//任务id
 
@@ -1182,12 +1237,13 @@ namespace INS {
 
 		qint32 variantId = 0;//variantId
 
-		bool isIntermediateFile = false;//是否是中间文件
+		qint32 isIntermediate = 0;//是否是中间文件  0 否 1是
+
+		qint32 isReview = 0;//是否为需要审批文件 0 否 1是
 
 		QPair<QString, QString> path;//路径,一般是output file需要,first: 路径"/aa/bb/cc",second: aa.txt
 
-		Serialization(operationType, taskId, fileType, fileId, path, variantId,
-					  isIntermediateFile)
+		Serialization(operationType, taskId, fileType, fileId, path, variantId, isIntermediate, isReview)
 	};
 
 	/*!
@@ -1418,7 +1474,7 @@ namespace INS {
 		int         id = 0;    //主键
 		int         projectId = 0;    //项目ID
 		QString     projectName = "";   //项目名称
-		int         type = 0;    //删除的业务所属类型（task/asset/shot） 0为task，1为asset，2为shot
+		int         type = 0;    //删除的业务所属类型（task/asset/shot） 0为task，1为asset，2为shot, 3为sequence，4为项目
 		int         objectId = 0;    //type为0时,taskid;type为1时,assetid;type为2时,shotid;
 		QString     objectName = "";   //名称
 		int         deleteById = 0;    //删除者ID
@@ -1428,14 +1484,40 @@ namespace INS {
 		Serialization(id, projectId, projectName, type, objectId, objectName, deleteById, deleteByName, deleteTime)
 	};
 
-	struct ProjectTaskInfo {
-		INQProjectVO currproject;
-		QMap<qint32, QList<INTask>> taskList;
-		int newlytasks = 0;
-		QMap<QString, QMap<qint32, QString>> teamtotasklist;
-		QMap<QString, QMap<qint32, QString>> persontotasklist;
+	struct ProjectTaskCountItem {
+		qint32 id = 0;
+		QString name = "";
+		qint32 allCount = 0;
+		qint32 approvedCount = 0;
 
-        Serialization(currproject, taskList, newlytasks, teamtotasklist, persontotasklist);
+		Serialization(id, name, allCount, approvedCount);
+	};
+
+	struct ProjectTaskInfo {
+
+		//项目信息
+		qint32 projectId = 0;
+		QString projectName = "";
+		QDateTime projectIssueTime;
+		QDateTime projectDueTime;
+
+		int newlyTaskCount = 0;
+		int leftDay = 0;//还剩下的时间
+		int totalTaskCount = 0;//所有的任务数量
+
+		//任务信息
+		QMap<qint32, qint32> taskStatusInfoMap;
+
+
+		//团队信息
+		QMap<qint32, ProjectTaskCountItem> teamInfoMap;
+
+		//人员任务信息 QPair<qint32, qint32> <总量，通过的量>
+		QMap<qint32, ProjectTaskCountItem> personTaskInfoMap;
+
+
+		Serialization(projectId, projectName, projectIssueTime, projectDueTime, newlyTaskCount, leftDay, totalTaskCount,
+					  taskStatusInfoMap, teamInfoMap, personTaskInfoMap);
 	};
 
 	struct  PersonInActionParam {
@@ -1550,18 +1632,20 @@ namespace INS {
 
     struct TaskLinkFile
     {
-        qint32      taskFileId              = 0;  //主键
-        qint32      taskId                  = 0;  //任务id
-        qint32      parentTaskId            = 0;  //父节点work_flow_detl id
-        qint32      fileId                  = 0;  //文件id
-        QString     path                    = ""; //文件/文件夹路径
-        qint32      type                    = 0;  //1表示文件，2表示文件夹
-        QString     fileName                = ""; //文件名
-        qint32      fileType                = 0;  //0=referenceFileId,1= repositoryFileId,2=requiredFileId,3=outFileId
-        qint32      buildType               = 0;  //生成类型[0：系统根据上下游关系生成的，1：用户后面手动添加]
+		qint32      taskFileId = 0;  //主键
+		qint32      taskId = 0;  //任务id
+		qint32      parentTaskId = 0;  //父节点
+		qint32      fileId = 0;  //文件id
+		QString     path = ""; //文件/文件夹路径
+		qint32      type = 0;  //1表示文件，2表示文件夹
+		QString     fileName = ""; //文件名
+		qint32      fileType = 0;  //0=referenceFileId,1= repositoryFileId,2=requiredFileId,3=outFileId
+		qint32      buildType = 0;  //生成类型[0：系统根据上下游关系生成的，1：用户后面手动添加]
+		qint32      isIntermediate = 0;  //是否为中间文件 0否 1是
+		qint32      isReview = 0;  //是否为审批文件 0否 1是
 
-        Serialization(taskFileId, taskId, parentTaskId,fileId,path,
-                      type, fileName, fileType, buildType)
+		Serialization(taskFileId, taskId, parentTaskId, fileId, path,
+			type, fileName, fileType, buildType, isIntermediate, isReview)
     };
 
     struct TaskWorkflowDetail
@@ -1759,4 +1843,100 @@ namespace INS {
 		Serialization(shotId, shotName, variantMatchedPairs)
 	};
 
+	struct INReviewProject {
+		IdName project;					//项目名和项目id
+		qint32 totalAssetTask = 0;		//项目下资产的reopen状态和pending approval状态的任务总数
+		qint32 totalShotTask = 0;		//项目下镜头的reopen状态和pending approval状态的任务总数
+		qint32 totalSequenceTask = 0;	//项目下seq的reopen状态和pending approval状态的任务总数
+		Serialization(project, totalAssetTask, totalShotTask, totalSequenceTask);
+	};
+
+	struct INTaskPreview {
+		IdName file;
+		QString checkCode;
+		qint32 version = 0;
+		qint64 size = 0;
+
+		Serialization(file, checkCode, version, size);
+	};
+
+    struct INReviewTask {
+		IdName project;              //任务所属的项目
+		QString tvTag;               //例如 “ep001_a001”
+		QString objectName;          //镜头号或者资产名，用于tab标题
+        QString taskPath;            //对于资产：projectName,对于镜头：projectName<_season><_episode>_scene,对于sequence：projectName<_season><_episode>
+        QString reviewTaskName;      //review模块的任务名。reviewTaskName = task.name - taskPath
+		IdName task;                 //任务id和名
+		IdName pipelineStep;         //任务所属的pipeline step的id和名
+		IdName assignee;             //完成此任务的人
+		qint32 status = 0;           //任务状态，这里只有reopen和pending approval状态
+		qint32 type = 0;             //任务类别 0：asset 1：shot 2：seq
+		QDateTime statusUpdatingTime;   //任务状态改变的时间
+		QDateTime dueTime;          //任务结束时间
+		qint32 leftTime = 0;        //到任务结束还剩余的时间,单位天，负值表示超时
+		QList<TaskApproval> approvalList;   //任务的审批列表
+		TaskApproval currentApprover;       //任务的当前审批节点
+		INTaskPreview taskPreview;  //任务的预览图，用审批的第一个文件。
+
+		Serialization(project, tvTag, objectName, taskPath, reviewTaskName, task, pipelineStep, assignee, status,
+			type, statusUpdatingTime, dueTime, leftTime, approvalList, currentApprover, taskPreview);
+	};
+
+    struct GetReviewTaskParam {
+        qint32 projectId = 0;   //指定审批任务所属的项目
+        qint32 objectType = 0;  //指定审批任务所属的类型，0 == asset，1 == shot, 2 == seq
+        qint32 orderBy = 0;     //排序方式：默认time，1 == pipeline step name
+
+        Serialization(projectId, objectType, orderBy);
+    };
+
+	struct INReviewTaskList {
+		QString key;        //每列左上角关键字
+		QList<INReviewTask> tasks;  //任务列表
+
+		Serialization(key, tasks);
+	};
+
+	struct INFileReviewInfo {
+
+		qint32 historyVersionReviewed = 0;  //0：历史版本没有review信息，其他：有
+		QMap<qint32, QList<QString>> reviewList;  //播放器上的涂涂改改.key:文件版本，value:内容
+
+		Serialization(historyVersionReviewed, reviewList);
+	};
+
+	struct INTaskReviewFile {
+		INReviewTask reviewTask;    //要审批的任务
+		QMap<qint32, FileVO> reviewFiles;      //任务下要审批的文件。key: fileId, value:交给前端的file vo结构体
+		QMap<qint32, QString> notForReviewFiles;    //任务下不需要审批的文件key: fileId, value: 仅名字，包括后缀名，无路径
+
+		//审批文件的审批信息。key:file id, file version, value:文件的审批信息
+		QMap<qint32, INFileReviewInfo> fileReviewInfo;
+
+		Serialization(reviewTask, reviewFiles, notForReviewFiles, fileReviewInfo);
+	};
+
+    struct INPostReviewParam {
+        qint32 taskId = 0;      //评论的任务的Id，如果是播放器上涂涂改改的内容，可不填此Id
+        qint32 fileId = 0;      //评论的文件的Id,如果不是播放器上涂涂改改的内容，可不填此Id。
+        qint32 fileVersion = 0;//评论文件时，须指定版本。
+        QString content;        //视频播放器上的内容
+        QString userText;       //用户输入的文件内容，包括视频播放器正下方post框生成的内容。
+
+        Serialization(taskId, fileId, fileVersion, content, userText);
+    };
+
+	struct INReviewTaskComment {
+		IdName person;          //评论人
+		qint32 isApprover = 0;  //评论人是否为审批者标记
+		qint32 avatar = 0;      //评论人头像文件Id
+
+		//评论的类型，用于区别任务操作日志使用不同图标。默认类别0下为通常的任务评论。
+		//1:任务创建，2：任务状态变化，3：任务分派，4：send to next review 5: send to previous review 6: time change
+		qint32 type = 0;
+		QString text;           //评论内容文本。
+		QDateTime submitDate;   //评论产生的时间
+
+		Serialization(person, isApprover, avatar, type, text, submitDate);
+	};
 };

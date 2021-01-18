@@ -40,9 +40,35 @@ namespace INS
 
 	void INSRequest::WaitForFinished(int timeout)
 	{
-		bool bResult = m_lock.tryLock(timeout);
-		if (bResult)
+		if(!INSNETWORK->SendDataToAppServer(m_senddata)) {
 			m_lock.unlock();
+			this->m_finished = true;
+			return;
+		}
+
+		this->m_finished = true;
+		if(m_lock.tryLock(timeout)) {
+			//若等到了锁，说明请求已经到了，则后面再开始处理数据
+			m_lock.unlock();
+		} else {
+			//如果在这时候，恰巧被解析线程拿到锁，怎么办？？？？？？
+			//只能先用一招了，该对象延迟析构，后面可以再加一把锁去解决这个问题
+			//如果等不到锁，那么直接移除掉那个指针,防止请求在此时又到来了
+			g_lock.lock();
+			g_requests.remove(m_request_id);
+			g_lock.unlock();
+
+			m_lock.unlock();
+		}
+	}
+
+	void INSRequest::Process(const QByteArray& data) {
+		m_data = data;
+		QByteArray tmp;
+		mp_in->device()->seek(0);
+		*mp_in >> tmp;
+
+		m_data = tmp;
 	}
 
 	void INSRequest::InitRequestId(bool bCustom, int n_requestId)

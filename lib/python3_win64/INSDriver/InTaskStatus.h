@@ -79,6 +79,13 @@ public:
         return taskColorMap.value(static_cast<int>(taskState)).color;
     }
 
+    static QPair<QString,QString> GetINTaskStatusStringAndColorName(int taskState)
+    {
+        QString stateString = GetINTaskStausString(INS::INTaskStatus(taskState));
+        QString colorName = GetINTaskStausColor(INS::INTaskStatus(taskState)).name();
+        return qMakePair(stateString,colorName);
+    }
+
     static QString SplitStrByWhiteSpace(QString sourceText)
     {
         for (int i = 0; i < sourceText.size(); ++i)
@@ -111,6 +118,50 @@ public:
         return taskMap;
     }
 
+    static QMap<qint32, QString> GetINTaskStatusColorMap()
+    {
+        static QMap<int, QString> taskStatusColorMap;
+        if (taskStatusColorMap.isEmpty())
+        {
+            auto addToMap = [](const int &statusId) {
+                taskStatusColorMap.insert(statusId, GetINTaskStausColor(INTaskStatus(statusId)).name());
+            };
+            addToMap((qint32)(INTaskStatus::ToDo));
+            addToMap((qint32)(INTaskStatus::WorkInProgress));
+            addToMap((qint32)(INTaskStatus::PendingApproval));
+            //addToMap((q(qint32)32)(INTaskStatus::PendingPanelReview), GetINTaskStausString(INTaskStatus::PendingPanelReview));
+            addToMap((qint32)(INTaskStatus::Reopened));
+            addToMap((qint32)(INTaskStatus::PendingValidation));
+            addToMap((qint32)(INTaskStatus::Approved));
+            addToMap((qint32)(INTaskStatus::Paused));
+            addToMap((qint32)(INTaskStatus::Deprecated));
+            addToMap((qint32)(INTaskStatus::OnHold));
+        }
+        return taskStatusColorMap;
+    }
+
+    static QList<QPair<int,QString>> GetINTaskStatusAndStringList()
+    {
+        static QList<QPair<int,QString>> taskStatusList;
+        if (taskStatusList.isEmpty())
+        {
+            auto addToList = [](const INTaskStatus & status) {
+                taskStatusList.append(qMakePair(int(status),GetINTaskStausString(status)));
+            };
+            addToList((INTaskStatus::ToDo));
+            addToList((INTaskStatus::WorkInProgress));
+            addToList((INTaskStatus::PendingApproval));
+            //addToMa2)(INTaskStatus::PendingPanelReview), GetINTaskStausString(INTaskStatus::PendingPanelReview));
+            addToList((INTaskStatus::Reopened));
+            addToList((INTaskStatus::PendingValidation));
+            addToList((INTaskStatus::Approved));
+            addToList((INTaskStatus::Paused));
+            addToList((INTaskStatus::Deprecated));
+            addToList((INTaskStatus::OnHold));
+        }
+        return taskStatusList;
+    }
+
 private:
     static QMap<int, StatusNameAndColor> GetINTaskStatus()
     {
@@ -120,13 +171,13 @@ private:
             auto addToMap = [](const QPair<int, QString>& taskType, const QColor& typeColor) {
                 taskMap.insert(taskType.first, {taskType.second, typeColor});
             };
-            addToMap(ToIntAndQstring(INTaskStatus::ToDo), QColor("#5eceff"));
-            addToMap(ToIntAndQstring(INTaskStatus::WorkInProgress), QColor("#2888F7"));
-            addToMap(ToIntAndQstring(INTaskStatus::PendingApproval), QColor("#ffaa40"));
+            addToMap(ToIntAndQstring(INTaskStatus::ToDo), QColor("#5AA9FA"));
+            addToMap(ToIntAndQstring(INTaskStatus::WorkInProgress), QColor("#2680EB"));
+            addToMap(ToIntAndQstring(INTaskStatus::PendingApproval), QColor("#E68619"));
             addToMap(ToIntAndQstring(INTaskStatus::PendingPanelReview), QColor("#ffb75d"));
-            addToMap(ToIntAndQstring(INTaskStatus::Reopened), QColor("#f23333"));
+            addToMap(ToIntAndQstring(INTaskStatus::Reopened), QColor("#E34850"));
             addToMap(ToIntAndQstring(INTaskStatus::PendingValidation), QColor("#cc7ee0"));
-            addToMap(ToIntAndQstring(INTaskStatus::Approved), QColor("#7ad975"));
+            addToMap(ToIntAndQstring(INTaskStatus::Approved), QColor("#2D9D78"));
             addToMap(qMakePair(int(INTaskStatus::Paused),QString("Paused by System")), QColor("#B15EFF"));
             addToMap(ToIntAndQstring(INTaskStatus::Deprecated), QColor("#8b8b8b"));
             addToMap(ToIntAndQstring(INTaskStatus::OnHold), QColor("#8080C0"));

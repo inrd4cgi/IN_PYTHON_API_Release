@@ -53,9 +53,11 @@ namespace INS
 		INSRequest* p_request = INSRequest::GetRequest(request_id);
 		if (p_request != Q_NULLPTR)
 		{
+			//p_request->Process(data);
 			p_request->Process(data);
 			if (p_request->m_finished)
-				p_request->m_lock.unlock();
+			    p_request->m_lock.unlock();
+			
 			return;
 		}
 		return;

@@ -85,6 +85,9 @@ namespace INS_INTERFACE
      */
     INSDRIVER_EXPORT MessageInfo setTaskApprovalToUrgent(qint32 taskId, qint32 approverID);
 
+    INSDRIVER_EXPORT MessageInfo setBatchTaskApprovalList(TaskApprovalWorkFlow& taskApprovalWorkFlow);
+
+
     /*!
      * \brief getTaskApprovalList 根据任务ID获取任务审批流程。
      * \param taskId

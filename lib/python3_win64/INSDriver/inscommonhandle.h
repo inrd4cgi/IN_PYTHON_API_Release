@@ -3,106 +3,77 @@
 #include "JsonMessageUtils.h"
 
 #define WAITFORFINISHEDTHENRETURN commonRequest.WaitForFinished();\
-return commonRequest.m_return_value;
+return commonRequest.getRetValue();
 
 #define WAITFORFINISHEDANDGETVALUETHENRETURN(dataContainer) commonRequest.WaitForFinished();\
-dataContainer = commonRequest.retData;\
-return commonRequest.m_return_value;
+dataContainer = commonRequest.getRecvData();\
+return commonRequest.getRetValue();
 
-namespace INS
-{
+namespace INS {
 
-	//通用请求模板
-	template<typename Recv, typename... Send>
-	class INSCommonRequest :public INSRequest {
-	private:
-		const static qint32 noUsedData = 0;
+	//通用请求模板:内部用
+	template<typename Recv, typename Ret>
+	class __INSCommonRequestBase :public INSRequest {
+
+		Recv _recvData;
+		Ret _retValue;
+		bool serialed = false;
+
 	public:
-		INSCommonRequest(qint32 serviceId, Send...sendData) {
-		    QString jsonStr = JsonMessageUtils::dataToJson(sendData...);
-			*mp_out << serviceId << m_request_id << jsonStr;
-			if (!INSNETWORK->SendDataToAppServer(m_senddata))
-			{
-				m_return_value = -999;
-				m_lock.unlock();
+		template<typename... Send>
+		__INSCommonRequestBase(qint32 serviceId, bool jsonParsing, Send...sendData) {
+			if(!jsonParsing) {
+				return;
 			}
-			return;
+			QByteArray jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(sendData...);
+			*mp_out << serviceId << m_request_id << jsonStr;
 		}
-		~INSCommonRequest() {}
 
-		MessageInfo m_return_value;
-		Recv retData;
-		void Process(const QByteArray& data) {
-			m_data = data;
-			mp_in->device()->seek(0);
-			QString jsonStr;
-            *mp_in >> jsonStr;
-            JsonMessageUtils::jsonToData(jsonStr, m_return_value, retData);
-			m_finished = true;
-			return;
+		__INSCommonRequestBase() {
+			//TODO 该对象延迟析构
+		}
+
+		Recv getRecvData() {
+			if(!serialed) {
+				JsonMessageUtils::jsonArrayBinaryDataToData(m_data, _retValue, _recvData);
+				serialed = true;
+			}
+			return _recvData;
+		}
+
+		Ret getRetValue() {
+			if(!serialed) {
+				JsonMessageUtils::jsonArrayBinaryDataToData(m_data, _retValue, _recvData);
+				serialed = true;
+			}
+			return _retValue;
 		}
 	};
 
-	//通用请求模板,返回值为int
-	template<typename Recv, typename... Send>
-	class INSCommonRequestRetInt :public INSRequest {
-	private:
-		const static qint32 noUsedData = 0;
-
+	template<typename Recv>
+	class INSCommonRequest :public __INSCommonRequestBase<Recv, MessageInfo> {
 	public:
-		INSCommonRequestRetInt(qint32 serviceId, Send... sendData)
-		{
-		    QString jsonStr = JsonMessageUtils::dataToJson(sendData...);
-			*mp_out << serviceId << m_request_id << jsonStr;
-			if (!INSNETWORK->SendDataToAppServer(m_senddata))
-			{
-				m_return_value = -999;
-				m_lock.unlock();
-			}
-			return;
-		}
-		~INSCommonRequestRetInt() {}
-
-		qint32 m_return_value;
-		Recv retData;
-
-		void Process(const QByteArray& data) {
-			m_data = data;
-			mp_in->device()->seek(0);
-			QString jsonStr;
-            *mp_in >> jsonStr;
-            JsonMessageUtils::jsonToData(jsonStr, m_return_value, retData);
-			m_finished = true;
-			return;
-		}
+		template<typename... Send>
+		INSCommonRequest(qint32 serviceId, Send...sendData) :__INSCommonRequestBase(serviceId, true, sendData...) {}
 	};
 
-	//json字符串请求
-	class JsonRequest : public INSRequest {
-	private:
-		MessageInfo m_return_value = MessageInfo::fail();
-
+	template<typename Recv>
+	class INSCommonRequestRetInt :public __INSCommonRequestBase<Recv, qint32> {
 	public:
-		JsonRequest(qint32 serviceId, const QString &jsonStr) {
-			*mp_out << serviceId << m_request_id << jsonStr;
-			if (!INSNETWORK->SendDataToAppServer(m_senddata))
-			{
-				retData = JsonMessageUtils::dataToJson(m_return_value);
-				m_lock.unlock();
-			}
-			return;
+		template<typename... Send>
+		INSCommonRequestRetInt(qint32 serviceId, Send...sendData) :__INSCommonRequestBase(serviceId, true, sendData...) {}
+	};
+
+	template<typename Recv>
+	class JsonRequest :public __INSCommonRequestBase<QString, QString> {
+	public:
+		template<typename... Send>
+		JsonRequest(qint32 serviceId, const QString& jsonStr) :__INSCommonRequestBase(serviceId, false) {
+			QByteArray jsonArrayData = QJsonDocument::fromJson(jsonStr.toUtf8()).toBinaryData();
+			*mp_out << serviceId << m_request_id << jsonArrayData;
 		}
-		~JsonRequest() {}
-
-		QString retData;
-
-		void Process(const QByteArray& data) {
-			m_data = data;
-			mp_in->device()->seek(0);
-			*mp_in >> retData;
-
-			m_finished = true;
-			return;
+		QString getRecvData() {
+			return QJsonDocument::fromBinaryData(m_data).toJson(QJsonDocument::Indented);
 		}
 	};
 }

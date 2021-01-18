@@ -99,11 +99,11 @@ namespace INS_INTERFACE
 	INSDRIVER_EXPORT qint32 GetShotInfo(INShot& shotinfo);
 
 	//asset/shot/task回收站部分
-	INSDRIVER_EXPORT qint32 GetBusRecycleBinList(int projectId, QList<RecycleInfo> &recyclebinList);
+	INSDRIVER_EXPORT MessageInfo GetBusRecycleBinList(int projectId, QList<RecycleInfo> &recyclebinList);
 
     //删除回收站某一条记录
-    INSDRIVER_EXPORT qint32 DeleteObjectInRecordBin(qint32 recordId);
+    INSDRIVER_EXPORT MessageInfo DeleteObjectInRecordBin(qint32 recordId);
 
     //恢复回收站某一条记录
-    INSDRIVER_EXPORT qint32 RestoreObjectInRecordBin(qint32 recordId);
+    INSDRIVER_EXPORT MessageInfo RestoreObjectInRecordBin(qint32 recordId);
 };

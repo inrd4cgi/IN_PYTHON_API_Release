@@ -8,19 +8,19 @@
 namespace INS_INTERFACE {
 
     INSDRIVER_EXPORT QString jsonRequest(int serviceId, QString &queryParam) {
-		JsonRequest jsonRequest(serviceId, queryParam);
+		JsonRequest<QString> jsonRequest(serviceId, queryParam);
 		jsonRequest.WaitForFinished();
-        return jsonRequest.retData;
+        return jsonRequest.getRecvData();
     }
 
     INSDRIVER_EXPORT MessageInfo GetClientUpdateServerPath(QString &path) {
-        INSCommonRequest<QString, qint32> commonRequest(352, 0);
+        INSCommonRequest<QString> commonRequest(352, 0);
         commonRequest.WaitForFinished();
-        path = commonRequest.retData;
-        return commonRequest.m_return_value;
+        path = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
     }
 
-    INSDRIVER_EXPORT void SetNotificationCallback(std::function<void(const QByteArray &)> p_callback) {
+    INSDRIVER_EXPORT void SetNotificationCallback(std::function<void(QString)> p_callback) {
         static INSNotificationListener notificationListener;
         notificationListener.SetCallbackFunc(p_callback);
     }
@@ -33,10 +33,10 @@ namespace INS_INTERFACE {
 
     //日志业务 通过查询参数查询日志
     INSDRIVER_EXPORT MessageInfo GetLogs(QList<LogInfoVO> &logs, LogBusParams &logParams) {
-        INSCommonRequest<QList<LogInfoVO>, LogBusParams> commonRequest(99, logParams);
+        INSCommonRequest<QList<LogInfoVO>> commonRequest(99, logParams);
         commonRequest.WaitForFinished();
-        logs = commonRequest.retData;
-        return commonRequest.m_return_value;
+        logs = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
     }
 
     INSDRIVER_EXPORT qint32 GetAvatarInfo(Avatar &avatar) {return 0;}
@@ -45,36 +45,11 @@ namespace INS_INTERFACE {
 
     INSDRIVER_EXPORT qint32 UpdateAvatarInfo(const Avatar Uavatar) {return 0;}
 
-    INSDRIVER_EXPORT qint32 GetTaskInfoFromProID(ProjectTaskInfo &pti) {
-        INSCommonRequestRetInt<ProjectTaskInfo, ProjectTaskInfo> commonRequest(654, pti);
+    INSDRIVER_EXPORT qint32 GetProjectTaskDateByProjectId(qint32 projectId,ProjectTaskInfo &pti) {
+        INSCommonRequestRetInt<ProjectTaskInfo> commonRequest(654, projectId);
         commonRequest.WaitForFinished();
-        pti = commonRequest.retData;
-        return commonRequest.m_return_value;
-    }
-
-    INSDRIVER_EXPORT qint32 GetTaskStatusFromProID(ProjectTaskInfo &pti) {
-
-        INSCommonRequestRetInt<ProjectTaskInfo, ProjectTaskInfo> commonRequest(655, pti);
-        commonRequest.WaitForFinished();
-        pti = commonRequest.retData;
-        return commonRequest.m_return_value;
-
-    }
-
-    INSDRIVER_EXPORT qint32 GetTeamInfoFromProID(ProjectTaskInfo &pti) {
-
-        INSCommonRequestRetInt<ProjectTaskInfo, ProjectTaskInfo> commonRequest(656, pti);
-        commonRequest.WaitForFinished();
-        pti = commonRequest.retData;
-        return commonRequest.m_return_value;
-    }
-
-    INSDRIVER_EXPORT qint32 GetMenFormProID(ProjectTaskInfo &pti) {
-
-        INSCommonRequestRetInt<ProjectTaskInfo, ProjectTaskInfo> commonRequest(657, pti);
-        commonRequest.WaitForFinished();
-        pti = commonRequest.retData;
-        return commonRequest.m_return_value;
+        pti = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
     }
 
 
@@ -111,7 +86,7 @@ namespace INS_INTERFACE {
     INSDRIVER_EXPORT qint32
     Login(const QString &username, const QString &password, bool &normalRole, const QString &type) {
         INSLogin login(username, password, type);
-        login.WaitForFinished();
+		login.WaitForFinished();
         normalRole = login.m_normalRole;
         return login.m_return_value;
     }
@@ -119,12 +94,12 @@ namespace INS_INTERFACE {
     INSDRIVER_EXPORT qint32 Logout() {
         INSCommonRequest<qint32> commonRequest(110);
         commonRequest.WaitForFinished();
-        return commonRequest.m_return_value.code;
+        return commonRequest.getRetValue().code;
     }
 
     INSDRIVER_EXPORT qint32 ActivateAccount(const QString &username, const QString &password) {
         INSActivateAccount resetpassword(username, password);
-        resetpassword.WaitForFinished();
+		resetpassword.WaitForFinished();
         return resetpassword.m_return_value;
     }
 
@@ -145,62 +120,62 @@ namespace INS_INTERFACE {
 
     //Worklog模块
     INSDRIVER_EXPORT qint32 CreateWorklog(SimpleWorklog &worklog) {
-        INSCommonRequestRetInt<SimpleWorklog, SimpleWorklog> commonRequest(702, worklog);
+        INSCommonRequestRetInt<SimpleWorklog> commonRequest(702, worklog);
         commonRequest.WaitForFinished();
-        worklog = commonRequest.retData;
-        return commonRequest.m_return_value;
+        worklog = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
     }
 
     INSDRIVER_EXPORT qint32 UpdateWorklog(SimpleWorklog &worklog) {
-        INSCommonRequestRetInt<SimpleWorklog, SimpleWorklog> commonRequest(703, worklog);
+        INSCommonRequestRetInt<SimpleWorklog> commonRequest(703, worklog);
         commonRequest.WaitForFinished();
-        worklog = commonRequest.retData;
-        return commonRequest.m_return_value;
+        worklog = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
     }
 
 
     INSDRIVER_EXPORT qint32 GetWorklogById(qint32 publisherId, QList<SimpleWorklog> &worklogs) {
-        INSCommonRequestRetInt<QList<SimpleWorklog>, qint32> commonRequest(700, publisherId);
+        INSCommonRequestRetInt<QList<SimpleWorklog>> commonRequest(700, publisherId);
         commonRequest.WaitForFinished();
-        worklogs = commonRequest.retData;
-        return commonRequest.m_return_value;
+        worklogs = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
     }
 
 
     INSDRIVER_EXPORT qint32 GetWorklogById(qint32 publisherId, const QDateTime &startTime, const QDateTime &endTime,
                                            QList<SimpleWorklog> &worklogs) {
-        INSCommonRequestRetInt<QList<SimpleWorklog>, qint32, QDateTime, QDateTime>
+        INSCommonRequestRetInt<QList<SimpleWorklog>>
                 request(701, publisherId, startTime, endTime);
         request.WaitForFinished();
-        worklogs = request.retData;
-        return request.m_return_value;
+        worklogs = request.getRecvData();
+        return request.getRetValue();
     }
 
 
     //INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id, Notification &no) {
-    //    INSCommonRequestRetInt<Notification, qint32, Notification>
+    //    INSCommonRequestRetInt<Notification>
     //            request(760, recv_id, no);
     //    request.WaitForFinished();
-    //    no = request.retData;
-    //    return request.m_return_value;
+    //    no = request.getRecvData();
+    //    return request.getRetValue();
     //}
 
 	INSDRIVER_EXPORT qint32 UpdateNotificationStatus(qint32 recv_id) 
 	{
-		INSCommonRequestRetInt<NotificationMessage, qint32>
+		INSCommonRequestRetInt<NotificationMessage>
 			request(760, recv_id);
 		request.WaitForFinished();
-		return request.m_return_value;
+		return request.getRetValue();
 	}
 
 
     //INSDRIVER_EXPORT qint32 GetInboxNofitication(qint32 recipient_id, qint32 beg, qint32 offset,
     //                                             QList<Notification> &nos) {
-    //    INSCommonRequestRetInt<QList<Notification>, qint32, qint32, qint32>
+    //    INSCommonRequestRetInt<QList<Notification>>
     //            request(761, recipient_id, beg, offset);
     //    request.WaitForFinished();
-    //    nos = request.retData;
-    //    return request.m_return_value;
+    //    nos = request.getRecvData();
+    //    return request.getRetValue();
     //}
 
 	INSDRIVER_EXPORT qint32 GetNofitications(
@@ -209,71 +184,71 @@ namespace INS_INTERFACE {
 		qint32 category,
 		qint32 notificationID) 
 	{
-		INSCommonRequestRetInt<QList<NotificationMessage>, qint32, qint32, qint32>
+		INSCommonRequestRetInt<QList<NotificationMessage>>
 			request(761, recipient_id, category, notificationID);
 		request.WaitForFinished();
-		nos = request.retData;
-		return request.m_return_value;
+		nos = request.getRecvData();
+		return request.getRetValue();
 	}
 
 	INSDRIVER_EXPORT qint32 GetNofiticationOverview(
 		qint32 recipient_id, 
 		QMap<qint32, qint32>& data)
 	{
-		INSCommonRequestRetInt<QMap<qint32, qint32>, qint32>
+		INSCommonRequestRetInt<QMap<qint32, qint32>>
 			request(762, recipient_id);
 		request.WaitForFinished();
 		//request.m_lock.lock();
-		data = request.retData;
-		return request.m_return_value;
+		data = request.getRecvData();
+		return request.getRetValue();
 	}
 
     INSDRIVER_EXPORT MessageInfo GetUnreadMsgAmount(qint32 &amount) {
-        INSCommonRequest<qint32, qint32> request(763, 0);
+        INSCommonRequest<qint32> request(763, 0);
         request.WaitForFinished();
-        amount = request.retData;
-        return request.m_return_value;
+        amount = request.getRecvData();
+        return request.getRetValue();
     }
 
     //INSDRIVER_EXPORT qint32 SendUserNofitication(Notification &no) {
-    //    INSCommonRequestRetInt<Notification, Notification> request(762, no);
+    //    INSCommonRequestRetInt<Notification> request(762, no);
     //    request.WaitForFinished();
-    //    no = request.retData;
-    //    return request.m_return_value;
+    //    no = request.getRecvData();
+    //    return request.getRetValue();
     //}
 
     //holiday
     MessageInfo CreateHolidayTemplate(INQHolidayTemplate &holidayTemplate) {
-        INSCommonRequest<INQHolidayTemplate, INQHolidayTemplate> request(5302, holidayTemplate);
+        INSCommonRequest<INQHolidayTemplate> request(5302, holidayTemplate);
         request.WaitForFinished();
-        holidayTemplate = request.retData;
-        return request.m_return_value;
+        holidayTemplate = request.getRecvData();
+        return request.getRetValue();
     }
 
     MessageInfo EditHolidayTemplate(INQHolidayTemplate &holidayTemplate) {
-        INSCommonRequest<INQHolidayTemplate, INQHolidayTemplate> request(5303, holidayTemplate);
+        INSCommonRequest<INQHolidayTemplate> request(5303, holidayTemplate);
         request.WaitForFinished();
-        holidayTemplate = request.retData;
-        return request.m_return_value;
+        holidayTemplate = request.getRecvData();
+        return request.getRetValue();
     }
 
     MessageInfo GetAllHolidays(QList<INQHolidayTemplate> &holidays) {
         INSCommonRequest<QList<INQHolidayTemplate>> request(5301);
         request.WaitForFinished();
-        holidays = request.retData;
-        return request.m_return_value;
+        holidays = request.getRecvData();
+        return request.getRetValue();
     }
 
     MessageInfo GetAllHolidaysInNewlyYear(QList<INQHolidayTemplate> &holidays) {
         INSCommonRequest<QList<INQHolidayTemplate>> request(5300);
         request.WaitForFinished();
-        holidays = request.retData;
-        return request.m_return_value;
+        holidays = request.getRecvData();
+        return request.getRetValue();
     }
 
     MessageInfo DeleteHolidayTemplate(qint32 templateId) {
-        INSCommonRequest<qint32, qint32> request(5304, templateId);
+        INSCommonRequest<qint32> request(5304, templateId);
         request.WaitForFinished();
-        return request.m_return_value;
+        return request.getRetValue();
     }
 };

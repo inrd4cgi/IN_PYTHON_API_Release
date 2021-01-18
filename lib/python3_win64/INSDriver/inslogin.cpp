@@ -32,14 +32,8 @@ namespace INS
 		const static QString type = INS_CLIENT_PREFIX + QString(":") + typ;//加个前缀，你江哥加的
 		QString password_encrypted = QCryptographicHash::hash(password.toLatin1(), QCryptographicHash::Md5).toHex();
 		SaveCurrentLoginInfo(username, password, type);
-        QString jsonStr = JsonMessageUtils::dataToJson(username, password_encrypted, type);
+        QByteArray jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(username, password_encrypted, type);
 		*mp_out << qint32(108) << m_request_id << jsonStr;
-		if (!INSNETWORK->SendDataToAppServer(m_senddata))
-		{
-			m_return_value = -999;
-			m_lock.unlock();
-		}
-		return;
 	}
 
 	INSLogin::~INSLogin() {
@@ -53,11 +47,11 @@ namespace INS
 	{
 		m_data = data;
 		mp_in->device()->seek(0);
-		QString jsonStr;
+		QByteArray jsonStr;
         qint32 isactived = 1;
 
         *mp_in >> jsonStr;
-        JsonMessageUtils::jsonToData(jsonStr, m_reply_code, isactived, m_normalRole);
+        JsonMessageUtils::jsonArrayBinaryDataToData(jsonStr, m_reply_code, isactived, m_normalRole);
 
 		if (m_reply_code == 110)
 		{
@@ -144,14 +138,8 @@ namespace INS
 	{
 		QString password_encrypted = QCryptographicHash::hash(password.toLatin1(), QCryptographicHash::Md5).toHex();
 		SaveCurrentLoginInfo(username, password);
-		QString jsonStr = JsonMessageUtils::dataToJson(username, password_encrypted);
+		QByteArray jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(username, password_encrypted);
 		*mp_out << qint32(111) << m_request_id << jsonStr;
-		if (!INSNETWORK->SendDataToAppServer(m_senddata))
-		{
-			m_return_value = -999;
-			m_lock.unlock();
-		}
-		return;
 	}
 
 	INSActivateAccount::~INSActivateAccount() {
@@ -161,9 +149,9 @@ namespace INS
 	{
 		m_data = data;
 		mp_in->device()->seek(0);
-		QString jsonStr;
+		QByteArray jsonStr;
 		*mp_in >> jsonStr;
-        JsonMessageUtils::jsonToData(jsonStr, m_return_value);
+        JsonMessageUtils::jsonArrayBinaryDataToData(jsonStr, m_return_value);
 		m_finished = true;
 		return;
 	}
@@ -185,11 +173,11 @@ namespace INS
 		if (m_loginConflictCallback) {
 			m_data = byteArray;
 			mp_in->device()->seek(0);
-			QString jsonStr;
+			QByteArray jsonStr;
 			*mp_in >> jsonStr;
 
 			QString msg;
-			JsonMessageUtils::jsonToData(jsonStr, msg);
+			JsonMessageUtils::jsonArrayBinaryDataToData(jsonStr, msg);
 			m_loginConflictCallback(msg);
 		}
 	}

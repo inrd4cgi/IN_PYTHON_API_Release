@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.10.2.0] - 2021-1-18
+### Fixed
+  * build script
+
 ## [1.10.1.3] - 2021-1-18
 ### Fixed
   * Rebuild

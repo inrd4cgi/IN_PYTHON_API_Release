@@ -1,9 +1,9 @@
 ﻿//
-// Created by Jiangsiyong on 2021-01-14.
+// Created by jiangsiyong on 2020/9/25.
 //
 
-#ifndef INTELLIGENT_NODE_JSONSERIALIZATIONUTILS_H
-#define INTELLIGENT_NODE_JSONSERIALIZATIONUTILS_H
+#ifndef IN_JSONSERIALIZATIONUTILS_H
+#define IN_JSONSERIALIZATIONUTILS_H
 
 #include <QVariant>
 #include <QDataStream>
@@ -16,6 +16,7 @@
 #include <QDebug>
 #include <QPoint>
 #include <limits>
+#include <climits>
 
 namespace INS {
 	//id与名字类
@@ -140,20 +141,14 @@ private:\
         return std::make_tuple(Func);\
     }\
 public:\
-    QJsonObject toJsonObject() const {\
-        return JsonHelper::getJsonFromTuple(std::make_tuple(Func));\
-    }\
-    void fromJsonObject(const QJsonObject& jsonObj) {\
-        JsonHelper::convertJson2Entity(std::make_tuple(Func), jsonObj);\
+    QString toJsonString() const {\
+        return JsonHelper::getJsonStringFromTuple(std::make_tuple(Func));\
     }\
     void fromJsonString(const QString& jsonStr) {\
         QJsonObject jsonObj = QJsonDocument::fromJson(jsonStr.toUtf8()).object();\
-        fromJsonObject(jsonObj);\
-    }\
-    QString toJsonString() const {\
-        QJsonObject jsonObj = toJsonObject();\
-        return QJsonDocument(jsonObj).toJson(QJsonDocument::Indented);\
+        JsonHelper::convertJsonString2Entity(std::make_tuple(Func), jsonObj);\
     }
+
 
 #define Serialization(...) SERIALIZATION_INNER(GEN_FUNC(GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__))
 
@@ -162,25 +157,28 @@ class JsonHelper {
 private:
 	template<typename Tuple, size_t N>
 	struct DataGetter {
-		static void genJsonObject(const Tuple &fieldTuple, QJsonObject &jsonObj) {
+		static void genJsonString(const Tuple &fieldTuple, QString &jsonStr) {
 			QString resultTmp;
 
-			DataGetter<Tuple, N - 1>::genJsonObject(fieldTuple, jsonObj);
+			DataGetter<Tuple, N - 1>::genJsonString(fieldTuple, jsonStr);
 			auto data = std::get<N - 1>(fieldTuple);
 			QString key = data.first;
 			auto value = *data.second;
 
-			jsonObj.insert(key, toJsonValue(value));
+			QString strJoinTmp = "%1,%2";
+			jsonStr = strJoinTmp.arg(jsonStr).arg(toJsonItem(key, value));
 		}
 	};
 
 	template<typename Tuple>
 	struct DataGetter<Tuple, 1> {
-		static void genJsonObject(const Tuple &fieldTuple, QJsonObject &jsonObj) {
+		static void genJsonString(const Tuple &fieldTuple, QString &jsonStr) {
 			auto data = std::get<0>(fieldTuple);
+
 			QString key = data.first;
 			auto value = *data.second;
-			jsonObj.insert(key, toJsonValue(value));
+
+			jsonStr = toJsonItem(key, value);
 
 		}
 	};
@@ -188,8 +186,8 @@ private:
 	/////////////////////
 	template<typename Tuple, size_t N>
 	struct DataSetter {
-		static void getValueFromJsonObject(const Tuple &fieldTuple, const QJsonObject &jsonObj) {
-			DataSetter<Tuple, N - 1>::getValueFromJsonObject(fieldTuple, jsonObj);
+		static void getValueFromJsonString(const Tuple &fieldTuple, const QJsonObject &jsonObj) {
+			DataSetter<Tuple, N - 1>::getValueFromJsonString(fieldTuple, jsonObj);
 			auto data = std::get<N - 1>(fieldTuple);
 			QString key = data.first;
 			if(jsonObj.contains(key)) {
@@ -202,7 +200,7 @@ private:
 
 	template<typename Tuple>
 	struct DataSetter<Tuple, 1> {
-		static void getValueFromJsonObject(const Tuple &fieldTuple, const QJsonObject &jsonObj) {
+		static void getValueFromJsonString(const Tuple &fieldTuple, const QJsonObject &jsonObj) {
 			auto data = std::get<0>(fieldTuple);
 
 			QString key = data.first;
@@ -251,17 +249,15 @@ public:
 		*field = jsonValue.toDouble();
 	}
 
-	static void setValue(double *field, const QJsonValue &jsonValue) {
-		*field = jsonValue.toDouble();
-	}
-
 	static void setValue(QVariant *field, const QJsonValue &jsonValue) {
-		*field = jsonValue.toVariant();
+		QString str;
+		setValue(&str, jsonValue);
+		*field = str;
 	}
 
 	template<typename T>
 	static void setValue(T *field, const QJsonValue &jsonValue) {
-		field->fromJsonObject(jsonValue.toObject());
+		field->fromJsonString(QJsonDocument(jsonValue.toObject()).toJson(QJsonDocument::Compact));
 	}
 
 public:
@@ -284,7 +280,7 @@ public:
 	static void setValueByJson(QList<T> *field, const QJsonValue &jsonValue) {
 		auto JsonArray = jsonValue.toArray();
 		int size = JsonArray.size();
-		field->reserve(size);//重写大小
+		field->reserve(size);
 		for(int i = 0; i < size; ++i) {
 			T t;
 			setValueByJson(&t, JsonArray[i]);
@@ -296,7 +292,7 @@ public:
 	static void setValueByJson(QVector<T> *field, const QJsonValue &jsonValue) {
 		auto JsonArray = jsonValue.toArray();
 		int size = JsonArray.size();
-		field->reserve(size);//重写大小
+		field->reserve(size);
 		for(int i = 0; i < size; ++i) {
 			T t;
 			setValueByJson(&t, JsonArray[i]);
@@ -310,11 +306,9 @@ public:
 		for(const QString &keyItem : jsonObjTmp.keys()) {
 			K k;
 			convertValueFromString(keyItem, k);
-			//不使用局部变量，不知道为啥有时候会67掉，真是奇了个怪了。。。
-			//直接使用field的空间
 			V v;
 			setValueByJson(&v, jsonObjTmp[keyItem]);
-			field->insert(k, v);
+			field->insert(k,v);
 		}
 	}
 
@@ -345,26 +339,11 @@ public:
 	}
 
 	static void setValueByJson(QVariantMap *field, const QJsonValue &jsonVal) {
-		auto jsonObjTmp = jsonVal.toObject();
-		for(const QString &keyItem : jsonObjTmp.keys()) {
-			QString k;
-			convertValueFromString(keyItem, k);
-
-			QVariant v;
-			setValueByJson(&v, jsonObjTmp[keyItem]);
-			field->insert(k, v);
-		}
+		*field = QJsonDocument(jsonVal.toObject()).object().toVariantMap();
 	}
 
-	static void setValueByJson(QVariantList *field, const QJsonValue &jsonValue) {
-		auto JsonArray = jsonValue.toArray();
-		int size = JsonArray.size();
-		field->reserve(size);//重写大小
-		for(int i = 0; i < size; ++i) {
-			QVariant t;
-			setValueByJson(&t, JsonArray[i]);
-			field->append(t);
-		}
+	static void setValueByJson(QVariantList *field, const QJsonValue &jsonVal) {
+		*field = QJsonDocument(jsonVal.toArray()).array().toVariantList();
 	}
 
 	static void setValueByJson(QPoint *field, const QJsonValue &jsonVal) {
@@ -376,147 +355,247 @@ public:
 
 public:
 
-	static QJsonValue genJsonValue(bool value) {
-		return QJsonValue((int)value);
+	static QString getJsonItemValue(bool value) {
+		QString jsonItemTemplate = "%1";
+		return jsonItemTemplate.arg(value);
 	}
 
-	static QJsonValue genJsonValue(qint32 value) {
-		return QJsonValue(value);
+
+	static QString getJsonItemValue(qint32 value) {
+		QString jsonItemTemplate = "%1";
+		return jsonItemTemplate.arg(value);
 	}
 
-	static QJsonValue genJsonValue(const QString &value) {
-		return QJsonValue(value);
+	static QString getJsonItemValue(qint64 value) {
+		QString jsonItemTemplate = "%1";
+		return jsonItemTemplate.arg(value);
 	}
 
-	static QJsonValue genJsonValue(const char *value) {
-		return QJsonValue(value);
+	static QString getJsonItemValue(const QString &value) {
+		QString jsonItemTemplate = "\"%1\"";
+		QString valueTmp = value;
+		valueTmp = valueTmp.replace("\\", "\\\\");
+		valueTmp = valueTmp.replace("\"", "\\\"");
+		//传入的value需要对所有的""进行转义
+		return jsonItemTemplate.arg(valueTmp);
 	}
 
-	static QJsonValue genJsonValue(qint64 value) {
-		return QJsonValue(value);
+	static QString getJsonItemValue(const char *value) {
+		QString jsonItemTemplate = "\"%1\"";
+		return jsonItemTemplate.arg(value);
 	}
 
-	static QJsonValue genJsonValue(double value) {
-		return QJsonValue(value);
-	}
-
-	static QJsonValue genJsonValue(const QDateTime &value) {
+	static QString getJsonItemValue(const QDateTime &value) {
 		qint64 time = value.toTime_t();
-		return QJsonValue(time);
+		return getJsonItemValue(time);
 	}
 
-	static QJsonValue genJsonValue(const QDate &value) {
+	static QString getJsonItemValue(const QDate &value) {
 		qint64 time = QDateTime(value).toTime_t();
-		return genJsonValue(time);
+		return getJsonItemValue(time);
 	}
 
-	static QJsonValue genJsonValue(const QVariant &value) {
-		return QJsonValue::fromVariant(value);//转为string类型
+	static QString getJsonItemValue(const QVariant &value) {
+		return getJsonItemValue(value.toString());//转为string类型
 	}
 
 	template<typename T>
-	static QJsonValue genJsonValue(const T &value) {
-		return value.toJsonObject();
+	static QString getJsonItemValue(const T &value) {
+		return value.toJsonString();
 	}
 
 public:
 
-	template<typename T>
-	static QJsonValue toJsonValue(const T &value) {
-		return genJsonValue(value);
+	template<typename K0, typename T>
+	static QString toJsonItem(K0 key, const T &value, bool hasKey = true) {
+		QString KEY = "\"%1\":";
+		QString jsonItemTemplate = hasKey ? KEY.arg(key) : "";
+		return jsonItemTemplate.append(getJsonItemValue(value));
 	}
 
-	template<typename T>
-	static QJsonValue toJsonValue(const QSet<T> &values) {
-		QJsonArray jsonArray;
-		for(const auto &v : values) {
-			jsonArray.append(toJsonValue(v));
+	template<typename K0, typename T>
+	static QString toJsonItem(K0 key, const QSet<T> &values, bool hasKey = true) {
+		//json没有集合，直接转为QList
+		return toJsonItem(key, values.toList(), hasKey);
+	}
+
+	template<typename K0, typename T>
+	static QString toJsonItem(K0 key, const QList<T> &values, bool hasKey = true) {
+		QString KEY = "\"%1\":";
+		QString jsonItemTemplate = hasKey ? KEY.arg(key) + "[" : "[";
+		int index = 0;
+		for(auto &v : values) {
+			//注意，列表里的项不需要有key值
+			jsonItemTemplate.append(toJsonItem("", v, false));
+
+			if(index != values.size() - 1) {
+				jsonItemTemplate.append(",");
+			}
+			index++;
 		}
-		return jsonArray;
+		return jsonItemTemplate.append("]");
 	}
 
-	template<typename T>
-	static QJsonValue toJsonValue(const QList<T> &values) {
-		QJsonArray jsonArray;
-		for(const auto &v : values) {
-			jsonArray.append(toJsonValue(v));
+	template<typename K0, typename T>
+	static QString toJsonItem(K0 key, const QVector<T> &values, bool hasKey = true) {
+		//转为跟List一样的格式，列表中元素顺序不变，不必担心
+		return toJsonItem(key, values.toList(), hasKey);
+	}
+
+	template<typename K0, typename K, typename V>
+	static QString toJsonItem(K0 key, const QMap<K, V> &value, bool hasKey = true) {
+		QString KEY = "\"%1\":";
+		QString jsonItemTemplate = hasKey ? KEY.arg(key) + "{" : "{";
+		int idx = 0;
+		for(auto &k : value.uniqueKeys()) {
+			//注意，没错，map结构需要有那个key值的
+			QString itemStr = toJsonItem(k, value[k]);
+			jsonItemTemplate.append(itemStr);
+			if(idx != value.size() - 1) {
+				jsonItemTemplate.append(",");
+			}
+			idx++;
 		}
-		return jsonArray;
+		return jsonItemTemplate.append("}");
 	}
 
-	template<typename T>
-	static QJsonValue toJsonValue(const QVector<T> &values) {
-		QJsonArray jsonArray;
-		for(const auto &v : values) {
-			jsonArray.append(toJsonValue(v));
-		}
-		return jsonArray;
+	template<typename K0, typename K, typename V>
+	static QString toJsonItem(K0 key, const QPair<K, V> &value, bool hasKey = true) {
+		QString KEY = "\"%1\":";
+		QString jsonItemTemplate = hasKey ? KEY.arg(key) + "[%1,%2]" : "[%1,%2]";
+		QString str1 = toJsonItem("", value.first, false);
+		QString str2 = toJsonItem("", value.second, false);
+		return jsonItemTemplate.arg(str1).arg(str2);
 	}
 
-	template<typename K, typename V>
-	static QJsonValue toJsonValue(const QMap<K, V> &values) {
-		QJsonObject jsonObj;
-		for(const auto &k : values.keys()) {
-			//key 需要转为字符串
-			QString keyStr = "%1";
-			keyStr = keyStr.arg(k);
-			jsonObj.insert(keyStr, toJsonValue(values[k]));
-		}
-		return jsonObj;
+	template<typename K0>
+	static QString toJsonItem(K0 key, const QVariantMap &value, bool hasKey = true) {
+		QString KEY = "\"%1\":";
+		QString jsonItemTemplate = hasKey ? KEY.arg(key) + "" : "";
+		QString str = QJsonDocument::fromVariant(value).toJson(QJsonDocument::Compact);
+		return jsonItemTemplate.append(str);
 	}
 
-	template<typename K, typename V>
-	static QJsonValue toJsonValue(const QPair<K, V> &value) {
-		QJsonArray jsonArray;
-		jsonArray.append(toJsonValue(value.first));
-		jsonArray.append(toJsonValue(value.second));
-		return jsonArray;
+	template<typename K0>
+	static QString toJsonItem(K0 key, const QVariantList &value, bool hasKey = true) {
+		QString KEY = "\"%1\":";
+		QString jsonItemTemplate = hasKey ? KEY.arg(key) + "" : "";
+		QString str = QJsonDocument::fromVariant(value).toJson(QJsonDocument::Compact);
+		return jsonItemTemplate.append(str);
 	}
 
-	static QJsonValue toJsonValue(const QVariantMap &values) {
-		QJsonObject jsonObj;
-		for(const auto &k : values.keys()) {
-			//key 需要转为字符串
-			QString keyStr = "%1";
-			keyStr = keyStr.arg(k);
-			jsonObj.insert(keyStr, toJsonValue(values[k]));
-		}
-		return jsonObj;
-	}
-
-	static QJsonValue toJsonValue(const QVariantList &values) {
-		QJsonArray jsonArray;
-		for(const auto &v : values) {
-			jsonArray.append(toJsonValue(v));
-		}
-		return jsonArray;
-	}
-
-
-	static QJsonValue toJsonValue(const QPoint &value) {
+	template<typename K0>
+	static QString toJsonItem(K0 key, const QPoint &value, bool hasKey = true) {
 		QPair<int, int> pair = { value.x(), value.y() };
-		return toJsonValue(pair);
+		return toJsonItem(key, pair, hasKey);
 	}
 
-	static QJsonValue toJsonValue(const IdName &value) {
+	template<typename K0>
+	static QString toJsonItem(K0 key, const IdName &value, bool hasKey = true) {
 		QPair<int, QString> pair = { value.id, value.name };
-		return toJsonValue(pair);
+		return toJsonItem(key, pair, hasKey);
 	}
 
 public:
 	template<typename... Args>
-	static QJsonObject getJsonFromTuple(const std::tuple<Args...> &fieldTuple) {
-		QJsonObject jsonObj;
-		DataGetter<decltype(fieldTuple), sizeof...(Args)>::genJsonObject(fieldTuple, jsonObj);
-		return jsonObj;
+	static QString getJsonStringFromTuple(const std::tuple<Args...> &fieldTuple) {
+		QString jsonStr;
+		DataGetter<decltype(fieldTuple), sizeof...(Args)>::genJsonString(fieldTuple, jsonStr);
+		return QString("{%1}").arg(jsonStr);
 	}
 
 	template<typename... Args>
-	static void convertJson2Entity(const std::tuple<Args...> &fieldTuple, const QJsonObject &jsonObj) {
+	static void convertJsonString2Entity(const std::tuple<Args...> &fieldTuple, const QJsonObject &jsonObj) {
 
-		DataSetter<decltype(fieldTuple), sizeof...(Args)>::getValueFromJsonObject(fieldTuple, jsonObj);
+		DataSetter<decltype(fieldTuple), sizeof...(Args)>::getValueFromJsonString(fieldTuple, jsonObj);
 	}
 
 };
 
-#endif //INTELLIGENT_NODE_JSONSERIALIZATIONUTILS_H
+
+/**
+ *
+ * 以下是示例
+ *
+ *
+ */
+
+#if false
+
+struct DEF {
+	int b = 13;
+	QString v = "nmasd";
+	QDateTime time = QDateTime::currentDateTime();
+
+	Serialization(b, v, time)
+};
+
+struct ABC {
+
+	qint64 as = 9999;
+	QVariantList vl = { 1,"213",90 };
+
+	QMap<qint32, QVariantList> vl2;
+
+	QMap<QString, QVariant> vm = { {"12",1},{"213","{\"a\":23}"} };
+
+	int a = 1;
+	QString b = "ab";
+	bool c = true;
+	QList<QString> d = { "avc","1ra" };
+	QList<qint32> e = { 1,5 };
+	QSet <bool> f = QSet<bool>({ 1 });
+	QPair<qint32, QString> pa = { 1,"12" };
+
+
+	DEF def;
+
+	QList<DEF> defs = { DEF(),DEF() };
+
+	QMap<qint32, DEF> pp1 = { {12,DEF()},{14,DEF()} };
+
+	QMap<QString, DEF> pp2 = { {"mmm",DEF()},{"aiq",DEF()} };
+
+	Serialization(vl2, vl, vm, a, b, c, d, e, def, defs, pp2, pp1, pa, as)
+};
+
+
+
+struct BBB {
+	qint64 as = 0;
+
+	QMap<QString, DEF> pp2;
+	QVariantMap vm;
+	QVariantList vl;
+	int a;
+	QMap<qint32, QVariantList> vl2;
+
+	QString b;
+	DEF def;
+	QList<qint32> e;
+	QMap<qint32, DEF> pp1;
+
+	QList<QString> d;
+
+	QPair<qint32, QString> pa;
+	Serialization(vl2, vl, vm, a, b, e, pp2, def, d, pp1, pa, as)
+};
+int main() {
+
+
+	ABC ad;
+	ad.a = 213213;
+	ad.b = "asdsa";
+	ad.def.b = 8858;
+	ad.vl2[12].append({ 1,3,"abv" });;
+	QString str = ad.toJsonString();
+
+	BBB dddd;
+	dddd.fromJsonString(str);
+
+	return 0;
+}
+
+#endif
+
+#endif //IN_JSONSERIALIZATIONUTILS_H

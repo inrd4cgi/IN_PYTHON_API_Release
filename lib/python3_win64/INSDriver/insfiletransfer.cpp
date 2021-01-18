@@ -395,9 +395,9 @@ namespace INS
 
 		//第二次从应用服务器接收数据，需要QDataStream指0的位置。
 		mp_in->device()->seek(0);
-		QString jsonStr;
+		QByteArray jsonStr;
 		*mp_in >> jsonStr;
-		JsonMessageUtils::jsonToData(jsonStr, m_responFromAppSever, m_fileRepoInfo);
+		JsonMessageUtils::jsonArrayBinaryDataToData(jsonStr, m_responFromAppSever, m_fileRepoInfo);
 
 		m_file = m_fileRepoInfo.clientInfo;
 		SetFinished(m_responFromAppSever.code, m_responFromAppSever.message);
@@ -430,9 +430,9 @@ namespace INS
 
 	void INSFileTransfer::ReceiveFileRepoInfo()
 	{
-	    QString jsonStr;
+	    QByteArray jsonStr;
 		*mp_in >> jsonStr;
-		JsonMessageUtils::jsonToData(jsonStr, m_responFromAppSever, m_fileRepoInfo);
+		JsonMessageUtils::jsonArrayBinaryDataToData(jsonStr, m_responFromAppSever, m_fileRepoInfo);
 
 		if (m_responFromAppSever.code == 1)
 			RunStepFunc(INSFileTransferStep::enumJudgeLastTransferComplete);
@@ -547,7 +547,7 @@ namespace INS
 		AddExtendData(transferInfo);
 
 		qDebug() << "md5 " << m_file.checkCode;
-		QString jsonStr = JsonMessageUtils::dataToJson(transferInfo);
+		QByteArray jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(transferInfo);
 		*mp_out << qint32(304) << m_request_id << jsonStr;
 		return INSNETWORK->SendDataToAppServer(m_senddata);
 	}
@@ -659,8 +659,8 @@ namespace INS
 
 		if (m_file.currentVersion > 0)
 			transferInfo.insert(QString("version"), m_file.currentVersion);
-		QString jsonStr;
-		jsonStr = JsonMessageUtils::dataToJson(transferInfo);
+		QByteArray jsonStr;
+		jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(transferInfo);
 		*mp_out << qint32(304) << m_request_id << jsonStr;
 		return INSNETWORK->SendDataToAppServer(m_senddata);
 	}
@@ -754,7 +754,7 @@ namespace INS
 		varMap.insert("type", m_transferType);
 		varMap.insert("fileId", m_file.fileId);
 
-		QString jsonStr = JsonMessageUtils::dataToJson(varMap);
+		QByteArray jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(varMap);
 		m_senddata.clear();
 		mp_out->device()->seek(0);
 		*mp_out << qint32(304) << m_request_id << jsonStr;
@@ -806,7 +806,7 @@ namespace INS
 		AddExtendData(transferInfo);
 
 		qDebug() << "md5  " << m_file.checkCode;
-		QString jsonStr = JsonMessageUtils::dataToJson(transferInfo);
+		QByteArray jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(transferInfo);
 		*mp_out << qint32(304) << m_request_id << jsonStr;
 		
 		return INSNETWORK->SendDataToAppServer(m_senddata);
