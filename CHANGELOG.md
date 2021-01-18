@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.9.0.0] - 2021-1-18
+### Added
+  * new interface for L&P `get_audit_tasks`
+
 ## [1.8.5.0] - 2021-1-17
 ### Updated
   * `data_flow_get_task_list` return data
