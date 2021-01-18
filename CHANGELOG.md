@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.10.1.2] - 2021-1-18
+### Fixed
+  * Rebuild
+
+## [1.10.1.1] - 2021-1-18
+### Fixed
+  * Rebuild
+  
 ## [1.10.1.0] - 2021-1-15
 ### Updated
   * try makrdirs method in data_flow_get_task_files_record
