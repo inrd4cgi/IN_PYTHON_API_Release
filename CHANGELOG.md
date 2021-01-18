@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.10.1.1] - 2021-1-15
+### Fixed
+  * Rebuild
+  
+## [1.10.1.0] - 2021-1-15
+### Updated
+  * try makrdirs method in data_flow_get_task_files_record
+
 ## [1.10.0.0] - 2021-1-15
 ### Updated
   * Update the latest of IN Python API
