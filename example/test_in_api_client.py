@@ -74,8 +74,7 @@ logging.getLogger().setLevel(logging.ERROR)
 in_map_dir = 'I:/'
 
 ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
-# ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'Bon', 'qwer', 'DCC', "http://127.0.0.1:20618"
-# ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sheng', '1', 'DCC', "http://127.0.0.1:20618"
+ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'Bon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
@@ -136,45 +135,42 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # -----------------------------------------------------------------
 
 
-
 # ------------------------------ Get ------------------------------
 _test_Get = False
 if _test_Get:
     proj_files = in_api.getProjectFiles()
     projs = in_api.getProjects()
-    proj = in_api.getProject(217)    # project_id=72
-    files = in_api.listdir(folder_id=13027)
+    proj = in_api.getProject(project_id=120)    # project_id=72
+    files = in_api.listdir(folder_id=12345)
     file = in_api.getFileFromId(file_id=4985)
     file_histories = in_api.getFileHistory(file_id=3650)
-    file_histories_b = in_api.getFileHistoryList(task_id=1890)    # 1890, 1891, 1896, 2827, 2829, 2841, 2844, 2862, 2889
-    workflow_list = in_api.getWorkFlowTempls(project_id=217, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Shot)
+    workflow_list = in_api.getWorkFlowTempls(project_id=120, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Shot)
     workflow = in_api.getWorkFlowTempl(workflow_id=2083)
     scenes = in_api.getSceneList(project_id=174)    # 80, 137, 167, 174, 177, 199
     shot = in_api.getShotInfo(shot_id=122)
-    person = in_api.getPerson(person_id=20200425)
-    people = in_api.getPersonList(department_id=99, team_id=0, filter=0)
+    people = in_api.getPersonList(department_id=141, team_id=0, filter=0)
+    person = in_api.getPerson(person_id=20200502)
     p_steps = in_api.getPipelineSteps(project_id=0, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
-    placeholder_list = in_api.getPlaceHolderList()
-    shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
+    # placeholder_list = in_api.getPlaceHolderList()
+    shots = in_api.getShotsByCondition(project_id=120)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
     tags = in_api.getTagInfo()    # tag_name="TestTag", tag_object_id=6, resource_id=90
     resources = in_api.getTagResource(tag_name="BonAssetTag_1")
-    teams_info = in_api.getTeams(department_id=181)    # department_id=0
-    team_info = in_api.getTeam(team_id=400)
-    assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
-    asset = in_api.getAssetInfo(asset_id=947)
     departments = in_api.getDepartments()
-    department = in_api.getDepartment(department_id=181)
-    tasks = in_api.getTasksByConditions(project_id=217)
+    department = in_api.getDepartment(department_id=141)
+    teams_info = in_api.getTeams(department_id=141)    # department_id=0
+    team_info = in_api.getTeam(team_id=388)
+    assets = in_api.getAssetsByCondition(project_id=120)    # project_id=72, asset_ids=[435]
+    asset = in_api.getAssetInfo(asset_id=4569)
+    tasks = in_api.getTasksByConditions(project_id=120)
     # tasks = in_api.getTasksByConditions(object_ids=[968], type=IN_DATA_STRUCTURE.PipelineType.Asset)
     # tasks = in_api.getTasksByConditions(task_ids=[6603])
-    task = in_api.getTaskFromID(task_id=1885)
-    file_task_vos = in_api.getTaskFileUsageRecord(task_id=6479, project_id=217, file_type=TaskFileType.All)
-    tasks = in_api.getTaskListPersonal(person_id=20200111)
-    files = in_api.getTaskRelatedFiles(task_id=6478, file_type=TaskFileType.All)    # return dict: {FileType: `TaskFileVO`}
+    task = in_api.getTaskFromID(task_id=39903)
+    file_task_vos = in_api.getTaskFileUsageRecord(task_id=39903, project_id=120, file_type=TaskFileType.All)
+    tasks = in_api.getTaskListPersonal(person_id=20200502)
+    files = in_api.getTaskRelatedFiles(task_id=39903, file_type=TaskFileType.All)    # return dict: {FileType: `TaskFileVO`}
     # comments = in_api.getTaskComment(task_id=1885)        # TODO: GetTaskComment 的 jsonRequest 返回结果无法解释, 由于IN前端填了错误信息进数据库
     person = in_api.getOneself()
     jobs = in_api.getJobList()
-    logs = in_api.getLogs(from_time='2020-4-10 14:13:23')
     storage = in_api.getStorageInfos(project_id=217)
     task_workflow = in_api.getWorkFlowInstance(resource_id=1057, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
 
