@@ -1,6 +1,61 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.11.0.0] - 2021-1-18
+### Updated
+  * Update Structure
+  ```
+    -------------------- Structure AssetFilterParam --------------------
+    New Attributes:
+    ['tagSearchAndOr']
+    
+    -------------------- Structure FileVO --------------------
+    New Attributes:
+    ['checkoutBy', 'checkoutTime', 'isIntermediate', 'isReview', 'lastModifiedBy']
+    
+    -------------------- Structure INQGetPrjBusinessFilter --------------------
+    New Attributes:
+    ['isDeleted']
+    
+    -------------------- Structure INQWorkPath --------------------
+    New Attributes:
+    ['isIntermediate', 'isReview']
+    
+    -------------------- Structure INTask --------------------
+    New Attributes:
+    ['toValidate', 'validationScript', 'loaderScript', 'scene']
+    
+    -------------------- Structure INTaskComment --------------------
+    New Attributes:
+    ['isApprover', 'statusDate', 'taskStatus']
+    
+    -------------------- Structure ProjectTaskInfo --------------------
+    New Attributes:
+    [   'leftDay',
+        'newlyTaskCount',
+        'personTaskInfoMap',
+        'projectDueTime',
+        'projectId',
+        'projectIssueTime',
+        'projectName',
+        'taskStatusInfoMap',
+        'teamInfoMap',
+        'totalTaskCount']
+    Deprecated Attributes:
+    ['currproject', 'newlytasks', 'persontotasklist', 'taskList', 'teamtotasklist']
+    
+    -------------------- Structure ShotFilterParam --------------------
+    New Attributes:
+    ['tagSearchAndOr']
+    
+    -------------------- Structure TaskFileRelationEditParam --------------------
+    New Attributes:
+    ['isIntermediate', 'isReview']
+    Deprecated Attributes:
+    ['isIntermediateFile']
+
+   ```
+  
 ## [1.10.2.0] - 2021-1-18
 ### Fixed
   * build script

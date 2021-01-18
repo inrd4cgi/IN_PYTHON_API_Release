@@ -185,8 +185,8 @@ if _test_Tag:
     # tag_name, resource_id, tag_object_id = 'BonAssetTag_1', 1029, TagObjectID.Asset
     # tag_name, resource_id, tag_object_id = 'BonShotTag_1', 690, TagObjectID.Shot
     # tag_name, resource_id, tag_object_id = 'BonTaskTag_1', 6808, TagObjectID.Task
-    # tag_name, resource_id, tag_object_id = 'BonFolderTag_1', 13200, TagObjectID.Folder
-    tag_name, resource_id, tag_object_id = 'BonFileTag_1', 5439, TagObjectID.File
+    tag_name, resource_id, tag_object_id = 'BonFolderTag_1', 13200, TagObjectID.Folder
+    # tag_name, resource_id, tag_object_id = 'BonFileTag_1', 5439, TagObjectID.File
 
 
 
