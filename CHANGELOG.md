@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.10.0.0] - 2021-1-15
+### Updated
+  * Update the latest of IN Python API
+  
 ## [1.9.1.0] - 2021-1-18
 ### Updated
   * `data_flow_get_task_list` return data
