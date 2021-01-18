@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [2.0.0.0] - 2021-1-15
+## [1.10.0.0] - 2021-1-15
 ### Updated
   * Update the latest of IN Python API
   
