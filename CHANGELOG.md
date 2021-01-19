@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.12.0.0] - 2021-1-19
+### Updated
+  * update `test_in_api_client`
+  
 ## [1.11.0.0] - 2021-1-18
 ### Updated
   * Update Structure

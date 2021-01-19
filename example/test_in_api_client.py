@@ -74,7 +74,7 @@ logging.getLogger().setLevel(logging.ERROR)
 in_map_dir = 'I:/'
 
 ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
-ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'Bon', 'qwer', 'DCC', "http://127.0.0.1:20618"
+ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
@@ -138,41 +138,68 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 # ------------------------------ Get ------------------------------
 _test_Get = False
 if _test_Get:
-    proj_files = in_api.getProjectFiles()
-    projs = in_api.getProjects()
-    proj = in_api.getProject(project_id=120)    # project_id=72
-    files = in_api.listdir(folder_id=12345)
-    file = in_api.getFileFromId(file_id=4985)
-    file_histories = in_api.getFileHistory(file_id=3650)
-    workflow_list = in_api.getWorkFlowTempls(project_id=120, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Shot)
-    workflow = in_api.getWorkFlowTempl(workflow_id=2083)
-    scenes = in_api.getSceneList(project_id=174)    # 80, 137, 167, 174, 177, 199
-    shot = in_api.getShotInfo(shot_id=122)
-    people = in_api.getPersonList(department_id=141, team_id=0, filter=0)
-    person = in_api.getPerson(person_id=20200502)
-    p_steps = in_api.getPipelineSteps(project_id=0, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
-    # placeholder_list = in_api.getPlaceHolderList()
-    shots = in_api.getShotsByCondition(project_id=120)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
-    tags = in_api.getTagInfo()    # tag_name="TestTag", tag_object_id=6, resource_id=90
-    resources = in_api.getTagResource(tag_name="BonAssetTag_1")
+
+    # ----- Staff -----
+    myself = in_api.getOneself()
     departments = in_api.getDepartments()
     department = in_api.getDepartment(department_id=141)
     teams_info = in_api.getTeams(department_id=141)    # department_id=0
     team_info = in_api.getTeam(team_id=388)
+    people = in_api.getPersonList(department_id=141, team_id=0, filter=0)
+    person = in_api.getPerson(person_id=20200502)
+    jobs = in_api.getJobList()
+
+
+    # ----- Miscellaneous -----
+    storage = in_api.getStorageInfos(project_id=120)
+    placeholder_list = in_api.getPlaceHolderList()
+
+
+    # ----- Project -----
+    proj_files = in_api.getProjectFiles()
+    projs = in_api.getProjects()
+    proj = in_api.getProject(project_id=120)    # project_id=72
+
+
+    # ----- File, Folder -----
+    files = in_api.listdir(folder_id=12345)
+    file = in_api.getFileFromId(file_id=4985)
+    file_histories = in_api.getFileHistory(file_id=3650)
+
+
+    # ----- Pipeline, Workflow -----
+    p_steps = in_api.getPipelineSteps(project_id=120, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+    workflow_list = in_api.getWorkFlowTempls(project_id=120, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+    workflow = in_api.getWorkFlowTempl(workflow_id=2083)
+
+
+    # ----- Asset -----
     assets = in_api.getAssetsByCondition(project_id=120)    # project_id=72, asset_ids=[435]
-    asset = in_api.getAssetInfo(asset_id=4569)
+    asset_id = 4569
+    asset = in_api.getAssetInfo(asset_id=asset_id)
+    task_workflow = in_api.getWorkFlowInstance(resource_id=asset_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+
+
+    # ----- Scene Shot -----
+    shots = in_api.getShotsByCondition(project_id=120)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
+    scenes = in_api.getSceneList(project_id=120)    # 80, 137, 167, 174, 177, 199
+    shot = in_api.getShotInfo(shot_id=122)
+
+
+    # ----- Task -----
     tasks = in_api.getTasksByConditions(project_id=120)
     # tasks = in_api.getTasksByConditions(object_ids=[968], type=IN_DATA_STRUCTURE.PipelineType.Asset)
     # tasks = in_api.getTasksByConditions(task_ids=[6603])
-    task = in_api.getTaskFromID(task_id=39903)
     file_task_vos = in_api.getTaskFileUsageRecord(task_id=39903, project_id=120, file_type=TaskFileType.All)
     tasks = in_api.getTaskListPersonal(person_id=20200502)
-    files = in_api.getTaskRelatedFiles(task_id=39903, file_type=TaskFileType.All)    # return dict: {FileType: `TaskFileVO`}
+    files_dict = in_api.getTaskRelatedFiles(task_id=39903, file_type=TaskFileType.All)    # return dict: {TaskFileType: `TaskFileVO`}
+    task = in_api.getTaskFromID(task_id=39903)
     # comments = in_api.getTaskComment(task_id=1885)        # TODO: GetTaskComment 的 jsonRequest 返回结果无法解释, 由于IN前端填了错误信息进数据库
-    person = in_api.getOneself()
-    jobs = in_api.getJobList()
-    storage = in_api.getStorageInfos(project_id=217)
-    task_workflow = in_api.getWorkFlowInstance(resource_id=1057, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+
+
+    # ----- Tag -----
+    tags = in_api.getTagInfo()    # tag_name="TestTag", tag_object_id=6, resource_id=90
+    resources = in_api.getTagResource(tag_name="BonAssetTag_1")
 
 
 
@@ -180,12 +207,12 @@ if _test_Get:
 _test_Tag = False
 if _test_Tag:
 
-    # tag_name, resource_id, tag_object_id = 'BonProjectTag_1', 217, TagObjectID.Project
+    tag_name, resource_id, tag_object_id = 'BonProjectTag_1', 120, TagObjectID.Project
     # tag_name, resource_id, tag_object_id = 'BonWorkflowTag_1', 5748, TagObjectID.Workflow
     # tag_name, resource_id, tag_object_id = 'BonAssetTag_1', 1029, TagObjectID.Asset
     # tag_name, resource_id, tag_object_id = 'BonShotTag_1', 690, TagObjectID.Shot
     # tag_name, resource_id, tag_object_id = 'BonTaskTag_1', 6808, TagObjectID.Task
-    tag_name, resource_id, tag_object_id = 'BonFolderTag_1', 13200, TagObjectID.Folder
+    # tag_name, resource_id, tag_object_id = 'BonFolderTag_1', 13200, TagObjectID.Folder
     # tag_name, resource_id, tag_object_id = 'BonFileTag_1', 5439, TagObjectID.File
 
 
@@ -363,7 +390,6 @@ if _test_Streaming:
     # testUploadPlaceHolders()
 
 
-
 # ------------------------------ Project ------------------------------
 _test_Project = False
 if _test_Project:
@@ -384,10 +410,11 @@ if _test_Project:
     # 从 StorageInfo 里拿到 storageType
     storage_list = in_api.getStorageInfos()
     # file_server_root = storage_list[0].storageType
-    # printer(storage_list)
-    file_server_root = 'hdd'
+    printer(storage_list)
 
-    index = 12
+    file_server_root = 'wsrd'
+
+    index = 13
     project_name = 'PythonAPIProject_%s' % index
 
     # result: `INQProjectVO`
@@ -395,13 +422,13 @@ if _test_Project:
         project_name=project_name,
         type=IN_DATA_STRUCTURE.ProjectType.FILM,
         file_server_root=file_server_root,
-        department_id=181,
-        project_root_id=20200478,
-        issue_date='2020-12-22 00:00:00',
-        due_date='2020-12-31 00:00:00',
+        department_id=141,
+        project_root_id=20200502,
+        issue_date='2021-01-12 00:00:00',
+        due_date='2021-12-31 00:00:00',
         root_dir='I:',
         description='Created by Python API',
-        color='#ffffff',
+        color='#0000ff',
     )
     print('Create Project: %s' % proj.projectId)
 
@@ -411,16 +438,16 @@ _test_PipelineStep = False
 if _test_PipelineStep:
 
     def createPipelineStep():
-        project_id = 217
+        project_id = 120
         pipeline_name = 'PythonPipelineStep'
-        coordinator_id = 20200478
+        coordinator_id = 20200502
 
         # ---------- Delete PipelineStep ----------
-        p_steps = in_api.getPipelineSteps(pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset, project_id=project_id)
+        p_steps = in_api.getPipelineSteps(project_id=project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
         for p_step in p_steps:
             if p_step.pipelineName == pipeline_name:
                 is_successful = in_api.deletePipelineStep(pipeline_id=p_step.pipelineId)
-                print('Delete Workflow %s: %s' % (workflow.workFlowId, is_successful))
+                print('Delete Pipeline %s: %s' % (p_step.pipelineId, is_successful))
                 break
 
 
@@ -454,13 +481,14 @@ if _test_PipelineStep:
             validation_script=validation_script,
         )
         print('Create Pipeline: %s' % pipeline.pipelineId)
+        return
 
 
     def updatePipelineStep_1():
         # ---------- Update PipelineStep ----------
 
-        project_id = 217
-        coordinator_id = 20200478
+        project_id = 120
+        coordinator_id = 20200502
         pipeline_name = 'PythonPipelineStep'
 
         # name: 'PythonPipelineStep', id: 1266
@@ -499,6 +527,7 @@ if _test_PipelineStep:
             validation_script=validation_script,
         )
         print('Update Pipeline: %s' % pipeline.pipelineId)
+        return
 
 
     def updatePipelineStep_2():
@@ -509,8 +538,8 @@ if _test_PipelineStep:
         # 此时, 你可以先 `getWorkFlowTempl`, 记录原有的关系
         # 之后调用 `updateWorkFlowTempl`, 将会自动连上所有 OutputFile
 
-        workflow_id = 2243    # Test
-        pipeline_id = 1230    # PythonPipelineStep
+        workflow_id = 1393
+        pipeline_id = 1856
         output_files = ['<project_name>/<asset_name>/source.mb']
 
         # Get old Workflow
@@ -527,6 +556,7 @@ if _test_PipelineStep:
         workflow = in_api.updateWorkFlowTempl(workflow_id=workflow_id, pipeline_nodes=pipeline_nodes)
 
         print('Update Workflow: %s' % workflow.workFlowId)
+        return
 
 
     # createPipelineStep()
@@ -538,8 +568,8 @@ if _test_PipelineStep:
 _test_WorkflowTemplate = False
 if _test_WorkflowTemplate:
 
-    project_id = 217
-    index = 2
+    project_id = 120
+    index = 1
     workflow_name = 'PythonWorkflow_%s' % index
 
     def createWorkflow():
@@ -600,14 +630,17 @@ if _test_WorkflowTemplate:
             pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset,
             pipeline_nodes=pipeline_nodes)
         print('Create Workflow: %s' % workflow.workFlowId)
-
+        return
 
     def updateWorkflow():
         # ---------- Update WorkflowTemplate ----------
-        pass
+
+        # 参照 updatePipelineStep_2()
+
+        return
 
 
-    pass
+    createWorkflow()
 
 
 # ------------------------------ Asset ------------------------------
@@ -618,18 +651,37 @@ if _test_Asset:
     # 创建 Asset 之后, 会按 workflow 自动创建对应数量的任务
     # 如果你想 Assign Task to Person, 你需要自己获取任务 id, 详见下面 `testEditTask`
 
-    i = 16
+    i = 3
     asset_name = 'BonAsset_%s' % i
     alias = asset_name
-    project_id, workflow_id, asset_color = 217, 2083, ''
-    tags = [ ['my_tag_name', '#ffffff'], ['my_tag_name_2', ''] ] # [ [tag_name, tag_color] ]
+    project_id, workflow_id, asset_color = 120, 1393, ''
+    tags = [ ['bon_tag_name', '#0000ff'], ['bon_tag_name_2', '#ff0000'] ] # [ [tag_name, tag_color] ]
 
+
+    # ---------- Delete Asset ----------
+    assets = in_api.getAssetsByCondition(project_id=project_id)
+    for asset in assets:
+        if asset.assetName == asset_name:
+            is_successful = in_api.deleteAsset(asset.assetId, force=True)
+            print('Delete Asset %s: %s' % (asset.assetId, is_successful))
+
+    # ----- Clear in RecycleBin -----
+    for record in in_api.getBusRecycleBinList(project_id=project_id):
+        if asset_name in record.objectName:
+            try:
+                in_api.deleteObjectInRecordBin(record_id=record.id)
+            except Exception as e:
+                logging.warning(e)
+
+
+    # ---------- createAsset ----------
     # result: `INAsset`
     asset_obj = in_api.createAsset(
         project_id, workflow_id, asset_name, alias, asset_color=asset_color,
         description='Created By Python API', tags=tags)
     asset_id = asset_obj.assetId
     print('Create Asset: %s' % asset_id)
+
 
     # ---------- Get Asset Info ----------
     # assets = in_api.getAssetsByCondition(project_id=217)    # project_id=72, asset_ids=[435]
@@ -645,80 +697,106 @@ if _test_Asset:
     print('Edit Asset: %s' % r)
 
 
-    # ---------- Delete Asset ----------
-    # asset_id = 942
-    is_successful = in_api.deleteAsset(asset_id)
-    print('Delete Asset %s: %s' % (asset_id, is_successful))
-
-
 # ------------------------------ Shot ------------------------------
 _test_Shot = False
 if _test_Shot:
+
+    # ---------------------------------------------
     # CreateScene 接口已废弃, 全部统一采用 CreateShot
     # 包括, Film/TV 类型
+    # ---------------------------------------------
 
-    # ---------- Create Shot ----------
-    project_id, workflow_id, scene_number, shot_number, shot_color = 217, 2097, '1', '0400', '#ffffff'
-    tags = [ ['my_shot_tag_name', '#ffffff'], ['my_shot_tag_name_2', ''] ]    # [ [tag_name, tag_color] ]
+    def test_delete_shot(project_id, shot_name):
+        # ---------- Delete Shot ----------
+        shots = in_api.getShotsByCondition(project_id=project_id)
+        for shot in shots:
+            if shot.shotName == shot_name:
+                is_successful = in_api.deleteShot(shot.shotId, force=True)
+                print('Delete Shot %s: %s' % (shot.shotId, is_successful))
 
-    # 创建 Film Shot,  不需要传入 type, 因为你创建 project 的时候已经设定了 Film / TV 类型了
-    shot_obj = in_api.createShot(
-        project_id, workflow_id,
-        scene=scene_number,
-        shot=shot_number,
-        shot_color=shot_color,
-        description='Created by Python API',
-        tags=tags)
-    shot_id = shot_obj.shotId
-    print('Create Shot: %s' % shot_id)
-
-
-    # ----------------------------------
-
-    # TV Project "CCTV"
-    project_id = 240
-    workflow_id = 2128
-    season_number = '001'
-    episode_number = '001'
-    scene_number = '001'
-    shot_number = '0800'
-
-    # 创建 TV Shot
-    # result: `INShot`
-    shot_obj = in_api.createShot(
-        project_id, workflow_id,
-        season=season_number,
-        episode=episode_number,
-        scene=scene_number,
-        shot=shot_number)
-    shot_id = shot_obj.shotId
-    print('Create Shot: %s' % shot_id)
+        # ----- Clear in RecycleBin -----
+        for record in in_api.getBusRecycleBinList(project_id=project_id):
+            if shot_name in record.objectName:
+                try:
+                    in_api.deleteObjectInRecordBin(record_id=record.id)
+                except Exception as e:
+                    logging.warning(e)
 
 
-    # ---------- Get Shot Info ----------
-    # e.g. [<INShot>, ...]
-    shots = in_api.getShotsByCondition(project_id=project_id, workflow_id=workflow_id)
-    # pprint(shots)
-    for shot in shots:
-        # print(shot.shotId, shot.shotName)
-        if shot_id == shot.shotId:
-            break
-    else:
-        raise Exception('Invalid shot_id')
+    def test_film_shot():
+        project_id, workflow_id, scene_number, shot_number, shot_color = 120, 1398, '001', '0400', '#ffffff'
+        shot_name = 'shot%s' % shot_number
+        tags = [ ['bon_shot_tag_name', '#ffffff'], ['bon_shot_tag_name_2', ''] ]    # [ [tag_name, tag_color] ]
 
-    # And
-    # shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
+        test_delete_shot(project_id, shot_name)
 
-    # ---------- Edit Shot ----------
-    r = in_api.editShot(shot_id=shot_id, color='#000000', description='Edit Asset by Python API')
-    print('Edit Shot: %s' % r)
+        # ---------- Create Shot (Film) ----------
+        # 创建 Film Shot,  不需要传入 type, 因为你创建 project 的时候已经设定了 Film / TV 类型了
+        shot_obj = in_api.createShot(
+            project_id, workflow_id,
+            scene=scene_number,
+            shot=shot_number,
+            shot_color=shot_color,
+            description='Created by Python API',
+            tags=tags)
+        shot_id = shot_obj.shotId
+        print('Create Shot: %s' % shot_id)
 
 
-    # ---------- Delete Shot ----------
-    r = in_api.deleteShot(shot_id)
-    print('Delete Shot: %s' % r)
+        # ---------- Edit Shot ----------
+        r = in_api.editShot(shot_id=shot_id, color='#000000', description='Edit Asset by Python API')
+        print('Edit Shot: %s' % r)
+        return
 
-    pass
+
+    def test_tv_shot():
+        project_id = 240
+        workflow_id = 2128
+        season_number = '001'
+        episode_number = '001'
+        scene_number = '001'
+        shot_number = '0800'
+        shot_color = '#0000ff'
+        shot_name = 'shot%s' % shot_number
+        tags = [ ['bon_shot_tag_name', '#ffffff'], ['bon_shot_tag_name_2', ''] ]    # [ [tag_name, tag_color] ]
+
+        test_delete_shot(project_id, shot_name)
+
+        # ---------- Create Shot (TV) ----------
+
+        # 创建 TV Shot
+        # result: `INShot`
+        shot_obj = in_api.createShot(
+            project_id, workflow_id,
+            season=season_number,
+            episode=episode_number,
+            scene=scene_number,
+            shot=shot_number)
+        shot_id = shot_obj.shotId
+        print('Create Shot: %s' % shot_id)
+
+
+        # ---------- Get Shot Info ----------
+        # e.g. [<INShot>, ...]
+        shots = in_api.getShotsByCondition(project_id=project_id, workflow_id=workflow_id)
+        # pprint(shots)
+        for shot in shots:
+            # print(shot.shotId, shot.shotName)
+            if shot_id == shot.shotId:
+                break
+        else:
+            raise Exception('Invalid shot_id')
+
+        # And
+        # shots = in_api.getShotsByCondition(project_id=72)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
+
+        # ---------- Edit Shot ----------
+        r = in_api.editShot(shot_id=shot_id, color='#000000', description='Edit Asset by Python API')
+        print('Edit Shot: %s' % r)
+        return
+
+    test_film_shot()
+    # test_tv_shot()
 
 
 # ------------------------------ Task ------------------------------
@@ -726,28 +804,30 @@ _test_Task = False
 if _test_Task:
 
     # -------------------- Get Task Info --------------------
-    def testGetTaskInfo(task_id):
-        # result: `INTask`
-        task = in_api.getTaskFromID(task_id)
-        # printer(task)
-        print('Task:', task.taskId, task.taskName)
+    def testGetTaskInfo():
+        tasks = in_api.getTasksByConditions(project_id=120)    # object_ids=[644, 659], task_ids=[5217, 5319, 5320], project_id=72
+        # printer(tasks)
 
-        # And
-        # tasks = in_api.getTasksByConditions(project_id=217)    # object_ids=[644, 659], task_ids=[5217, 5319, 5320], project_id=72
+        for task in tasks:
+            # result: `INTask`
+            task = in_api.getTaskFromID(task_id)
+            print('Task:', task.taskId, task.taskName)
+        return
 
     def testCreateTask():
-        pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset,
-        project_id = 217
-        object_id = 1117    # object_id 为 Asset/Shot/Sequence ID, 取决于 pipeline_type
-        pipeline_step_id = 867    # Pipeline Step ID, 可通过 `getPipelineSteps` 获取
-        alias = 'Python API Task Alias 2'
-        assignee_team_id = 400    # Assignee 给某Team
-        assignee_person_id = 20200478    # Assignee 给某人
-        issue_date = '2020-12-28 00:00:00'
-        due_date = '2020-12-28 00:00:00'
+
+        pipeline_type = IN_DATA_STRUCTURE.PipelineType.Asset,
+        project_id = 120
+        object_id = 4592    # object_id 为 Asset / Shot / Sequence ID, 取决于 pipeline_type
+        pipeline_step_id = 1856    # Pipeline Step ID, 可通过 `getPipelineSteps` 获取
+        alias = 'Python API Task Alias'
+        assignee_team_id = 388    # Assignee 给某Team
+        assignee_person_id = 20200502    # Assignee 给某人
+        issue_date = '2020-01-19 00:00:00'
+        due_date = '2020-01-19 00:00:00'
         privilege_start_time = '2020-12-28 00:00:00'
         privilege_end_time = '2020-12-28 00:00:00'
-        storage_type = 'hdd'    # storage_type 需要调用 `getStorageInfos` 获取, 若传入None则默认存在第一个 Server
+        storage_type = 'film'    # storage_type 需要调用 `getStorageInfos` 获取, 若传入None则默认存在第一个 Server
         color = '#ff0000'
         description = 'Created by Python API `createTask`'
 
@@ -768,12 +848,13 @@ if _test_Task:
             description=description,
         )
         print('Create Task: %s' % task.taskId)
+        return
 
     # -------------------- Edit Task Info --------------------
 
     def testEditTask():
 
-        task_id = 11497
+        task_id = 39971
 
         # Test
         to_validate=False
@@ -782,7 +863,7 @@ if _test_Task:
 
         # ----- Edit Task -----
         # 能传入任意参数编辑 Task, 包括 Assign 给某人
-        r = in_api.editTask(task_id, color='#ffffff', description='Edited by Python API',
+        r = in_api.editTask(task_id, color='#ff00ff', description='Edited by Python API',
             to_validate=to_validate,
             loader_script=loader_script,
             validation_script=validation_script,)
@@ -790,17 +871,17 @@ if _test_Task:
 
 
         # ----- Assign Task to Person -----
-        project_id = 217
+        project_id = 120
         storage_list = in_api.getStorageInfos(project_id=project_id)
         if len(storage_list) == 0: raise ValueError('Invalid Storage Info')
         # 从 storage 里拿到 type, storage_list[0].storageType    # str: hdd
 
-        person_id = 20200480
-        team_id = 400
-        issue_date = '2020-11-09 00:00:00'    # 开始时间
-        due_date = '2020-11-30 00:00:00'    # 结束时间
-        privilege_start_time = '2020-11-09 00:00:00'
-        privilege_end_time = '2020-11-30 00:00:00'
+        team_id = 388
+        person_id = 20200502
+        issue_date = '2020-01-09 00:00:00'    # 开始时间
+        due_date = '2020-01-30 00:00:00'    # 结束时间
+        privilege_start_time = '2020-01-09 00:00:00'
+        privilege_end_time = '2020-01-30 00:00:00'
 
 
         # -----------------------------------------------------
@@ -816,18 +897,18 @@ if _test_Task:
             privilege_start_time=privilege_start_time,
             privilege_end_time=privilege_end_time,
         )
-        print('assign task to person: %s' % r)
-
+        print('Assign task to person: %s' % r)
+        return
 
     def testEditTask_Others():
-        task_ids = [6787, 6788, 6789]
-        assignee = 20200480
-        issue_date = '2020-11-09 00:00:00'    # 开始时间
-        due_date = '2020-11-30 00:00:00'    # 结束时间
+        task_ids = [40052]
+        assignee = 20200502
+        issue_date = '2020-01-20 00:00:00'    # 开始时间
+        due_date = '2020-01-31 00:00:00'    # 结束时间
 
-        in_api.editTaskAssignee(task_ids, assignee)
-        in_api.editTaskTime(task_ids, issue_date, due_date)
-
+        print(in_api.editTaskAssignee(task_ids, assignee))
+        print(in_api.editTaskTime(task_ids, issue_date, due_date))
+        return
 
     # -------------------- Update Task Status --------------------
     # 想要获得任务的流向, 判断任务先后顺序, 需要调用 `getWorkFlowInstance` 接口
@@ -853,21 +934,27 @@ if _test_Task:
         # 要改为 WorkInProgress, 要先 Checkout 所有 OutputFile
         if new_status == IN_DATA_STRUCTURE.TaskStatus.WorkInProgress:
             # Get output files id & checkout all files
-            for file in in_api._getTaskRelatedFiles(task_id, TaskFileType.Output):
+            # getTaskOutputFiles 只返回一些数据, 想获得详细参数, 请用 getTaskRelatedFiles
+            for file in in_api.getTaskOutputFiles(task_id):
                 print(file.fileId, file.directory, file.name, file.status)
                 if file.status == IN_DATA_STRUCTURE.FileStatus.CheckOuted:
                     continue
 
-                r = in_api.checkout(file.fileId, in_map_dir=in_map_dir)
-                print('checkouted:', file.fileId)
+                r = in_api.checkout(file.fileId, download=True)
+                print('checkouted file_id %s: %s' % (file.fileId, r))
 
         # Update Status
         r = in_api.updateTaskStatus(task_id, new_status, is_required_first_approved=False)
         print('update task status:', r)
+        return
 
 
     def testToPendingApproval(task_id):
         # ----- to PendingApproval -----
+
+        # 现在 IN 需要在每个 Project 上面设置映射路径,
+        # 所以这个 in_map_dir 不是太必要,
+        # 如果你需要获得映射路径, 可以 getProject()
         # e.g. 'I:'
         in_map_dir = in_api.getINMapDir()
 
@@ -884,7 +971,9 @@ if _test_Task:
         # 要改为 PendingApproval, 要先 Checkin 所有 OutputFile
         if new_status == IN_DATA_STRUCTURE.TaskStatus.PendingApproval:
             # Get output files id & checkout all files
-            for file in in_api._getTaskRelatedFiles(task_id, TaskFileType.Output):
+
+            # getTaskOutputFiles 只返回一些数据, 想获得详细参数, 请用 getTaskRelatedFiles
+            for file in in_api.getTaskOutputFiles(task_id):
 
                 print(file.fileId, file.directory, file.name, file.status)
 
@@ -899,11 +988,13 @@ if _test_Task:
                 print(src_path)
                 r = in_api.checkin(file.fileId, src_path=src_path)
                 print('checkin:', file.fileId)
+                continue
 
 
         # Update Status
         r = in_api.updateTaskStatus(task_id, new_status, is_required_first_approved=False)
         print('update task status:', r)
+        return
 
 
     # -------------------- Edit Task Files --------------------
@@ -913,15 +1004,15 @@ if _test_Task:
 
         # Add
         r = in_api.addTaskReferenceFile(task_id, file_id, variant_id=0)
-        print('add reference file %s: %s' % (file_id, r))
+        print('Add reference file %s: %s' % (file_id, r))
 
         # Get
         files = in_api.getTaskRelatedFiles(task_id=task_id, file_type=TaskFileType.Reference)
-        pprint(files.values()[0].files + files.values()[0].sequenceFiles)
+        pprint(list(files.values())[0].files + list(files.values())[0].sequenceFiles)
 
         # Remove
         r = in_api.removeTaskReferenceFile(task_id, file_id)
-        print('remove reference file %s: %s' % (file_id, r))
+        print('Remove reference file %s: %s\n' % (file_id, r))
         return True
 
 
@@ -929,16 +1020,15 @@ if _test_Task:
         # ----- Task Required File -----
         # Add
         r = in_api.addTaskRequiredFile(task_id, file_id, variant_id=0)
-        print('add required file %s: %s' % (file_id, r))
+        print('Add required file %s: %s' % (file_id, r))
 
         # Get
         files = in_api.getTaskRelatedFiles(task_id=task_id, file_type=TaskFileType.Required)
-        pprint(files.values()[0].files + files.values()[0].sequenceFiles)
+        pprint(list(files.values())[0].files + list(files.values())[0].sequenceFiles)
 
         # Remove
         r = in_api.removeTaskRequiredFile(task_id, file_id)
-        print('remove required file %s: %s' % (file_id, r))
-
+        print('Remove required file %s: %s\n' % (file_id, r))
         return True
 
 
@@ -947,11 +1037,14 @@ if _test_Task:
 
         # 你要添加的 OutputFile 路径
         relpath_n_name = ('/BonProject/assets/BonAsset_100/none', 'a.b.c.mb')    # e.g. file
-        relpath_n_name = ('/BonProject/assets/BonAsset_100/none/a.b.c.d', '')    # e.g. file
+        suffix = 'mb'
+
+        # relpath_n_name = ('/BonProject/assets/BonAsset_100/none/a.b.c.d', '')    # e.g. folder
+        # suffix = '.folder'
+
         # relpath_n_name = ('/BonProject/assets/GG/geo', 'source.mb')    # e.g. file
         # relpath_n_name = (r'\BonProject\assets\GG\geo', '')    # e.g. folder
 
-        suffix = 'mb'
         placeholder_file_id = None
 
         # Add
@@ -969,15 +1062,14 @@ if _test_Task:
         # 这里 Add OutputFile, 仅仅是添加路径, 实际并不上传文件,
         # 注意 relpath_n_name, 是 list/tuple, 是 2 个 elements,
         r = in_api.addTaskOutputFile(task_id, placeholder_file_id, relpath_n_name, is_intermediate_file=False)
-        print('add output file, placeholder_file %s: %s' % (placeholder_file_id, r))
+        print('Add output file, placeholder_file %s: %s' % (placeholder_file_id, r))
 
 
         # 检查是否添加成功, 添加之后服务器可能有延迟, 所以下面可能有报错, 可以 time.sleep 一下
         time.sleep(2)
         file_id = None
         # Get
-        files = in_api._getTaskRelatedFiles(task_id=task_id, file_type=TaskFileType.Output)
-        for file in files:
+        for file in in_api.getTaskOutputFiles(task_id=task_id):
             print(file.fileId, file.directory, file.name, file.status)
             if (file.directory == relpath_n_name[0]) and (file.name == relpath_n_name[1]):
                 file_id = file.fileId
@@ -993,7 +1085,7 @@ if _test_Task:
 
         # Remove
         r = in_api.removeTaskOutputFile(task_id, file_id)
-        print('remove output file %s: %s' % (file_id, r))
+        print('Remove output file %s: %s' % (file_id, r))
 
         return True
 
@@ -1001,43 +1093,50 @@ if _test_Task:
     # -------------------- Delete Task --------------------
     def testDeleteTask(task_id):
         # ----- Delete Task -----
-        r = in_api.deleteTask(task_id)
-        print('delete task: %s' % r)
+        r = in_api.deleteTask(task_id, force=True)
+        print('Delete task: %s' % r)
         return True
 
 
-    task_id = 6545
-    file_id = 5213
-
-    # testGetTaskInfo(task_id)
+    # testGetTaskInfo()
     # testCreateTask()
-    testEditTask()
+    # testEditTask()
     # testEditTask_Others()
-    # testToWorkInProgress(task_id)
-    # testToPendingApproval(task_id)
-    # testTaskReferenceFile(task_id, file_id)
-    # testTaskRequiredFile(task_id, file_id)
-    # testTaskOutputFile(task_id)
-    # testDeleteTask(task_id)
+    # testToWorkInProgress(task_id=40052)
+    # testToPendingApproval(task_id=40052)
+    # testTaskReferenceFile(task_id=39972, file_id=89973)
+    # testTaskRequiredFile(task_id=39972, file_id=89973)
+    # testTaskOutputFile(task_id=39972)
+    # testDeleteTask(task_id=39972)
 
 
 # ------------------------------ Variant ------------------------------
 _test_Variant = False
 if _test_Variant:
 
-    asset_id = 947
-    variant_name = 'My Variant Created by Python API'
+    asset_id = 4592
+    variant_name = 'Variant Created by Python API'
+
+    # ----- Delete Variant -----
+    [in_api.deleteVariantById(variant.variantId)
+    for variant in in_api.getVariantByAssetId(asset_id=asset_id)
+    if variant.variantName == variant_name]
 
     # ----- Create Variant -----
-    variant_id = in_api.createVariant(asset_id, variant_name, file_ids=None)
+    variant_id = in_api.createVariant(asset_id, variant_name, files_id=None)
     print('Created Variant: %s' % variant_id)
+
+
+    # ----- Get Asset Variant Record/Usage -----
+    variants_record = in_api.getVariantRecordByAssetId(asset_id=asset_id)
+    printer(variants_record)
 
 
     # ----- Get Asset Variant -----
     variants = in_api.getVariantByAssetId(asset_id=asset_id)
     for variant in variants:
         print(variant.variantId, variant.variantName)
-        if variant.variantId != 91: continue
+        if variant.variantId != variant_id: continue
 
         # variant.taskFiles:    `FileTaskVO`
         for file_task_vo in variant.taskFiles:
@@ -1056,20 +1155,15 @@ if _test_Variant:
 
 
     # ----- Edit Variant -----
-    variant_name = 'My Variant Edited by Python API'
-    r = in_api.editVariant(variant_name)
+    variant_name = 'Variant Edited by Python API'
+    r = in_api.editVariant(asset_id, variant_id, variant_name, files_id=None)
     print('Edit Variant: %s' % r)
 
-
-    # ----- Get Asset Variant Record/Usage -----
-    # variants_record = in_api.getVariantRecordByAssetId(asset_id=asset_id)
-    # printer(variants_record)
 
 
     # ----- Delete Variant -----
     r = in_api.deleteVariantById(variant_id)
     print('Delete Variant: %s' % r)
-
 
 
 # ------------------------------ Super Search ------------------------------
@@ -1085,7 +1179,7 @@ if _test_superSearch:
     regex = 'file=D.jpg'
     regex = 'file=source.mb'
     regex = 'folder=library'
-    regex = 'folder=*BonAsset_20*'
+    regex = 'folder=*BonAsset_*'
     regex = 'folder=/BonProject/assets'
     regex = 'folder=/BonProject/assets/BonAsset_31/*||file=/BonProject/assets/BonAsset_31/*'
     regex = 'file=/BonProject/assets/BonAsset_31/geo/source.mb'
@@ -1120,14 +1214,6 @@ if _test_superSearch:
     pprint(_dict)
 
 
-
-# ---------------------------------- My Test ----------------------------------
-
-
-
-
-if __name__ == '__main__':
-    pass
 
 
 
