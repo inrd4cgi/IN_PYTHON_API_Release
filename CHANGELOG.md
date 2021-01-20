@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.13.0.0] - 2021-1-20
+### Updated
+  * update `update deleteRecycleBin`
+
 ## [1.12.0.0] - 2021-1-19
 ### Updated
   * update `test_in_api_client`

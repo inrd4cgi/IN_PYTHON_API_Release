@@ -99,7 +99,7 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 #         args = INSPECT_HELPER.getargspec(v).args[1: ]
 #         print(k, args)
 
-# 如果之前已启动过 Server, 并登录过, 那么在其它 DCC, 可以不用再登录
+# 如果之前已启动过 Server, 并登录过, 那么在其它 DCC,0 可以不用再登录
 # in_api = InApiClient(in_map_dir, webserver=webserver)
 
 
