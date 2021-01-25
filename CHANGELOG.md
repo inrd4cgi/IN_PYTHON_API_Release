@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.13.2.0] - 2021-1-25
+### Fixed
+  * Intermediate file data returned
+
 ## [1.13.1.0] - 2021-1-21
 ### Updated
   * try catch os.makedirs
