@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.13.3.0] - 2021-1-26
+### Fixed
+  * Turn off Flask logger while using `IN_API_SERVER_B` to Run Server
+
 ## [1.13.2.0] - 2021-1-25
 ### Fixed
   * Intermediate file data returned

@@ -75,6 +75,7 @@ in_map_dir = 'I:/'
 
 ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
+ip, port, username, password, ctype, webserver = '192.168.3.32', 7000, 'root', 'wsrnd', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
@@ -136,7 +137,7 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 
 # ------------------------------ Get ------------------------------
-_test_Get = False
+_test_Get = True
 if _test_Get:
 
     # ----- Staff -----
@@ -810,7 +811,7 @@ if _test_Task:
 
         for task in tasks:
             # result: `INTask`
-            task = in_api.getTaskFromID(task_id)
+            task = in_api.getTaskFromID(task.taskId)
             print('Task:', task.taskId, task.taskName)
         return
 
