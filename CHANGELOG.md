@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.13.4.0] - 2021-1-29
+### Updated
+  * call_api_request return `[{}, {}]` if none result of INI.jsonRequest 
+
 ## [1.13.3.0] - 2021-1-26
 ### Fixed
   * Turn off Flask logger while using `IN_API_SERVER_B` to Run Server
