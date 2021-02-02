@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.14.0.0] - 2021-2-2
+### Fixed
+  * Fix `start_server` failed in `Katana` 
+
 ## [1.13.4.0] - 2021-1-29
 ### Updated
   * call_api_request return `[{}, {}]` if none result of INI.jsonRequest 
