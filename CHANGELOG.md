@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.15.0.0] - 2021-2-17
+### Updated
+  * `data_flow_get_task_list` 
+### Note
+  * Not compatible with LoaderV1.13.x.x version, compatible with LoaderV1.14.x.x
+
 ## [1.14.0.0] - 2021-2-2
 ### Fixed
   * Fix `start_server` failed in `Katana` 
