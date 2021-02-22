@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.15.2.0] - 2021-2-22
+### Updated
+  * less message print
+
 ## [1.15.1.0] - 2021-2-22
 ### Updated
   * less message print
