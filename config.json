@@ -50,5 +50,5 @@
     "ENVIRONMENTS_VARIABLES": {
         "WS_EXTRA_PYTHON_INTERPRETER": ""
     },
-    "VERSION": "1.15.0.0"
+    "VERSION": "1.15.1.0"
 }
