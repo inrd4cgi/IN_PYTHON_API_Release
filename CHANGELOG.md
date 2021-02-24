@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.15.3.0] - 2021-2-24
+### Updated
+  * data_flow_get_task_list optimize
+
 ## [1.15.2.0] - 2021-2-22
 ### Updated
   * less message print
