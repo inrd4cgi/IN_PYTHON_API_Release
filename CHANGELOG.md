@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.16.0.0] - 2021-3-2
+### Updated
+  * `data_flow_get_task_list` using batch-operation  
+
 ## [1.15.4.0] - 2021-3-1
 ### Fixed
   * data_flow_get_task_list get tasks with types
