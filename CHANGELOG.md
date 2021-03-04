@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.16.2.0] - 2021-3-4
+### Updated
+  * `data_flow_get_task_list` merge audit task
+
 ## [1.16.1.0] - 2021-3-4
 ### Fixed
   * `data_flow_get_task_list` ignore sequence task
