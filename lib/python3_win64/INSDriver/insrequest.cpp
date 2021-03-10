@@ -79,7 +79,7 @@ namespace INS
 		m_lock.lock();
 		g_lock.lock();
 
-		//自动生成requestI folderId
+		//自动生成requestId
 		if (!bCustom)
 		{
 			//当id达到最大值的时候，再从头开始

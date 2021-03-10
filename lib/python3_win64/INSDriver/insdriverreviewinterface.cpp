@@ -37,10 +37,11 @@ namespace INS_INTERFACE
 	}
 
     INSDRIVER_EXPORT MessageInfo
-    PostReviewContent(const INPostReviewParam &postReviewParam) {
+    PostReviewContent(const INPostReviewParam &postReviewParam,INReviewTaskComment & reviewTaskComment) {
 
-        INSCommonRequest<qint32> commonRequest(284, postReviewParam);
+        INSCommonRequest<INReviewTaskComment> commonRequest(284, postReviewParam);
         commonRequest.WaitForFinished();
+        reviewTaskComment = commonRequest.getRecvData();
         return  commonRequest.getRetValue();
 	}
 
@@ -59,6 +60,15 @@ namespace INS_INTERFACE
         INSCommonRequest<QList<INReviewTaskComment>> commonRequest(286, taskIds);
         commonRequest.WaitForFinished();
         reviewTaskComment = commonRequest.getRecvData();
+        return  commonRequest.getRetValue();
+	}
+
+    INSDRIVER_EXPORT MessageInfo
+    GetReviewContentByCommentId(QString &reviewContent, qint32 commentId) {
+
+        INSCommonRequest<QString> commonRequest(287, commentId);
+        commonRequest.WaitForFinished();
+        reviewContent = commonRequest.getRecvData();
         return  commonRequest.getRetValue();
 	}
 };

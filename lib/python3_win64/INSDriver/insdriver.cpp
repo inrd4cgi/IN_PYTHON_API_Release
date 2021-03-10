@@ -27,8 +27,7 @@ namespace INS_INTERFACE {
 
     void SetLoginConfilctCallback(std::function<void(QString)> p_callback)
     {
-        static INSLoginConflictListener loginConflictListener;
-        loginConflictListener.SetCallbackFunc(p_callback);
+        INSLoginConflictListener::GetInstance()->SetCallbackFunc(p_callback);
     }
 
     //日志业务 通过查询参数查询日志

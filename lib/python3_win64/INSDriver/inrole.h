@@ -65,6 +65,8 @@ namespace INS
 		PROJ_DEL = 1216,//删除项目
         PROJ_EDIT_ROOT_DIR = 1217,//修改项目根路径
 		PILN_REASSIG = 1284,//pipeline step的重新分配
+		RECYCLE_DEL = 1286, //删除回收站记录权限
+        RECYCLE_RECOVER = 1287, //恢复回收站记录权限
 		PERM_TEMPL_ADD = 1221,//添加项目权限模板
 		PERM_TEMPL_EDIT = 1222,//编辑项目的权限模板
 		PERM_TEMPL_DEL = 1223,//删除项目的权限模板

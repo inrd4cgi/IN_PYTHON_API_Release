@@ -569,7 +569,7 @@ namespace INS {
         qint32  parentTaskApprovalId    = 0;    //父节点审批流程ID
         qint32  isCurrent               = 0;    //任务当前审批人 0 否；1 是
         qint32  type                    = 0;    // 0 普通；1加急
-        qint32  status                  = 0;    // 0 未审批；1已审批；2重新审批
+        qint32  status                  = 0;    // 0 未审批；1已审批；2 send to previous; 3 reopen
         qint32  operation               = 0;    //用户操作, -1 删除；0 默认；1 新增
         QDateTime   createTime;
         QDateTime   updateTime;
@@ -1862,10 +1862,11 @@ namespace INS {
 
     struct INReviewTask {
 		IdName project;              //任务所属的项目
-		QString tvTag;               //例如 “ep001_a001”
+        QString tag;               //例如 “ep001_a001”
 		QString objectName;          //镜头号或者资产名，用于tab标题
         QString taskPath;            //对于资产：projectName,对于镜头：projectName<_season><_episode>_scene,对于sequence：projectName<_season><_episode>
         QString reviewTaskName;      //review模块的任务名。reviewTaskName = task.name - taskPath
+        QString batchTaskCardName;        // 批量界面任务卡的名字
 		IdName task;                 //任务id和名
 		IdName pipelineStep;         //任务所属的pipeline step的id和名
 		IdName assignee;             //完成此任务的人
@@ -1878,7 +1879,7 @@ namespace INS {
 		TaskApproval currentApprover;       //任务的当前审批节点
 		INTaskPreview taskPreview;  //任务的预览图，用审批的第一个文件。
 
-		Serialization(project, tvTag, objectName, taskPath, reviewTaskName, task, pipelineStep, assignee, status,
+        Serialization(project, tag, objectName, taskPath, reviewTaskName,batchTaskCardName,task, pipelineStep, assignee, status,
 			type, statusUpdatingTime, dueTime, leftTime, approvalList, currentApprover, taskPreview);
 	};
 
@@ -1917,13 +1918,16 @@ namespace INS {
 	};
 
     struct INPostReviewParam {
-        qint32 taskId = 0;      //评论的任务的Id，如果是播放器上涂涂改改的内容，可不填此Id
-        qint32 fileId = 0;      //评论的文件的Id,如果不是播放器上涂涂改改的内容，可不填此Id。
-        qint32 fileVersion = 0;//评论文件时，须指定版本。
-        QString content;        //视频播放器上的内容
-        QString userText;       //用户输入的文件内容，包括视频播放器正下方post框生成的内容。
+		qint32 taskId = 0;      //评论的任务的Id，如果是播放器上涂鸦的内容，可不填此Id
+		qint32 fileId = 0;      //评论的文件的Id,如果不是播放器上涂鸦的内容，可不填此Id。
+		qint32 fileVersion = 0; //评论文件时，须指定版本。
+		QString content;        //视频播放器上涂鸦的内容
+		QString userText;       //用户输入的文本内容，包括视频播放器正下方post框生成的内容。
+		QSet<qint32> audioIds;  //语音评论文件id
+		QSet<qint32> videoIds;  //视频评论文件id
+		QSet<qint32> pixmapIds; //图片评论文件id
 
-        Serialization(taskId, fileId, fileVersion, content, userText);
+		Serialization(taskId, fileId, fileVersion, content, userText, audioIds, videoIds, pixmapIds);
     };
 
 	struct INReviewTaskComment {
@@ -1935,8 +1939,12 @@ namespace INS {
 		//1:任务创建，2：任务状态变化，3：任务分派，4：send to next review 5: send to previous review 6: time change
 		qint32 type = 0;
 		QString text;           //评论内容文本。
+		qint32 commentId = 0;   //评论的Id.用于获取对应的涂鸦时起效。其他情况为0
 		QDateTime submitDate;   //评论产生的时间
+		QSet<qint32> audioIds;  //语音评论id
+		QSet<qint32> videoIds;  //视频评论id
+		QSet<qint32> pixmapIds; //图片评论id
 
-		Serialization(person, isApprover, avatar, type, text, submitDate);
+		Serialization(person, isApprover, avatar, type, text, commentId, submitDate, audioIds, videoIds, pixmapIds);
 	};
 };

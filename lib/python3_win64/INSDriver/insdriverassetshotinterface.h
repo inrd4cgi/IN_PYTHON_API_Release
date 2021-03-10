@@ -102,8 +102,8 @@ namespace INS_INTERFACE
 	INSDRIVER_EXPORT MessageInfo GetBusRecycleBinList(int projectId, QList<RecycleInfo> &recyclebinList);
 
     //删除回收站某一条记录
-    INSDRIVER_EXPORT MessageInfo DeleteObjectInRecordBin(qint32 recordId);
+    INSDRIVER_EXPORT MessageInfo DeleteObjectInRecordBin(qint32 projectId, QList<qint32> recordIds);
 
     //恢复回收站某一条记录
-    INSDRIVER_EXPORT MessageInfo RestoreObjectInRecordBin(qint32 recordId);
+    INSDRIVER_EXPORT MessageInfo RestoreObjectInRecordBin(qint32 projectId, QList<qint32> recordIds);
 };

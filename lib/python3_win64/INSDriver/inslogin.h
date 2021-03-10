@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "insrequest.h"
+#include "insdriver_global.h"
 
+#include <QObject>
 #include <functional>
 
 namespace INS
@@ -61,9 +63,9 @@ namespace INS
 
 	//INSLoginConflictListener
 	//**************************************************************************************
-	class INSLoginConflictListener : public INSRequest{
+	class INSLoginConflictListener : public INSRequest
+	{
 	public:
-		INSLoginConflictListener();
 
 		/*!
          * \brief 设置登录冲突通知的回调函数，如果之前已经设置过回调函数，那么新的函数会覆盖掉旧的函数。
@@ -75,7 +77,31 @@ namespace INS
 
 		void Process(const QByteArray &) override;
 
+		static INSLoginConflictListener *GetInstance();
 	protected:
 		std::function<void(QString)> m_loginConflictCallback{nullptr};
+
+    private:
+        INSLoginConflictListener();
+	};
+
+	class INSDRIVER_EXPORT INSPythonNotifier : public QObject
+	{
+        Q_OBJECT
+
+	public:
+
+        static INSPythonNotifier *GetInstance();
+        void LogOff(QString);
+        void Disconnected();
+	
+    signals:
+	    void EventLogOff(QString);
+        void EventDisconnected();
+
+    private slots:
+        void SlotAppServerSocketStatus(bool);
+    private:
+        INSPythonNotifier(QObject *parent = 0);
 	};
 };

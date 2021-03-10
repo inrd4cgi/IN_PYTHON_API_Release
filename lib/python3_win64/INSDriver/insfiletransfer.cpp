@@ -327,6 +327,8 @@ namespace INS
 				folderPath.mkpath(folderPath.path());
 		}
 
+		if ((m_fileHandleOpenMode & QIODevice::WriteOnly) && !(m_fileHandle.permissions() & QFileDevice::WriteOther))
+		    m_fileHandle.setPermissions(m_fileHandle.permissions() | QFileDevice::WriteOther);
         return m_fileHandle.open(m_fileHandleOpenMode);
     }
 
@@ -522,7 +524,12 @@ namespace INS
 	 */
 	bool INSUpLoad::Start()
 	{
-		assert(QFile::exists(m_fileAbsolutePath));
+		if (!QFile::exists(m_fileAbsolutePath))
+		{
+			SetFinished((int)(ClientTransMsg::enumFileIsNotExist), "file is not exist.");
+			return false;
+		}
+
 		if (m_fileRecorder == nullptr)
 			m_fileRecorder = new FileTransferRecorder(m_fileAbsolutePath);
 
@@ -534,7 +541,12 @@ namespace INS
 		else
 			transferInfo.insert(QString("directory"), m_file.directory);
 
-		assert(m_file.fileId > 0 || !m_file.name.isEmpty());
+		if (m_file.fileId <= 0 && m_file.name.isEmpty())
+		{
+			SetFinished((int)(ClientTransMsg::enumFileIsNotExist), "file is not exist.");
+			return false;
+		}
+
 		if (m_file.fileId > 0)
 			transferInfo.insert(QString("fileId"), m_file.fileId);
 		else

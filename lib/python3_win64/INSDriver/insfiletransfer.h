@@ -56,7 +56,7 @@ namespace INS
 		enum class ClientTransMsg
 		{
 			enumInfoAbort = 10000,
-			enumInfoTimeout = 20000, enumInfoFileOpenFailed
+			enumInfoTimeout = 20000, enumInfoFileOpenFailed, enumFileIsNotExist
 		};
 
 		friend class TransferOperatorAbstract;

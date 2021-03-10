@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.17.0.0] - 2021-3-10
+### Updated
+  * python3_api updated, new interface for notification user logged status
+
 ## [1.16.3.0] - 2021-3-4
 ### Updated
   * `data_flow_update_all_task_files` using cover_inter_and_out argument to control the intermediate file and output file covered needed status

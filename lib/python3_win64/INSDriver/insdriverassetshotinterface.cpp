@@ -279,15 +279,15 @@ namespace INS_INTERFACE {
     }
 
     //删除回收站某一条记录
-    INSDRIVER_EXPORT MessageInfo DeleteObjectInRecordBin(qint32 recordId) {
-		INSCommonRequest<qint32> commonRequest(801, recordId);
+    INSDRIVER_EXPORT MessageInfo DeleteObjectInRecordBin(qint32 projectId, QList<qint32> recordIds) {
+		INSCommonRequest<qint32> commonRequest(801, projectId, recordIds);
 		commonRequest.WaitForFinished();
 		return commonRequest.getRetValue();
     }
 
     //恢复回收站某一条记录
-    INSDRIVER_EXPORT MessageInfo RestoreObjectInRecordBin(qint32 recordId) {
-		INSCommonRequest<qint32> commonRequest(802, recordId);
+    INSDRIVER_EXPORT MessageInfo RestoreObjectInRecordBin(qint32 projectId, QList<qint32> recordIds) {
+		INSCommonRequest<qint32> commonRequest(802, projectId, recordIds);
         commonRequest.WaitForFinished();
         return commonRequest.getRetValue();
     }
