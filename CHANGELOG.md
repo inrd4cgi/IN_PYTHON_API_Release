@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.17.0.1] - 2021-4-1
+### Updated
+  * remove MD5 checked for IN_API_CLIENT_B download
 
 ## [1.17.0.0] - 2021-3-10
 ### Updated
