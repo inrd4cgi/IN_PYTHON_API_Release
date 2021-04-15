@@ -116,15 +116,28 @@ namespace INS_INTERFACE {
         return commonRequest.getRetValue();
     }
 
-    MessageInfo GetWorkflowDetailRequiredFiles(qint32 workflowStepId, QList<WorkFlowDetlFile> &detailFiles) {
-        INSCommonRequest<QList<WorkFlowDetlFile>> commonRequest(5523, workflowStepId);
+    MessageInfo InstanceTaskByPipelineStep(qint32& taskId, const InstanceTaskRequest &detailFiles) {
+        INSCommonRequest<qint32> commonRequest(5523, detailFiles);
         commonRequest.WaitForFinished();
-        detailFiles = commonRequest.getRecvData();
+        taskId = commonRequest.getRecvData();
         return commonRequest.getRetValue();
     }
 
     MessageInfo UpdateWorkflowDetailRequiredFiles(qint32 workflowStepId, QList<WorkFlowDetlFile> &detailFiles) {
         INSCommonRequest<qint32> commonRequest(5524, workflowStepId, detailFiles);
+        commonRequest.WaitForFinished();
+        return commonRequest.getRetValue();
+    }
+
+    MessageInfo ExportPipelineStep(qint32 sourceProjectId, PipelineStepExport& pipelineStepExport) {
+        INSCommonRequest<PipelineStepExport> commonRequest(5116, sourceProjectId);
+        commonRequest.WaitForFinished();
+        pipelineStepExport = commonRequest.getRecvData();
+        return commonRequest.getRetValue();
+    }
+
+    MessageInfo ImportPipelineStep(qint32 targetProjectId, const PipelineStepExport& pipelineStepExport) {
+        INSCommonRequest<qint32> commonRequest(5117, targetProjectId, pipelineStepExport);
         commonRequest.WaitForFinished();
         return commonRequest.getRetValue();
     }

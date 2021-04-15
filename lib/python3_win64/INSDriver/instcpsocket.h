@@ -120,6 +120,8 @@ namespace INS
 		~INSHttpRequestAbstract() override;
 
 		QPointer<QNetworkReply> m_netReply;	//HTTP请求的返回对象。
+		qint64 m_bytesReceived {0};
+		qint64 m_bytesTotal {0};
 
 		/*! 
 		 * \brief 该函数主要用途时执行发出HTTP请求。具体的请求内容需要在该函数中重载。

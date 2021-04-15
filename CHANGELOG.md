@@ -1,6 +1,38 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.18.0.0] - 2021-4-1
+### Updated
+  * Update Structure
+    ```
+    New Structures:
+    [
+        'ExtraFilter'    # 筛选的额外条件
+    ]
+
+    -------------------- Structure INTask --------------------
+    New Attributes:
+    [
+        'lastModifyTime'
+    ]
+    
+    -------------------- Structure TaskFilterParam --------------------
+    New Attributes:
+    [
+        'excludeDeletedItem', 
+        'extraFilter', 
+        'tagNameRegExp'
+    ]
+
+    -------------------- Structure TaskWorkflowDetail --------------------
+    New Attributes:
+    [
+        'alias', 
+    ]
+    
+    ```
+
 ## [1.17.2.0] - 2021-4-1
 ### Updated
   * remove logging log.txt log file output

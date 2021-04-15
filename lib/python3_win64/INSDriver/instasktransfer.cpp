@@ -28,7 +28,7 @@ namespace INS
 
 
 	INSUploadCommentFile::INSUploadCommentFile(const FileVO & file, const INSDataUploadComment & commentData)
-		:INSUpLoad(file, QString(), commentData.absolutePath), m_commentData(commentData)
+        :INSUpLoad(file, file.directory, commentData.absolutePath), m_commentData(commentData)
 	{
 		m_transferType = 0x00010008;
 	}

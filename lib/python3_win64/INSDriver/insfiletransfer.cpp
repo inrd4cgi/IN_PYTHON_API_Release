@@ -122,7 +122,8 @@ namespace INS
 			SetValue(m_strFileSize, fileSize);
 			SetValue(m_strModifiedTime, modifiedDate);
 			SetValue(m_strTransType, transferType);
-			SetValue(m_strMd5, md5Value, true);
+			SetValue(m_strMd5, md5Value);
+			SetValue(m_strFIleId, {}, true);
 		}
 
 		/*!
@@ -139,12 +140,13 @@ namespace INS
 			tempFolder.mkpath(folderName);
 
 			//拼接记录文件的文件名
-			int n_index = filePath.lastIndexOf("/");
-			QString fileName = filePath.mid(n_index);
+			QString fileName(std::move(filePath));
+            fileName.remove("/");
+            fileName.remove(":");
 			fileName.remove(".");
 			fileName.append("Recorder");
 
-			return folderName + fileName;
+			return folderName + "/"+ fileName;
 		}
 
 		bool isTheFileSameAsTheOld(QFile* p_file)
@@ -190,16 +192,6 @@ namespace INS
 			RemoveRecordFile();
 		}
 
-		qint64 GetTransLength()
-		{
-			return m_recordFile->value(m_strTransLength).toLongLong();
-		}
-
-		void SetTransLength(qint64 dataLength)
-		{
-			SetValue(m_strTransLength, dataLength, true);
-		}
-
 		QString GetTransFileMd5()
 		{
 			return m_recordFile->value(m_strMd5).toString();
@@ -212,17 +204,45 @@ namespace INS
 
 		const char* m_strModifiedTime{ "modifiedTime" };
 		const char* m_strFileSize{ "fileSize" };
-		const char* m_strTransLength{ "transLength" };
 		const char* m_strTransType{ "transfType" };
 		const char* m_strFIleId{ "fileId" };
 		const char* m_strMd5{ "md5" };
 	};
 
 
+    //*************************************************************************************************
+    class FileVoOperator
+    {
+    public:
+        FileVoOperator(const INS::FileVO& fileVo)
+            :m_fileVo(fileVo)
+        {}
 
-	/*************************************************************************************************
-	Description: 传输文件[file],[root_dir]为文件根路径。
-	*************************************************************************************************/
+        QString GetCurrentVersionMd5()
+        {
+            return m_fileVo.fileVersions.contains(m_fileVo.currentVersion) ?
+                   m_fileVo.fileVersions.value(m_fileVo.currentVersion).checkCode : m_fileVo.checkCode;
+        }
+
+        QDateTime GetCurrentFileLastModifyTime()
+        {
+            return m_fileVo.fileVersions.contains(m_fileVo.currentVersion) ?
+                   m_fileVo.fileVersions.value(m_fileVo.currentVersion).lastModifyTime : m_fileVo.lastModifyTime;
+        }
+
+        qint64 GetCurrentFileSize()
+        {
+            return m_fileVo.fileVersions.contains(m_fileVo.currentVersion) ?
+                   m_fileVo.fileVersions.value(m_fileVo.currentVersion).size : m_fileVo.size;
+        }
+
+    private:
+        INS::FileVO m_fileVo;
+    };
+
+    /*************************************************************************************************
+    Description: 传输文件[file],[root_dir]为文件根路径。
+    *************************************************************************************************/
 	INSFileTransfer::INSFileTransfer(const FileVO & file, const QString & rootDir, const QString& absolutePath)
 		:m_file(file), m_fileAbsolutePath(absolutePath), m_rootDir(rootDir), m_step(INSFileTransferStep::enumRecvRepoInfo)
 	{
@@ -378,6 +398,7 @@ namespace INS
 		auto jsonDoc = QJsonDocument::fromJson(dataBuf, &parseError);
 		if (parseError.error != QJsonParseError::NoError)
 		{
+			qInfo() << "error json value: " << dataBuf;
 			return qMakePair((int)parseError.error, QString("QJsonParseError:%1").arg(parseError.error));
 		}
 
@@ -416,12 +437,20 @@ namespace INS
             msgCode = 1;
         }
 
+        if(m_fileHandle.isOpen())
+            m_fileHandle.close();
+
 		m_transFinished = true;
+        m_finishedResult = {msgCode, strMsg};
 		emit SigEventFinishedForPy(msgCode, strMsg);
 		emit SigEventFinished(qMakePair(msgCode, strMsg));
-		qInfo() << "transferType " << m_transferType << " msgCode: " << msgCode << " Msg: " << strMsg;
+        qInfo() << "file name & id" << m_file.name << m_file.fileId <<"transferType " << m_transferType << " msgCode: " << msgCode << " Msg: " << strMsg;
 	}
 
+	QPair<qint32, QString> INSFileTransfer::GetFinishedResult()
+	{
+		return m_finishedResult;
+	}
 
 	void INSFileTransfer::RegistStepFunc()
 	{
@@ -494,13 +523,13 @@ namespace INS
 		}
 	}
 
-	/*!
-	 * \brief 上传文件业务的构造函数。
-	 * \details
-	 * \param[in] file 需要上传的文件的结构体，包含文件的信息，必须填写file的文件名。
-	 * \param[in] strLocalFilePath 本地文件的路径。
-	 * \return
-	 */
+    /*!
+     * \brief 上传文件业务的构造函数。
+     * \details
+     * \param[in] file 需要上传的文件的结构体，包含文件的信息，必须填写file的文件名。
+     * \param[in] strLocalFilePath 本地文件的路径。
+     * \return
+     */
 	INSUpLoad::INSUpLoad(const FileVO& file, const QString& rootDir, const QString& absolutePath)
 		:INSFileTransfer(file, rootDir, absolutePath)
 	{
@@ -558,9 +587,10 @@ namespace INS
 		//添加延申的数据，方便传输其他类型的文件拓展
 		AddExtendData(transferInfo);
 
-		qDebug() << "md5 " << m_file.checkCode;
 		QByteArray jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(transferInfo);
 		*mp_out << qint32(304) << m_request_id << jsonStr;
+
+		qDebug() << "start upload. fileId and name " << m_file.fileId <<m_file.name << "folder: "<< m_file.directory << "md5 " << m_file.checkCode;
 		return INSNETWORK->SendDataToAppServer(m_senddata);
 	}
 
@@ -671,9 +701,12 @@ namespace INS
 
 		if (m_file.currentVersion > 0)
 			transferInfo.insert(QString("version"), m_file.currentVersion);
+
 		QByteArray jsonStr;
 		jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(transferInfo);
 		*mp_out << qint32(304) << m_request_id << jsonStr;
+
+		qDebug() << "start download. file Id" << m_file.fileId;
 		return INSNETWORK->SendDataToAppServer(m_senddata);
 	}
 
@@ -700,15 +733,24 @@ namespace INS
 
 	void INSDownLoad::DownloadFileFromServer()
 	{
+		//下载之前检测本地文件是否存在
+		if (GetFileMd5(&m_fileHandle) == FileVoOperator(m_file).GetCurrentVersionMd5())
+		{
+			if(m_fileHandle.isOpen())
+				m_fileHandle.close();
+			SetFinished(1, "File is exist in local.");
+			return;
+		}
+
 		m_file = m_fileRepoInfo.clientInfo;
-		m_downloadOperator = new DownloadFileOperator(this, this);
+		m_downloadOperator = QSharedPointer<DownloadFileOperator>(new DownloadFileOperator(this, nullptr));
+		m_downloadOperator->InitTransState();
 		m_downloadOperator->RunRequest();
 	}
 
-
 	void INSDownLoad::BeginFileTransferStep()
 	{
-		if (m_file.directory.isEmpty())
+        if (m_file.directory.isEmpty())
 			m_file.directory = m_fileRepoInfo.clientInfo.directory;
 		if (m_file.name.isEmpty())
 			m_file.name = m_fileRepoInfo.clientInfo.name;
@@ -722,10 +764,17 @@ namespace INS
 		if (m_fileRecorder == nullptr)
 			m_fileRecorder = new FileTransferRecorder(m_fileAbsolutePath);
 
-		if (!m_fileRecorder->isRecordFileExist())
-			m_fileRecorder->InitRecordFile(m_file.size, m_file.lastModifyTime, m_transferType, m_file.checkCode);
+		if (!m_fileRecorder->isRecordFileExist() || !isTheFileSameAsTheOld())
+        {
+            FileVoOperator fileVoOperator(m_file);
+			m_fileRecorder->InitRecordFile(m_fileRepoInfo.size, fileVoOperator.GetCurrentFileLastModifyTime(),
+			        m_transferType, fileVoOperator.GetCurrentVersionMd5());
+        }
+
 		RunStepFunc(INSFileTransferStep::enumTransferData);
 	}
+
+
 
 
 	//INSCheckIn
@@ -751,15 +800,26 @@ namespace INS
 
 	void INSCheckOut::DownloadFileFromServer()
 	{
+        if (GetFileMd5(&m_fileHandle) == FileVoOperator(m_file).GetCurrentVersionMd5())
+        {
+        	if(m_fileHandle.isOpen())
+        		m_fileHandle.close();
+            RunStepFunc(INSFileTransferStep::enumSecondReqToAppServer);
+            return;
+        }
+
 		m_file = m_fileRepoInfo.clientInfo;
-		m_downloadOperator = new DownloadFileOperator(this, this);
+		m_downloadOperator = QSharedPointer<DownloadFileOperator>(new DownloadFileOperator(this, nullptr));
 		m_downloadOperator->m_nextStep = INSFileTransferStep::enumSecondReqToAppServer;
+		m_downloadOperator->InitTransState();
 		m_downloadOperator->RunRequest();
 	}
 
 	void INSCheckOut::SendCheckOutReqToAppServer()
 	{
 		qInfo() << "send checkout request to app server";
+
+		m_step = INSFileTransferStep::enumWaitForRespon;
 
 		m_transferType = 0x00020003;
 		QVariantMap varMap;
@@ -773,9 +833,7 @@ namespace INS
 		INSNETWORK->SendDataToAppServer(m_senddata);
 
 		StartWaitForResponTimer();
-		m_step = INSFileTransferStep::enumWaitForRespon;
 	}
-
 
 	//INSUploadTinyFile
 	INSUploadTinyFile::INSUploadTinyFile(const FileVO & file, const QString & rootDir, const QString & absolutePath)
@@ -817,10 +875,10 @@ namespace INS
 		//添加延申的数据，方便传输其他类型的文件拓展
 		AddExtendData(transferInfo);
 
-		qDebug() << "md5  " << m_file.checkCode;
 		QByteArray jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(transferInfo);
 		*mp_out << qint32(304) << m_request_id << jsonStr;
-		
+
+		qDebug() << "start uploadTinyFile. "<< "md5  " << m_file.checkCode << "file id and name "<< m_file.fileId << m_file.name << " folder " << m_file.directory;
 		return INSNETWORK->SendDataToAppServer(m_senddata);
 	}
 
@@ -870,7 +928,7 @@ namespace INS
 
 	void TransferOperatorAbstract::SlotRequestError(QNetworkReply::NetworkError netError)
 	{
-		qWarning() << "Http request error. error type: " << netError;
+		qWarning() << "Http request error. error type: " << netError << "  error url: "<< m_netReply->url();
 		qWarning() << "error code: " << m_errorMsg.first << " error msg: " << m_errorMsg.second;
 	}
 
@@ -878,7 +936,6 @@ namespace INS
 	void TransferOperatorAbstract::SlotRequestFinished()
 	{
 	    deleteLater();
-		qInfo() << "Http request finished.";
 	}
 
 	void TransferOperatorAbstract::GenerateTransPostRequestWithJson(const QJsonObject & jsonObj, const QString & reqPath)
@@ -894,7 +951,11 @@ namespace INS
 
 	void TransferOperatorAbstract::ManuaAbortNetworkReply()
 	{
-		if (!m_netReply.isNull() && !m_netReply->isFinished())
+		if (m_netReply.isNull())
+			return;
+
+		m_netReply->disconnect(this);
+		if (!m_netReply->isFinished())
 			m_netReply->abort();
 	}
 
@@ -1139,27 +1200,29 @@ namespace INS
 		netReq.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
 		qint64 receivedLength{ GetReceivedLength() };
-		InitFileState(receivedLength);
-
 		QByteArray contentRange{ GenerateContentRange(receivedLength) };
-		if (!contentRange.isEmpty())
-			netReq.setRawHeader("Range", contentRange);
+		netReq.setRawHeader("Range", contentRange);
 
 		m_netReply = INSNETWORKHTTP->post(netReq, QJsonDocument(reqParam).toJson());
-
 		ConnectReplySlot(m_netReply);
 
-		qInfo() << "http request download file. file name: " << m_transferObj->m_fileAbsolutePath << "range: " << contentRange;
+		qInfo() << "http request download file. file name: " << m_transferObj->m_fileAbsolutePath
+			<< "  request url: " << m_netReply->url() << "  range: " << contentRange << m_transferObj->m_fileRepoInfo.name;
 	}
 
 	void DownloadFileOperator::SlotReadyread(QByteArray & byteArray)
 	{
 		if (m_transferObj.isNull() || m_transferObj->isFinished())
 			return;
+        if (m_bytesReceived >= m_bytesTotal)
+            ManuaAbortNetworkReply();
 
 		int retStatus = m_netReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
 		if (retStatus == RETSTATUSSUCCEEDED || RETSTATUSSUCCEEDEDOTHER == retStatus)
+        {
 			SaveFileData(byteArray);
+	        UpdateTransData();
+        }
 		else
 		{
 			qWarning() << "download error . http status: " << retStatus;
@@ -1170,31 +1233,46 @@ namespace INS
 	void DownloadFileOperator::SaveFileData(QByteArray &byteArray)
 	{
 		auto receivedLength = m_transferObj->m_fileHandle.write(byteArray);
-		if (receivedLength == -1)
-			return;
+        if (receivedLength == -1)
+        {
+            qDebug() << "write to file failed." << m_transferObj->m_fileHandle.errorString() << m_transferObj->m_file.name << m_transferObj->m_file.fileId;
+            return;
+        }
 
+        if(m_transferObj->m_fileRepoInfo.size != 0 && receivedLength == 0)
+        {
+            qDebug() << "receivedLength: " << receivedLength << m_transferObj->m_file.name << m_transferObj->m_file.fileId
+            << "byteArray size: " << byteArray.size() << "error msg:" << m_netReply->errorString()
+		            << "bytesReceived: " << m_bytesReceived << "bytesTotal: " << m_bytesTotal << "isRunning: " << m_netReply->isRunning();
+
+            return;
+        }
 		m_transferObj->m_fileInfoInFileServer.m_receivedLength += receivedLength;
-
-		if(receivedLength > 0)
-            m_transferObj->m_fileRecorder->SetTransLength(m_transferObj->m_fileInfoInFileServer.m_receivedLength);
-
-		if (m_transferObj->m_fileInfoInFileServer.m_receivedLength >= m_transferObj->m_fileRepoInfo.size)
-		{
-			m_transferObj->m_fileHandle.setFileTime(m_transferObj->m_file.lastModifyTime, QFileDevice::FileModificationTime);
-			m_transferObj->m_fileHandle.setFileTime(m_transferObj->m_file.createTime, QFileDevice::FileBirthTime);
-
-			m_transferObj->m_fileRecorder->SetRecordFileDeleted(true);
-			if (m_nextStep == INSFileTransferStep::enumNone)
-			{
-				FinishedOperator(INSFileTransferStep::enumNone, true);
-				m_transferObj->SetFinished(1, "download finished. type: succeeded");
-			}
-			else
-				m_transferObj->RunStepFunc(m_nextStep);
-		}
-		else
-			emit m_transferObj->SigTransLength(m_transferObj->m_fileInfoInFileServer.m_receivedLength);
 	}
+
+    void DownloadFileOperator::UpdateTransData()
+    {
+        if (m_transferObj->m_fileInfoInFileServer.m_receivedLength < m_transferObj->m_fileRepoInfo.size)
+        {
+	        emit m_transferObj->SigTransLength(m_transferObj->m_fileInfoInFileServer.m_receivedLength);
+	        if (m_bytesReceived >= m_bytesTotal)
+	            RunRequest();
+	        return;
+        }
+
+	    FileVoOperator fileVoOperator(m_transferObj->m_file);
+	    m_transferObj->m_fileHandle.setFileTime(fileVoOperator.GetCurrentFileLastModifyTime(), QFileDevice::FileModificationTime);
+	    m_transferObj->m_fileHandle.setFileTime(m_transferObj->m_file.createTime, QFileDevice::FileBirthTime);
+
+	    m_transferObj->m_fileRecorder->SetRecordFileDeleted(true);
+	    if (m_nextStep == INSFileTransferStep::enumNone)
+	    {
+		    FinishedOperator(INSFileTransferStep::enumNone, true);
+		    m_transferObj->SetFinished(1, "download finished. type: succeeded");
+	    }
+	    else
+		    m_transferObj->RunStepFunc(m_nextStep);
+    }
 
 	void DownloadFileOperator::ParseAndReturnError(int errorStatus, QByteArray &byteArray)
 	{
@@ -1207,37 +1285,42 @@ namespace INS
 
 	qint64 DownloadFileOperator::GetReceivedLength()
 	{
-		if (!m_transferObj->m_fileRecorder->isTransTypeEnqual(m_transferObj->m_transferType))
-			return 0;
+//		if (m_transferObj->m_fileInfoInFileServer.m_receivedLength > 0)
+//			return m_transferObj->m_fileInfoInFileServer.m_receivedLength;
 
-		qint64 fileSizeInRecord = m_transferObj->m_fileRecorder->GetTransLength();
-        return fileSizeInRecord == m_transferObj->m_fileHandle.size() ? fileSizeInRecord : 0;
+//		if (!m_transferObj->isTheFileSameAsTheOld())
+//			m_transferObj->m_fileInfoInFileServer.m_receivedLength = m_transferObj->m_fileHandle.size();
+        return m_transferObj->m_fileInfoInFileServer.m_receivedLength;
 	}
 
-	void DownloadFileOperator::InitFileState(qint64 n_seek)
+	void DownloadFileOperator::InitTransState()
 	{
-		m_transferObj->m_fileHandle.resize(n_seek);
-		m_transferObj->m_fileHandle.seek(n_seek);
-		m_transferObj->m_fileInfoInFileServer.m_receivedLength = n_seek;
+		auto seek = GetReceivedLength();
+		m_transferObj->m_fileHandle.resize(seek);
+		m_transferObj->m_fileHandle.seek(seek);
 	}
 
 	QByteArray DownloadFileOperator::GenerateContentRange(qint64 n_received)
 	{
-		if (n_received == 0)
-			return QByteArray();
-
 		QString contentRange("bytes=");
 		contentRange.append(QString::number(n_received) + "-");
+
+		qint64 endSize = n_received + m_transferObj->m_fileChunkSize;
+		auto fileSize = m_transferObj->m_fileRepoInfo.size;
+		if (endSize < fileSize)
+			contentRange.append(QString::number(endSize));
 		return contentRange.toStdString().c_str();
 	}
 
-	void DownloadFileOperator::SlotRequestFinished()
+	void DownloadFileOperator::ConnectReplySlot(QNetworkReply *netReply)
 	{
-        if (m_transferObj.isNull())
-            return;
+		assert(netReply != nullptr);
+		if (m_netReply != netReply)
+			m_netReply = netReply;
 
-        m_transferObj->m_fileHandle.close();
-		TransferOperatorAbstract::SlotRequestFinished();
+		connect(netReply, &QNetworkReply::downloadProgress, this, &INSHttpRequestAbstract::SlotReadDataFromNetReply);
+		connect(netReply, &QNetworkReply::finished, netReply, &QNetworkReply::deleteLater);
+		connect(netReply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &INSHttpRequestAbstract::SlotRequestError);
 	}
 
 

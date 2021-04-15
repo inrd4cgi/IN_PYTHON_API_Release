@@ -173,7 +173,7 @@ namespace INS_INTERFACE
 	 * \param[in] commentData 评论文件的数据
 	 * \return 返回INSUploadCommentFile对象,调用start启动上传业务。业务结束后，需要手动删除。
 	 */
-	extern "C" INSDRIVER_EXPORT INSUploadCommentFile *UploadCommentFile(const INSDataUploadComment &commentData);
+    extern "C" INSDRIVER_EXPORT INSUploadCommentFile *UploadCommentFile(const INSDataUploadComment &commentData, const QString &directory);
 
 	/*!
 	 * \brief 上传required file的函数

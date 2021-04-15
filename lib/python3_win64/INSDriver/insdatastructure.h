@@ -115,7 +115,7 @@ namespace INS {
 
 		Serialization(fileId, name, projectId, folderId, directory, checkCode, size, previewId, createTime,
 			lastModifyTime, creatorId, creatorName, currentVersion, fileVersions, comment, status,
-			actionBy, type, tags, isIntermediate, isReview)
+			actionBy, type, tags, lastModifiedBy, isIntermediate, isReview)
 	};
 
     //文件夹类的基类
@@ -615,6 +615,8 @@ namespace INS {
 		QString loaderScript = "";
 		QString validationScript = "";
 
+		QDateTime lastModifyTime;
+
 		//taskId,projectId,containerName,taskName,pipelineStep,supervisor,organizer,color,status,type不能为空
 		bool checkTaskParam() {
 			if(projectId == 0 || objectId == 0 || taskName.isEmpty() || organizerId == 0
@@ -629,7 +631,7 @@ namespace INS {
 					  assigneePersonId, assigneePerson, pipelineStepId, pipelineStep, supervisorId, supervisor,
 					  coordinatorId, coordinator, organizerId, organizer, reminderId, difficulty, type, wftype, workFlowStepId,
                       containerId, storageType,taskApprovalId,approvalList, tags, toValidate,
-					  loaderScript, validationScript)
+					  loaderScript, validationScript, lastModifyTime)
 	};
 
     //
@@ -780,8 +782,9 @@ namespace INS {
 		qint32 fileVersion      = 0;    //文件版本
 		QString freqContent     = "";   //视频标签数据
 		QString text            = "";   //review内容
+        QSet<qint32> pixmapIds;        //评论图片文件Id集合
 
-		Serialization(taskId,shotGroupId,version,fileId,fileVersion,freqContent,text)
+        Serialization(taskId,shotGroupId,version,fileId,fileVersion,freqContent,text,pixmapIds)
 	};
 
 
@@ -799,13 +802,14 @@ namespace INS {
 	    qint32  shotCount               = 0;    //镜头数量
         qint32  totalDuration           = 0;    //当前镜头总时长 单位：秒
         qint32  totalFreq               = 0;    //当前镜头总修改意见次数
+        qint32  totalShotGroup          = 0;    //任务总镜头组数量
         IdName  creator;                        //创建者id和名字
         QDateTime   createTime;                 //创建时间
         QDateTime   updateTime;                 //更新时间
         QMap<qint32,QList<INSequenceShotFile>>  shotFileMap; //镜头列表 key 镜头号码 value 文件列表
 
         Serialization(shotGroupId, projectId, sequenceId, taskId,groupName,
-                description,version,isDefault, isApproved,shotCount,totalDuration,totalFreq,
+                description,version,isDefault, isApproved,shotCount,totalDuration,totalFreq,totalShotGroup,
                 creator,createTime, updateTime,shotFileMap)
     };
 
@@ -821,6 +825,19 @@ namespace INS {
 
         Serialization(shotFileRecycleId,shotGroupId,fileId,fileVersion,fileName,creator,createTime)
     };
+
+    // 镜头组下可创建的镜头列表信息结构体
+    struct INSequenceShotStatus {
+        qint32 projectId        = 0;        //项目Id
+        qint32 projectType      = 0;        //所属的项目类型。1： film，2: tv
+        QString seasonName      = "";       //季名称
+        QString episodeName     = "";       //剧集名称
+        QString sceneName       = "";       //场次名称
+        QMap<qint32,qint32> shotStatusMap;  //镜头列表 key 镜头号码 value 是否已经创建 0 未创建 1已经创建
+
+        Serialization(projectId,projectType,seasonName,episodeName,sceneName,shotStatusMap)
+    };
+
     //**************************************************************************************************
 
 
@@ -1046,6 +1063,43 @@ namespace INS {
 		Serialization(storageType, groupName, instanceId, ip, port, totalSpace, freeSpace, basePath)
 	};
 
+	/**
+     * 筛选的额外条件
+     */
+	struct ExtraFilter {
+
+		int fromStatus = 0;//from状态，当且仅当fileterFlag = 1时候有效
+		int toStatus = 0;//to状态，当且仅当fileterFlag = 1时候有效
+
+		int fileType = 0;//文件类型，当且仅当filterFlag = 1的时候有效
+
+		int filterFlag = 0;//0: 表示无效， 1: 表示By Task Status 2: 表示By File Change
+
+		QDateTime fromTime;
+		QDateTime toTime;
+
+		bool operator==(const ExtraFilter& other) {
+			if(fromStatus != other.fromStatus)
+				return false;
+			if(toStatus != other.toStatus)
+				return false;
+			if(fileType != other.fileType)
+				return false;
+			if(filterFlag != other.filterFlag)
+				return false;
+			if(fromTime != other.fromTime)
+				return false;
+			if(toTime != other.toTime)
+				return false;
+			return true;
+		}
+
+		bool operator!=(const ExtraFilter& other) {
+			return !(*this == other);
+		}
+
+		Serialization(fromStatus, toStatus, fileType, filterFlag, fromTime, toTime)
+	};
 
 	//任务过滤参数
 	struct TaskFilterParam {
@@ -1078,6 +1132,12 @@ namespace INS {
 		QSet<QString> tagNames;//标签条件搜索
 
 		QString alias;          //别名
+
+		QString tagNameRegExp;//标签条件搜索
+
+		qint32 excludeDeletedItem = 0;//是否排除已经删除的项 0:排除已经删除的 1:包含已经删除的 2:只包含已经删除的
+
+		ExtraFilter extraFilter;//额外的刷选条件
 
 
 
@@ -1112,7 +1172,13 @@ namespace INS {
 			if(tagNames != other.tagNames)
 				return false;
 			if (alias != other.alias)
+				return false;
+			if(tagNameRegExp != other.tagNameRegExp)
+				return false;
+			if (excludeDeletedItem != other.excludeDeletedItem)
                 return false;
+			if(extraFilter != other.extraFilter)
+				return false;
             return true;
 		}
 
@@ -1122,7 +1188,7 @@ namespace INS {
 		}
 
 		Serialization(fetchData, projectId, objectIds, types, status, assignTeamId, assigneeIds, supervisorIds, issueTime,
-					  dueTime, isUnassigned, taskIds, pipelineStepIds, isPendingAppend, tagNames, alias)
+					  dueTime, isUnassigned, taskIds, pipelineStepIds, isPendingAppend, tagNames, alias, tagNameRegExp, excludeDeletedItem, extraFilter)
 	};
 
 	//资产过滤参数
@@ -1659,12 +1725,12 @@ namespace INS {
         qint32 status = 0; // 任务状态
         qint32 taskType = 0; // 节点类型 0-普通任务节点 1-容器
         qint32 containerId = 0;
-        QList<TaskLinkFile> taskFileList;
-        qint32 operation = 0; // 用户操作 -1 - 删除 0-默认 1-新增
+//        QList<TaskLinkFile> taskFileList;
+//        qint32 operation = 0; // 用户操作 -1 - 删除 0-默认 1-新增
         qint32 pipelineStepId = 0;
 
         Serialization(taskId, taskName, alias, color, position, parentTaskIdList, status,
-                      taskType, containerId, taskFileList, operation, pipelineStepId);
+                      taskType, containerId, /*taskFileList, operation,*/ pipelineStepId);
     };
 
     struct TaskWorkflow
@@ -1678,6 +1744,18 @@ namespace INS {
 
         Serialization(projectId, projectName, objectId, objectType, objectName, taskList);
     };
+
+	struct InstanceTaskRequest
+	{
+		qint32      projectId       = 0;    //项目ID
+		qint32      pipelineStepId  = 0;    //pstId
+		QString     taskName        = "";   //任务名字
+		qint32      objectId        = 0;    //资产/镜头Id
+		QString     color           = "#FFFFFF"; //节点颜色
+		QPair<QPoint, QPoint> position;   //节点位置
+
+		Serialization(projectId,pipelineStepId,taskName,objectId,color,position);
+	};
 
     struct ProjectStatisticsData {
         qint32 totalScenes = 0;
@@ -1947,4 +2025,17 @@ namespace INS {
 
 		Serialization(person, isApprover, avatar, type, text, commentId, submitDate, audioIds, videoIds, pixmapIds);
 	};
+
+    struct PipelineStepExport {
+
+        IdName sourceProject;
+        QMap<qint32, INPipelineStep> pipelineSteps;
+        QMap<qint32, INQWorkPath> pipelineStepWorkPath;
+        QMap<qint32, INQWorkFlowVO> workFlows;
+        QMap<qint32, WorkFlowDetlFile> workFlowFiles;
+        QMap<qint32, PipelineStepMappingVO> pipelineStepMappingVOs;
+
+        Serialization(sourceProject, pipelineSteps, pipelineStepWorkPath, workFlows, workFlowFiles,
+                      pipelineStepMappingVOs)
+    };
 };

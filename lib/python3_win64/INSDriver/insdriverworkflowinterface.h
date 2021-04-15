@@ -63,7 +63,11 @@ namespace INS_INTERFACE
 	INSDRIVER_EXPORT MessageInfo updatePipelineStepCoordinator(qint32 personId, QList<qint32> pipelineSteps);
 
 
-	INSDRIVER_EXPORT MessageInfo GetWorkflowDetailRequiredFiles(qint32 workflowStepId, QList<WorkFlowDetlFile>& detailFiles);
+	INSDRIVER_EXPORT MessageInfo InstanceTaskByPipelineStep(qint32& taskId, const InstanceTaskRequest &detailFiles);
 
 	INSDRIVER_EXPORT MessageInfo UpdateWorkflowDetailRequiredFiles(qint32 workflowStepId, QList<WorkFlowDetlFile>& detailFiles);
+
+    INSDRIVER_EXPORT MessageInfo ExportPipelineStep(qint32 sourceProjectId, PipelineStepExport& pipelineStepExport);
+
+    INSDRIVER_EXPORT MessageInfo ImportPipelineStep(qint32 targetProjectId, const PipelineStepExport& pipelineStepExport);
 };

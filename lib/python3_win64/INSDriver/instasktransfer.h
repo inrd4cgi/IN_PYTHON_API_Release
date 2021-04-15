@@ -7,7 +7,7 @@ namespace INS
 	{
 		enum class enumCommentType
 		{
-			ct_audio, ct_video
+            ct_audio, ct_general
 		};
 
 		QString name;

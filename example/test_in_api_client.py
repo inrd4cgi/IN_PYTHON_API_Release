@@ -75,7 +75,7 @@ in_map_dir = 'I:/'
 
 ip, port, username, password, ctype, webserver = '192.168.17.212', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
 ip, port, username, password, ctype, webserver = '192.168.17.110', 7000, 'sbon', 'qwer', 'DCC', "http://127.0.0.1:20618"
-ip, port, username, password, ctype, webserver = '192.168.3.32', 7000, 'root', 'wsrnd', 'DCC', "http://127.0.0.1:20618"
+# ip, port, username, password, ctype, webserver = '192.168.3.32', 7000, 'root', 'wsrnd', 'DCC', "http://127.0.0.1:20618"
 
 
 # 在本工程里, src 外有一份 config.json, 里面填写了一些默认值
@@ -137,8 +137,9 @@ in_api = InApiClient.connectAndLogin(in_map_dir, ip, port, username, password, c
 
 
 # ------------------------------ Get ------------------------------
-_test_Get = True
+_test_Get = False
 if _test_Get:
+    project_id = 120
 
     # ----- Staff -----
     myself = in_api.getOneself()
@@ -152,14 +153,14 @@ if _test_Get:
 
 
     # ----- Miscellaneous -----
-    storage = in_api.getStorageInfos(project_id=120)
+    storage = in_api.getStorageInfos(project_id=project_id)
     placeholder_list = in_api.getPlaceHolderList()
 
 
     # ----- Project -----
     proj_files = in_api.getProjectFiles()
     projs = in_api.getProjects()
-    proj = in_api.getProject(project_id=120)    # project_id=72
+    proj = in_api.getProject(project_id=project_id)    # project_id=72
 
 
     # ----- File, Folder -----
@@ -169,33 +170,34 @@ if _test_Get:
 
 
     # ----- Pipeline, Workflow -----
-    p_steps = in_api.getPipelineSteps(project_id=120, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
-    workflow_list = in_api.getWorkFlowTempls(project_id=120, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+    p_steps = in_api.getPipelineSteps(project_id=project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
+    workflow_list = in_api.getWorkFlowTempls(project_id=project_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
     workflow = in_api.getWorkFlowTempl(workflow_id=2083)
 
 
     # ----- Asset -----
-    assets = in_api.getAssetsByCondition(project_id=120)    # project_id=72, asset_ids=[435]
-    asset_id = 4569
+    assets = in_api.getAssetsByCondition(project_id=project_id)    # project_id=72, asset_ids=[435]
+    asset_id = 4840
     asset = in_api.getAssetInfo(asset_id=asset_id)
     task_workflow = in_api.getWorkFlowInstance(resource_id=asset_id, pipeline_type=IN_DATA_STRUCTURE.PipelineType.Asset)
 
 
     # ----- Scene Shot -----
-    shots = in_api.getShotsByCondition(project_id=120)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
-    scenes = in_api.getSceneList(project_id=120)    # 80, 137, 167, 174, 177, 199
+    shots = in_api.getShotsByCondition(project_id=project_id)    # project_id=72, scene_ids=[65, 61], shot_ids=[533, 534]
+    scenes = in_api.getSceneList(project_id=project_id)    # 80, 137, 167, 174, 177, 199
     shot = in_api.getShotInfo(shot_id=122)
 
 
     # ----- Task -----
-    tasks = in_api.getTasksByConditions(project_id=120)
+    tasks = in_api.getTasksByConditions(project_id=project_id)
     # tasks = in_api.getTasksByConditions(object_ids=[968], type=IN_DATA_STRUCTURE.PipelineType.Asset)
     # tasks = in_api.getTasksByConditions(task_ids=[6603])
-    file_task_vos = in_api.getTaskFileUsageRecord(task_id=39903, project_id=120, file_type=TaskFileType.All)
+    task_id = 75607
+    file_task_vos = in_api.getTaskFileUsageRecord(task_id=task_id, project_id=project_id, file_type=TaskFileType.All)
     tasks = in_api.getTaskListPersonal(person_id=20200502)
-    files_dict = in_api.getTaskRelatedFiles(task_id=39903, file_type=TaskFileType.All)    # return dict: {TaskFileType: `TaskFileVO`}
-    task = in_api.getTaskFromID(task_id=39903)
-    # comments = in_api.getTaskComment(task_id=1885)        # TODO: GetTaskComment 的 jsonRequest 返回结果无法解释, 由于IN前端填了错误信息进数据库
+    files_dict = in_api.getTaskRelatedFiles(task_id=task_id, file_type=TaskFileType.All)    # return dict: {TaskFileType: `TaskFileVO`}
+    task = in_api.getTaskFromID(task_id=task_id)
+    comments = in_api.getTaskComment(task_id=task_id)        # TODO: GetTaskComment 的 jsonRequest 返回结果无法解释, 由于IN前端填了错误信息进数据库
 
 
     # ----- Tag -----
@@ -208,7 +210,7 @@ if _test_Get:
 _test_Tag = False
 if _test_Tag:
 
-    tag_name, resource_id, tag_object_id = 'BonProjectTag_1', 120, TagObjectID.Project
+    tag_name, resource_id, tag_object_id = 'BonProjectTag_10', 120, TagObjectID.Project
     # tag_name, resource_id, tag_object_id = 'BonWorkflowTag_1', 5748, TagObjectID.Workflow
     # tag_name, resource_id, tag_object_id = 'BonAssetTag_1', 1029, TagObjectID.Asset
     # tag_name, resource_id, tag_object_id = 'BonShotTag_1', 690, TagObjectID.Shot
@@ -415,7 +417,7 @@ if _test_Project:
 
     file_server_root = 'wsrd'
 
-    index = 13
+    index = 14
     project_name = 'PythonAPIProject_%s' % index
 
     # result: `INQProjectVO`
@@ -434,8 +436,9 @@ if _test_Project:
     print('Create Project: %s' % proj.projectId)
 
 
+
 # ------------------------------ PipelineStep ------------------------------
-_test_PipelineStep = False
+_test_PipelineStep = True
 if _test_PipelineStep:
 
     def createPipelineStep():

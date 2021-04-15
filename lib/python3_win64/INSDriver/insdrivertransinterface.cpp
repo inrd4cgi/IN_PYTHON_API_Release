@@ -127,9 +127,11 @@ namespace INS_INTERFACE {
         return new INSUpLoadUserAvatar(file, AbsolutePath);
     }
 
-    INSDRIVER_EXPORT INSUploadCommentFile *UploadCommentFile(const INSDataUploadComment &commentData) {
+    INSDRIVER_EXPORT INSUploadCommentFile *UploadCommentFile(const INSDataUploadComment &commentData,
+                                                             const QString & directory) {
         FileVO fileBase;
         fileBase.name = commentData.name;
+        fileBase.directory = directory;
         return new INSUploadCommentFile(fileBase, commentData);
     }
 

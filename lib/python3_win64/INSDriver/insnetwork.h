@@ -77,7 +77,7 @@ namespace INS
 		Q_OBJECT;
 
 	public:
-		INSHttpRequest(QObject* parent = nullptr);
+		explicit INSHttpRequest(QObject* parent = nullptr);
 
 		/*! 
 		 * \brief 获取QNetworkAccessManager对象的指针函数。

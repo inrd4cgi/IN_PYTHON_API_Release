@@ -37,9 +37,9 @@ namespace INS_INTERFACE
         WAITFORFINISHEDANDGETVALUETHENRETURN(shotGroups)
     }
 
-    MessageInfo GetSequenceShotGroup(INSequenceShotGroup &shotGroup, qint32 shotGroupId)
+    MessageInfo GetSequenceShotGroup(INSequenceShotGroup &shotGroup, qint32 shotGroupId,qint32 shotGroupVersion)
     {
-        INSCommonRequest<INSequenceShotGroup> commonRequest(5405, shotGroupId);
+        INSCommonRequest<INSequenceShotGroup> commonRequest(5405, shotGroupId,shotGroupVersion);
         WAITFORFINISHEDANDGETVALUETHENRETURN(shotGroup)
     }
 
@@ -79,15 +79,16 @@ namespace INS_INTERFACE
         WAITFORFINISHEDANDGETVALUETHENRETURN(shotGroups)
     }
 
-    MessageInfo RestoreSequenceShotGroupToCurrentVersion(INSequenceShotGroup &shotGroup, qint32 shotGroupId, qint32 version)
-    {
-        INSCommonRequest<INSequenceShotGroup> commonRequest(5412, shotGroupId, version);
-        WAITFORFINISHEDANDGETVALUETHENRETURN(shotGroup)
-    }
 
     MessageInfo SaveShotFilesReviewDataOfSequenceShotGroup(const INSequenceShotGroupReview &reviewData)
     {
         INSCommonRequest<qint32> commonRequest(5413, reviewData);
         WAITFORFINISHEDTHENRETURN
+    }
+
+    MessageInfo GetShotGroupGeneralShotsInformation(qint32 shotGroupId,INSequenceShotStatus & shotStatus)
+    {
+        INSCommonRequest<INSequenceShotStatus> commonRequest(5414,shotGroupId);
+        WAITFORFINISHEDANDGETVALUETHENRETURN(shotStatus)
     }
 };

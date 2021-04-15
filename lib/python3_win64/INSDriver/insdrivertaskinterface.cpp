@@ -54,6 +54,13 @@ namespace INS_INTERFACE {
         return commonRequest.getRetValue();
     }
 
+    INSDRIVER_EXPORT MessageInfo
+    GetNewTaskId(const InstanceTaskRequest& option) {
+        INSCommonRequest<qint32> commonRequest(5223, option);
+        commonRequest.WaitForFinished();
+        return commonRequest.getRetValue();
+    }
+
     //获取下一个可显示的状态
     INSDRIVER_EXPORT MessageInfo GetTaskNextAvailableStatus(QList<qint32> &taskStatus, int taskId) {
         INSCommonRequest<QList<qint32>> commonRequest(587, taskId);

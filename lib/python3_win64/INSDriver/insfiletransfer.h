@@ -92,6 +92,7 @@ namespace INS
 		MessageInfo m_responFromAppSever;	//应用服务器返回的业务结果。
 		QIODevice::OpenMode m_fileHandleOpenMode{ QIODevice::ReadWrite };
 		QSharedPointer<QTimer> m_waitFotResponTimer {nullptr};
+		QPair<qint32, QString> m_finishedResult;
 
 		/*!
 		 * \brief 注册文件传输步骤的函数。需要更改传输步骤和对应的执行函数时，要重载该函数。该函数需要手动调用。
@@ -220,6 +221,8 @@ namespace INS
 
 		void SetFinished(qint32 msgCode, const QString& strMsg);
 
+		QPair<qint32, QString> GetFinishedResult();
+
 		virtual void BeginFileTransferStep() {}
 		virtual void WaitAppServerResponse();
 
@@ -321,7 +324,7 @@ namespace INS
 
 
 	protected:
-        QPointer<DownloadFileOperator> m_downloadOperator{ nullptr };		//下载文件的具体操作对象
+        QSharedPointer<DownloadFileOperator> m_downloadOperator{ nullptr };		//下载文件的具体操作对象
 
 		void RegistStepFunc() override;
 
@@ -331,7 +334,7 @@ namespace INS
 		 * \param
 		 * \return
 		 */
-		virtual void DownloadFileFromServer();
+        virtual void DownloadFileFromServer();
 
 		void BeginFileTransferStep() override;
 	};
@@ -422,7 +425,7 @@ namespace INS
 	{
 		Q_OBJECT;
 	public:
-		TransferOperatorAbstract(INSFileTransfer* p_transfer, QObject* parent = nullptr);
+        explicit TransferOperatorAbstract(INSFileTransfer* p_transfer, QObject* parent = nullptr);
 
 		/*!
 		 * \brief 关闭QNetworkReply对象，关闭后，直接结束传输操作，需要手动删除传输中的文件和记录文件。
@@ -550,7 +553,10 @@ namespace INS
 		explicit DownloadFileOperator(INSFileTransfer* p_transfer, QObject* parent = nullptr);
 		void RunRequest() override;
 		void SlotReadyread(QByteArray& byteArray) override;
+        void ConnectReplySlot(QNetworkReply *netReply) override;
 		void SaveFileData(QByteArray& byteArray);
+		void UpdateTransData();
+
 		void ParseAndReturnError(int errorStatus, QByteArray& byteArray);
 
 		/*!
@@ -562,12 +568,12 @@ namespace INS
 		qint64 GetReceivedLength();
 
 		/*!
-		 * \brief 初始化文件的句柄的操作位置
+		 * \brief 初始化文件传输的位置和接收长度的变量数据
 		 * \details
-		 * \param[in] n_seek 文件已经接收到的长度。
+		 * \param[in]
 		 * \return
 		 */
-		void InitFileState(qint64 n_seek);
+		void InitTransState();
 
 		/*!
 		 * \brief 按照特定的格式，生成当前文件已经接收的数据长度的字符串。
@@ -577,7 +583,6 @@ namespace INS
 		 */
 		QByteArray GenerateContentRange(qint64 n_received);
 
-		void SlotRequestFinished() override;
 	};
 
 	class UploadTinyFileOperator : public TransferOperatorAbstract

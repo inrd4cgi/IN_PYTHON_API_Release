@@ -171,7 +171,6 @@ namespace INS
 		{
 			if(m_netReply->isOpen())
 				m_netReply->close();
-			qDebug() << "INSHttpRequest auto delete. url: " << m_netReply->url();
 			m_netReply->deleteLater();
 		}
 	}
@@ -186,17 +185,18 @@ namespace INS
         connect(netReply, &QNetworkReply::downloadProgress, this, &INSHttpRequestAbstract::SlotReadDataFromNetReply);
 		connect(netReply, &QNetworkReply::finished, this, &INSHttpRequestAbstract::SlotRequestFinished);
 		connect(netReply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &INSHttpRequestAbstract::SlotRequestError);
-		connect(m_netReply, &QObject::destroyed, []() {qDebug() << "m_netReply has been destroyed "; });
 	}
 
 	void INSHttpRequestAbstract::SlotReadDataFromNetReply(qint64 bytesReceived, qint64 bytesTotal)
 	{
 		if (!m_netReply.isNull())
         {
-		    QByteArray by(std::move(m_netReply->readAll()));
+            m_bytesReceived = bytesReceived;
+            m_bytesTotal = bytesTotal;
+
+            QByteArray by(std::move(m_netReply->readAll()));
             SlotReadyread(by);
         }
-
 	}
 
 	QString INSHttpRequestAbstract::GenerateHttpUrl(QString strAddress, QString strPort, const QString & strPath, const QStringList & strParam)

@@ -32,6 +32,14 @@ namespace INS_INTERFACE
 	 */
 	INSDRIVER_EXPORT MessageInfo EditTaskFileRelatedFiles(const QList<TaskFileRelationEditParam>& taskFileRelationEditParams);
 
+	/*!
+	 * \brief 通过参数，从服务器获取一个新的taskId。
+	 * \details
+	 * \param[in]option 获取pipeline step的参数
+	 * \return
+	 */
+	INSDRIVER_EXPORT MessageInfo GetNewTaskId(const InstanceTaskRequest& option);
+
 	////获取任务所绑定的团队，key--任务id value--团队id
 	//INSDRIVER_EXPORT MessageInfo GetTaskBindedTeamList(QMap<qint32, qint32>& taskBindTeams);
 
