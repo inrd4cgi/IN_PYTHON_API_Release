@@ -438,7 +438,7 @@ if _test_Project:
 
 
 # ------------------------------ PipelineStep ------------------------------
-_test_PipelineStep = True
+_test_PipelineStep = False
 if _test_PipelineStep:
 
     def createPipelineStep():
@@ -588,31 +588,30 @@ if _test_WorkflowTemplate:
 
 
         # ---------- Create WorkflowTemplate ----------
+        ids = [2700, 2701, 2702, 2703]
 
         # ---------- Test 1 ----------
         # 注意 parents 是一个 list
-        p1_1 = IN_DATA_STRUCTURE.PipelineNode(id=1183, alias='s1_alias_name')
-        p1_2 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
-        p1_3 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
-        p1_4 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
-        p1_5 = IN_DATA_STRUCTURE.PipelineNode(id=1183)
-        p2_1 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
-        p2_2 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
-        p2_3 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_1])
-        p2_4 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_2])
-        p2_5 = IN_DATA_STRUCTURE.PipelineNode(id=1184, parents=[p1_2])
-        p3_1 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_1, p2_2])
-        p3_2 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p1_4, p2_2])
-        p3_3 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_2])
-        p3_4 = IN_DATA_STRUCTURE.PipelineNode(id=1193, parents=[p2_3])
-        p4_1 = IN_DATA_STRUCTURE.PipelineNode(id=1197, parents=[p3_1])
-        p5_1 = IN_DATA_STRUCTURE.PipelineNode(id=1198, parents=[p4_1])
+        p1_1 = IN_DATA_STRUCTURE.PipelineNode(id=ids[0], alias='s1_alias_name')
+        p1_2 = IN_DATA_STRUCTURE.PipelineNode(id=ids[0])
+        p1_3 = IN_DATA_STRUCTURE.PipelineNode(id=ids[0])
+        p1_4 = IN_DATA_STRUCTURE.PipelineNode(id=ids[0])
+        p1_5 = IN_DATA_STRUCTURE.PipelineNode(id=ids[0])
+        p2_1 = IN_DATA_STRUCTURE.PipelineNode(id=ids[1], parents=[p1_1])
+        p2_2 = IN_DATA_STRUCTURE.PipelineNode(id=ids[1], parents=[p1_1])
+        p2_3 = IN_DATA_STRUCTURE.PipelineNode(id=ids[1], parents=[p1_1])
+        p2_4 = IN_DATA_STRUCTURE.PipelineNode(id=ids[1], parents=[p1_2])
+        p2_5 = IN_DATA_STRUCTURE.PipelineNode(id=ids[1], parents=[p1_2])
+        p3_1 = IN_DATA_STRUCTURE.PipelineNode(id=ids[2], parents=[p2_1, p2_2])
+        p3_2 = IN_DATA_STRUCTURE.PipelineNode(id=ids[2], parents=[p1_4, p2_2])
+        p4_1 = IN_DATA_STRUCTURE.PipelineNode(id=ids[3], parents=[p3_1])
+        p5_1 = IN_DATA_STRUCTURE.PipelineNode(id=ids[3], parents=[p4_1])
         pipeline_nodes = [p1_1, p1_2, p1_3, p1_4, p1_5, p2_1, p2_2, p2_3, p2_4, p2_5, p3_1, p3_2, p4_1, p5_1]
 
 
         # ---------- Test 2 ----------
-        column_count = 6
-        pipelines_id = [1183, 1184, 1193, 1197, 1198]
+        column_count = 4
+        pipelines_id = [2700, 2701, 2702, 2703]
         pipeline_nodes = []
 
         for row, pipeline_id in enumerate(pipelines_id):
@@ -670,13 +669,12 @@ if _test_Asset:
             print('Delete Asset %s: %s' % (asset.assetId, is_successful))
 
     # ----- Clear in RecycleBin -----
-    for record in in_api.getBusRecycleBinList(project_id=project_id):
-        if asset_name in record.objectName:
-            try:
-                in_api.deleteObjectInRecordBin(record_id=record.id)
-            except Exception as e:
-                logging.warning(e)
+    records_id = [record.id
+     for record in in_api.getBusRecycleBinList(project_id=project_id)
+     if asset_name in record.objectName]
 
+    if records_id:
+        in_api.deleteObjectInRecordBin(project_id=project_id, records_id=records_id)
 
     # ---------- createAsset ----------
     # result: `INAsset`
