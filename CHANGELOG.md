@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.18.6.0] - 2021-4-21
+### Updated
+  * `data_flow_get_task_list` https://wsrd.atlassian.net/browse/CP-169
+
+## [1.18.5.0] - 2021-4-19
+### Add test files
+
+## [1.18.4.0] - 2021-4-19
+### Add test files
+
+## [1.18.3.0] - 2021-4-19
+### Rebuild
+
 ## [1.18.2.0] - 2021-4-19
 ### Rebuild
 
