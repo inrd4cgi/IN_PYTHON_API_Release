@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.18.10.1] - 2021-5-18
+### Fixed
+  * rebuild
+
 ## [1.18.10.0] - 2021-5-18
 ### Fixed
   * Fix `getTasksByCondition` in backend
