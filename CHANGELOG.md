@@ -1,6 +1,30 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.18.10.0] - 2021-5-18
+### Fixed
+  * Fix `getTasksByCondition` in backend
+
+### Added
+  * Add `TaskPipelineType` for distinguish `PipelineType` and `TaskPipelineType`
+
+## [1.18.9.0] - 2021-5-12
+### Fixed
+  * Fix `deleteAsset`
+
+## [1.18.8.1] - 2021-5-12
+### Fixed
+  * rebuild
+
+## [1.18.8.0] - 2021-5-12
+### Fixed
+  * `getShotsByCondition` add argument `task_filter_param```
+  * `getAssetsByCondition` add argument `task_filter_param```
+
+## [1.18.7.0] - 2021-5-11
+### Fixed
+  * pops up error while checkin
+
 ## [1.18.6.0] - 2021-4-21
 ### Updated
   * `data_flow_get_task_list` https://wsrd.atlassian.net/browse/CP-169
