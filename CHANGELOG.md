@@ -1,5 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
+## [1.18.12] - 2021-6-21
+### Added
+  * Added a func `get_logged_status` to validate the login status
+## [1.18.11] - 2021-6-21
+### Fixed
+  * Fixed a bug that caused files to not upload correctly
 
 ## [1.18.10.1] - 2021-5-18
 ### Fixed
