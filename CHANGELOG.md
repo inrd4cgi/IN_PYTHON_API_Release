@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.19.0] - 2021-7-8
+### Added
+  * Modify Exception message
+  * Modify README.md
+
+
 ## [1.18.13] - 2021-6-26
 ### Fixed
   * Fix the attribute `tags` of `INAsset` got incorrect value
