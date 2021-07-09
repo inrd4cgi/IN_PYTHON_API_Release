@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.20.0] - 2021-7-8
+### Added
+  * add `findTaskStatus` method
+
+
 ## [1.19.0] - 2021-7-8
 ### Added
   * Modify Exception message
