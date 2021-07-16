@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.22.0] - 2021-7-16
+### Added
+  * Enhance error message
+
+
 ## [1.21.0] - 2021-7-16
 ### Added
   * check md5 before `download`
