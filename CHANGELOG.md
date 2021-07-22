@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.23.0] - 2021-7-22
+### Added
+  * Support javascript
+
+
 ## [1.22.0] - 2021-7-16
 ### Added
   * Enhance error message
