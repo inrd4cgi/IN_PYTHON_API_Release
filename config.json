@@ -17,11 +17,11 @@
     "SERVER_START_OVERTIME": 10,
     "USING_PYTHON_LOGGER_MODULE_FOR_STREAM": true,
     "DISABLE_ALL_OF_STD_STREAM": false,
-    "LOGGER_LEVEL": "debug",
-    "LOGGER_STREAM_LEVEL": "debug",
+    "LOGGER_LEVEL": "info",
+    "LOGGER_STREAM_LEVEL": "info",
     "LOGGER_FILE_LEVEL": "error",
-    "USING_PYTHON_SUBPROCESS_DW_FLAGS": false,
-    "SOURCE_IS_PYD_MODE": false,
+    "USING_PYTHON_SUBPROCESS_DW_FLAGS": true,
+    "SOURCE_IS_PYD_MODE": true,
     "USING_EXCEPTION_FULL_MSG": false,
     "USING_PYTHON_STDOUT_STREAM": true,
     "USING_PYTHON_SUBPROCESS": true,
@@ -36,13 +36,19 @@
     "LP_CONFIG_DIR": "C:\\test_3rd_party_plugins\\maya\\2019\\scripts\\IN_Dcc_Client\\Config",
     "FIXED_MAPPING_PATH": "",
     "PROJECT_FILE_FORMAT": {
-        "Maya": ["ma", "mb"],
-        "Houdini": ["hip", "hiplc", "hipnc"],
+        "Maya": [
+            "ma",
+            "mb"
+        ],
+        "Houdini": [
+            "hip",
+            "hiplc",
+            "hipnc"
+        ],
         "Unreal": []
     },
     "ENVIRONMENTS_VARIABLES": {
         "WS_EXTRA_PYTHON_INTERPRETER": ""
     },
-    "VERSION": "1.23.0"
+    "VERSION": "1.23.1"
 }
-
