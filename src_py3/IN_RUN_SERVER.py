@@ -18,9 +18,9 @@ print(current_path)
 sys.path.append(os.path.dirname(current_path))
 
 
-import IN_API_SERVER
-print(IN_API_SERVER)
-server = IN_API_SERVER.run_server()
+import IN_API_SERVER_B
+print(IN_API_SERVER_B)
+server = IN_API_SERVER_B.run(host='127.0.0.1', port='20618')
 
 
 
