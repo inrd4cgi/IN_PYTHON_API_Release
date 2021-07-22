@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.23.2] - 2021-7-22
+### Rebuild
+
 
 ## [1.23.1] - 2021-7-22
 ### Rebuild
