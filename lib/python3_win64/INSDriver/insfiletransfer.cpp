@@ -44,6 +44,62 @@ static const char* strInterfaceUploadTinyFile{ "/api/upload" };
 
 namespace INS
 {
+    class FileCheckCodeCalculator: public QObject
+    {
+    public:
+        explicit FileCheckCodeCalculator(INSFileTransfer* transObj, QFile* fileHandle)
+            :m_transObj(transObj), m_fileHandle(fileHandle)
+        {}
+
+        QString GetResult()
+        {
+            return m_result;
+        }
+
+	    static QString GetFileMd5(INSFileTransfer* transObj)
+	    {
+		    FileCheckCodeCalculator calculator(transObj, &transObj->m_fileHandle);
+
+		    //QEventLoop eventLoop(&calculator);
+		    //connect(&calculator, &QThread::finished, &eventLoop, &QEventLoop::quit);
+		    //calculator.start();
+		    //eventLoop.exec();
+			calculator.run();
+			return calculator.GetResult();
+	    }
+
+   
+        void run() 
+        {
+            QCryptographicHash hashCalculator(QCryptographicHash::Md5);
+            auto originPos = m_fileHandle->pos();
+            auto readChunk = m_transObj->m_fileChunkSize;
+	        auto fileSize = m_fileHandle->size();
+            m_fileHandle->seek(0);
+
+            while (fileSize > 0)
+            {
+				if (m_transObj->isTransFinished())
+				{
+					m_fileHandle->seek(originPos);
+					return;
+				}
+
+            	auto readData = m_fileHandle->read(readChunk);
+                hashCalculator.addData(readData);
+	            fileSize -= readData.size();
+            }
+
+	        m_result = QString(hashCalculator.result().toHex());
+	        m_fileHandle->seek(originPos);
+        }
+
+    private:
+        INSFileTransfer* m_transObj {nullptr};
+        QFile* m_fileHandle {nullptr};
+        QString m_result;
+    };
+
 	/*!
 	 * \class FileTransferRecorder
 	 * \ingroup
@@ -214,9 +270,11 @@ namespace INS
     class FileVoOperator
     {
     public:
-        FileVoOperator(const INS::FileVO& fileVo)
-            :m_fileVo(fileVo)
-        {}
+        FileVoOperator(INS::FileVO fileVo, int currentVersion)
+                :m_fileVo(std::move(fileVo))
+        {
+            m_fileVo.currentVersion = currentVersion;
+        }
 
         QString GetCurrentVersionMd5()
         {
@@ -240,18 +298,22 @@ namespace INS
         INS::FileVO m_fileVo;
     };
 
+
     /*************************************************************************************************
     Description: 传输文件[file],[root_dir]为文件根路径。
     *************************************************************************************************/
 	INSFileTransfer::INSFileTransfer(const FileVO & file, const QString & rootDir, const QString& absolutePath)
 		:m_file(file), m_fileAbsolutePath(absolutePath), m_rootDir(rootDir), m_step(INSFileTransferStep::enumRecvRepoInfo)
 	{
-        qDebug() << "rootDir ==" << rootDir;
+        m_fileAbsolutePath = m_fileAbsolutePath.replace(QRegExp("/{2,}"), "/");
+
         qDebug() << "absolutePath == " << absolutePath;
 	    qDebug() << "m_fileAbsolutePath == " << m_fileAbsolutePath;
 	    qDebug() << "m_rootDir" << m_rootDir;
 		//上传下载业务不需要加锁，将基类锁解锁。
 		m_lock.unlock();
+
+		connect(this, &INSFileTransfer::SigReqCancelTransfer, this, &INSFileTransfer::CancelTransfer, Qt::DirectConnection);
 	}
 
 	INSFileTransfer::~INSFileTransfer()
@@ -274,7 +336,7 @@ namespace INS
 	{
 		m_step = transferStep;
 		auto p_stepFunc = m_stepFunc.value(m_step, nullptr);
-		if (p_stepFunc)
+		if (p_stepFunc && !m_transFinished)
 			p_stepFunc();
 	}
 
@@ -327,9 +389,7 @@ namespace INS
 		if (!tmpFileHandle->isOpen())
 			tmpFileHandle->open(m_fileHandleOpenMode);
 
-		QCryptographicHash hashObj(QCryptographicHash::Md5);
-		hashObj.addData(tmpFileHandle);
-		return QString(hashObj.result().toHex());
+		return FileCheckCodeCalculator::GetFileMd5(this);
 	}
 
 	bool INSFileTransfer::InitFileHandle(bool bCreateIfNotExist)
@@ -354,11 +414,11 @@ namespace INS
 
 	void INSFileTransfer::InitFileAbsolutePath()
 	{
-		
 		if (m_fileAbsolutePath.isEmpty())
 		{
 			m_fileAbsolutePath = m_rootDir + m_file.directory + "/" + m_file.name;
-			qInfo() << "InitFileAbsolutePath. fileName: " << m_fileAbsolutePath;
+            m_fileAbsolutePath = m_fileAbsolutePath.replace(QRegExp("/{2,}"), "/");
+            qInfo() << "InitFileAbsolutePath. fileName: " << m_fileAbsolutePath;
 		}
 	}
 
@@ -597,7 +657,6 @@ namespace INS
 	void INSUpLoad::CancelTransfer()
 	{
 		RunStepFunc(INSFileTransferStep::enumCancelTransfer);
-		m_step = INSFileTransferStep::enumNone;
 		m_fileRecorder->SetRecordFileDeleted(true);
 	}
 
@@ -635,19 +694,19 @@ namespace INS
 
 	void INSUpLoad::InitUploadFile()
 	{
-		InitUploadInfoOperator* p_operator = new InitUploadInfoOperator(this, this);
+        auto p_operator = new InitUploadInfoOperator(this, this);
 		p_operator->RunRequest();
 	}
 
 	void INSUpLoad::CheckUploadStateBeforeTransfer()
 	{
-		CheckFileStateOperator* p_operator = new CheckFileStateOperator(this, this);
+        auto p_operator = new CheckFileStateOperator(this, this);
 		p_operator->RunRequest();
 	}
 
 	void INSUpLoad::UploadFileToFileServer()
 	{
-		UploadFileOperator* p_operator = new UploadFileOperator(this, this);
+        auto p_operator = new UploadFileOperator(this, this);
 		p_operator->RunRequest();
 	}
 
@@ -664,8 +723,12 @@ namespace INS
 			return;
 		}
 
-		CancelTransferOperator* p_operator = new CancelTransferOperator(this, this);
-		p_operator->RunRequest();
+		if (!m_fileRepoInfo.token.isEmpty() && !m_fileInfoInFileServer.m_fileId.isEmpty())
+        {
+            auto p_operator = new CancelTransferOperator(this, this);
+            p_operator->RunRequest();
+        }
+        m_step = INSFileTransferStep::enumNone;
 		SetFinished((int)(ClientTransMsg::enumInfoAbort), "trans abort.");
 	}
 
@@ -700,7 +763,10 @@ namespace INS
 		transferInfo.insert(QString("fileId"), m_file.fileId);
 
 		if (m_file.currentVersion > 0)
+        {
+            m_fileCurrentVersion = m_file.currentVersion;
 			transferInfo.insert(QString("version"), m_file.currentVersion);
+        }
 
 		QByteArray jsonStr;
 		jsonStr = JsonMessageUtils::dataToJsonArrayBinaryData(transferInfo);
@@ -734,7 +800,7 @@ namespace INS
 	void INSDownLoad::DownloadFileFromServer()
 	{
 		//下载之前检测本地文件是否存在
-		if (GetFileMd5(&m_fileHandle) == FileVoOperator(m_file).GetCurrentVersionMd5())
+		if (GetFileMd5(&m_fileHandle) == FileVoOperator(m_file, m_fileCurrentVersion).GetCurrentVersionMd5())
 		{
 			if(m_fileHandle.isOpen())
 				m_fileHandle.close();
@@ -766,7 +832,7 @@ namespace INS
 
 		if (!m_fileRecorder->isRecordFileExist() || !isTheFileSameAsTheOld())
         {
-            FileVoOperator fileVoOperator(m_file);
+            FileVoOperator fileVoOperator(m_file, m_fileCurrentVersion);
 			m_fileRecorder->InitRecordFile(m_fileRepoInfo.size, fileVoOperator.GetCurrentFileLastModifyTime(),
 			        m_transferType, fileVoOperator.GetCurrentVersionMd5());
         }
@@ -800,7 +866,7 @@ namespace INS
 
 	void INSCheckOut::DownloadFileFromServer()
 	{
-        if (GetFileMd5(&m_fileHandle) == FileVoOperator(m_file).GetCurrentVersionMd5())
+        if (GetFileMd5(&m_fileHandle) == FileVoOperator(m_file, m_fileCurrentVersion).GetCurrentVersionMd5())
         {
         	if(m_fileHandle.isOpen())
         		m_fileHandle.close();
@@ -930,6 +996,13 @@ namespace INS
 	{
 		qWarning() << "Http request error. error type: " << netError << "  error url: "<< m_netReply->url();
 		qWarning() << "error code: " << m_errorMsg.first << " error msg: " << m_errorMsg.second;
+
+        ManuaAbortNetworkReply();
+        if (!m_transferObj.isNull())
+        {
+            FinishedOperator(INSFileTransferStep::enumNone, false);
+            m_transferObj->SetFinished(static_cast<qint32>(INSFileTransfer::ClientTransMsg::enumNetworkError), tr("Network error"));
+        }
 	}
 
 
@@ -981,6 +1054,8 @@ namespace INS
 	{
 	    if (m_transferObj.isNull())
             return;
+        if (m_bytesReceived >= m_bytesTotal)
+            ManuaAbortNetworkReply();
 
 		QJsonObject jsonObj;
 		auto retResult = m_transferObj->GetValidJsonFromByteArray(byteArray, jsonObj);
@@ -994,9 +1069,8 @@ namespace INS
 			m_transferObj->RunStepFunc(INSFileTransferStep::enumCheckFileState);
 		}
 		else
-		{
-			qWarning() << "init upload error." << " code: " << retResult.first << " message: " << retResult.second;
-		}
+			qWarning() << "init upload error." << " code: " << retResult.first << " message: " << retResult.second
+			<< "status code: " << m_netReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
 	}
 
 
@@ -1019,6 +1093,8 @@ namespace INS
 	{
 	    if (m_transferObj.isNull())
             return;
+        if (m_bytesReceived >= m_bytesTotal)
+            ManuaAbortNetworkReply();
 
 		QJsonObject jsonObj;
 		auto retResult = m_transferObj->GetValidJsonFromByteArray(byteArray, jsonObj);
@@ -1034,7 +1110,8 @@ namespace INS
 		else
 		{
 			m_transferObj->SetFinished(retResult.first, retResult.second);
-			qWarning() << "check upload state error. code: " << retResult.first << " msg: " << retResult.second;
+			qWarning() << "check upload state error. code: " << retResult.first << " msg: " << retResult.second
+                    << "status code: " << m_netReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
 		}
 	}
 
@@ -1106,6 +1183,8 @@ namespace INS
 	{
 		if(byteArray.size() <= 0 || m_transferObj.isNull())
 			return;
+        if (m_bytesReceived >= m_bytesTotal)
+            ManuaAbortNetworkReply();
 
 		QJsonObject jsonObj;
 		auto retResult = m_transferObj->GetValidJsonFromByteArray(byteArray, jsonObj);
@@ -1123,7 +1202,8 @@ namespace INS
 		else
 		{
 			m_transferObj->SetFinished(retResult.first, retResult.second);
-			qWarning() << "upload failed. code: " << retResult.first << " msg: " << retResult.second;
+			qWarning() << "upload failed. code: " << retResult.first << " msg: " << retResult.second
+                    << "status code: " << m_netReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
 		}
 	}
 
@@ -1167,6 +1247,8 @@ namespace INS
 	{
         if (m_transferObj.isNull())
             return;
+        if (m_bytesReceived >= m_bytesTotal)
+            ManuaAbortNetworkReply();
 
 		QJsonObject jsonObj;
 		auto retResult = m_transferObj->GetValidJsonFromByteArray(byteArray, jsonObj);
@@ -1176,7 +1258,8 @@ namespace INS
 		}
 		else
 		{
-			qWarning() << "Cancel upload failed. code: " << retResult.first << " msg: " << retResult.second;
+			qWarning() << "Cancel upload failed. code: " << retResult.first << " msg: " << retResult.second
+                    << "status code: " << m_netReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
 		}
 	}
 
@@ -1201,7 +1284,8 @@ namespace INS
 
 		qint64 receivedLength{ GetReceivedLength() };
 		QByteArray contentRange{ GenerateContentRange(receivedLength) };
-		netReq.setRawHeader("Range", contentRange);
+		if (!contentRange.isEmpty())
+		    netReq.setRawHeader("Range", contentRange);
 
 		m_netReply = INSNETWORKHTTP->post(netReq, QJsonDocument(reqParam).toJson());
 		ConnectReplySlot(m_netReply);
@@ -1212,7 +1296,7 @@ namespace INS
 
 	void DownloadFileOperator::SlotReadyread(QByteArray & byteArray)
 	{
-		if (m_transferObj.isNull() || m_transferObj->isFinished())
+		if (m_transferObj.isNull() || m_transferObj->isTransFinished())
 			return;
         if (m_bytesReceived >= m_bytesTotal)
             ManuaAbortNetworkReply();
@@ -1260,7 +1344,7 @@ namespace INS
 	        return;
         }
 
-	    FileVoOperator fileVoOperator(m_transferObj->m_file);
+	    FileVoOperator fileVoOperator(m_transferObj->m_file, m_transferObj->m_fileCurrentVersion);
 	    m_transferObj->m_fileHandle.setFileTime(fileVoOperator.GetCurrentFileLastModifyTime(), QFileDevice::FileModificationTime);
 	    m_transferObj->m_fileHandle.setFileTime(m_transferObj->m_file.createTime, QFileDevice::FileBirthTime);
 
@@ -1302,11 +1386,14 @@ namespace INS
 
 	QByteArray DownloadFileOperator::GenerateContentRange(qint64 n_received)
 	{
+        auto fileSize = m_transferObj->m_fileRepoInfo.size;
+        if (fileSize == 0)
+            return {};
+
 		QString contentRange("bytes=");
 		contentRange.append(QString::number(n_received) + "-");
 
 		qint64 endSize = n_received + m_transferObj->m_fileChunkSize;
-		auto fileSize = m_transferObj->m_fileRepoInfo.size;
 		if (endSize < fileSize)
 			contentRange.append(QString::number(endSize));
 		return contentRange.toStdString().c_str();
@@ -1367,6 +1454,8 @@ namespace INS
 	{
 		if(byteArray.size() <= 0 || m_transferObj.isNull())
 			return;
+        if (m_bytesReceived >= m_bytesTotal)
+            ManuaAbortNetworkReply();
 
 		QJsonObject jsonObj;
 		auto retResult = m_transferObj->GetValidJsonFromByteArray(byteArray, jsonObj);
@@ -1383,7 +1472,8 @@ namespace INS
 		else
 		{
 			m_transferObj->SetFinished(retResult.first, retResult.second);
-			qWarning() << "upload failed. code: " << retResult.first << " msg: " << retResult.second;
+            qWarning() << "upload failed. code: " << retResult.first << " msg: " << retResult.second
+            << "status code: " << m_netReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
 		}
 	}
 

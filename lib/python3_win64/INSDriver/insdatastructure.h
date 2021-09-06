@@ -67,13 +67,14 @@ namespace INS {
         qint32 version = 0;					//文件版本0
         qint32 authorId = 0;				//文件作者的id值
         QString authorName = "";			//作者名字
+        IdName lastModifyBy;                //谁上传的这个文件
         QString comment = "";				//对文件最新上传时的评论
         QDateTime lastModifyTime = QDateTime();         //文件最后一次修改时间
         qint32 action = 1;					//产生该版本的动作
         qint64 size = 0;					//文件大小，字节
         QString checkCode;//校验码
 
-    Serialization(fileId, projectId, version, authorId, authorName, comment, lastModifyTime, action, size, checkCode)
+    Serialization(fileId, projectId, version, authorId, authorName, lastModifyBy, comment, lastModifyTime, action, size, checkCode)
     };
     //*********************************************************************************************************
 
@@ -643,6 +644,125 @@ namespace INS {
 
         Serialization(projectId, taskId, personList);
     };
+
+    struct TaskRelationFile {
+        qint32 fileId           = 0;  //文件ID。必填
+        qint32 variantId        = 0;  //variantId。requiredFile必填，其他可填。
+        qint32 isIntermediate   = 0;  //
+        qint32 isReview         = 0;  //
+        QString path            = ""; //文件所在的目录，不包括文件名。以"/"开头，但不以"/"结尾。例如：/ab/cd/ef
+        QString name            = ""; //文件名,包括后缀。例如：abc.txt
+
+    Serialization(fileId,variantId,isIntermediate, isReview, path, name);
+    };
+    struct TaskRelationFileRequest {
+        qint32 taskId           = 0; //任务ID。 必填
+        qint32 fileType         = 0; //文件类型。0 referenceFile;1 repositoryFile(废弃);2 requiredFile; 3 outputFile
+        QList<TaskRelationFile> fileList;
+
+    Serialization(taskId, fileType, fileList);
+    };
+
+
+	struct FileComment {
+		QString comment;
+		QString commentBy;
+		QDateTime date;
+
+		Serialization(comment, commentBy, date);
+	};
+	struct OutputFileRequest {
+		qint32  projectId = 0;    //项目ID  [必填]
+		qint32  objectType = 0;    //类型  0 资产 ; 1 镜头  [必填]
+		qint32  pipelineStepId = 0;    //工作节点ID [必填]
+		QString assetName = "";   //资产名、资产别名  需要支持模糊匹配 [可选]
+		qint32  seasonId = 0;    //季度ID TV项目[必填]，FILM项目[可选]
+		qint32  episodeId = 0;    //集数ID [可选]
+		qint32  sceneId = 0;    //场次ID [可选]
+		qint32  shotNumber = 0;    //镜头号  需要支持模糊匹配 [可选]
+		QString fileName = "";   //文件名  需要支持模糊匹配 [可选]
+
+		Serialization(projectId, objectType, pipelineStepId, assetName, seasonId, episodeId, sceneId, shotNumber, fileName)
+	};
+
+	struct TaskTree {
+		qint32  taskId = 0;        //任务ID
+		QString taskName = "";       //任务名称
+		QString alias = "";       //任务别名
+		qint32  pipelineStepId = 0;        //pstId
+		QString pipelineStepName = "";       //pst节点名称
+		qint32  status = 0;        //任务状态 None = 0,ToDo = 1,WorkInProgress = 2,PendingApproval = 3,PendingPanelReview = 4,Reopen = 5,PendingValidation = 6,Approval = 7,Paused = 8,Deprecated = 9,OnHold = 10
+		QList<FileVO> fileList;                 //任务输出文件列表
+
+		Serialization(taskId, taskName, alias, pipelineStepId, pipelineStepName, status, fileList)
+
+			bool operator==(const TaskTree& task) const {
+			return task.taskId == this->taskId;
+		}
+	};
+	struct AssetVariant {
+		qint32  variantId = 0;            //variantId
+		QString variantName = "";           //名称
+		QList<TaskTree> taskList;               //任务列表
+
+		Serialization(variantId, variantName, taskList)
+
+			bool operator==(const AssetVariant& av) const {
+			return av.variantId == this->variantId;
+		}
+	};
+
+	struct ObjectAsset {
+		qint32  assetId = 0;            //资产ID
+		QString assetName = "";           //资产名称
+		QString alias = "";           //资产别名
+		QList<AssetVariant>     variantList;    //资产下variant列表
+
+		Serialization(assetId, assetName, alias, variantList)
+
+			bool operator==(const ObjectAsset& oa) const {
+			return oa.assetId == this->assetId;
+		}
+	};
+	struct ObjectShot {
+		qint32  shotId = 0;            //镜头ID
+		QString shotName = "";           //镜头号
+		QList<TaskTree> taskList;               //任务列表
+
+		Serialization(shotId, shotName, taskList)
+	};
+
+	struct ObjectScene {
+		qint32  sceneId = 0;
+		QString sceneName = "";
+		QList<ObjectShot>   shotList;
+
+		Serialization(sceneId, sceneName, shotList)
+	};
+	struct ObjectEpisode {
+		qint32  episodeId = 0;
+		QString episodeName = "";
+		QList<ObjectScene>  sceneList;
+
+		Serialization(episodeId, episodeName, sceneList)
+	};
+	struct ObjectSeason {
+		qint32  seasonId = 0;
+		QString seasonName = "";
+		QList<ObjectEpisode> episodeList;
+
+		Serialization(seasonId, seasonName, episodeList)
+	};
+	struct OutputFileResponse {
+		qint32  projectId = 0;    //项目ID
+		QString projectName = "";   //项目名称
+		qint32  projectType = 0;    //项目类型 1 电影; 2 电视
+		qint32  objectType = 0;    //类型  0 资产 ; 1 镜头
+		QList<ObjectAsset>    assetList;  //资产列表
+		QList<ObjectSeason>   seasonList; //镜头列表
+
+		Serialization(projectId, projectName, projectType, objectType, assetList, seasonList)
+	};
 
 
 	//**************************************************************************************************
@@ -1876,14 +1996,29 @@ namespace INS {
 		Serialization(pipelineStepId, matchedPipelineStepPathIds, matchedPipelineStepIds)
 	};
 
-	struct TaskPipelineStepVO {
-		qint32 taskId = 0;
-		QString taskName = "";
-		qint32 pipelineStepId = 0;
-		QString pipelineName = "";
+    /**
+ * 文件的匹配状态
+ */
+    struct TaskPipelineStepFileMatchedVO {
+        QString filePath = "";//文件路径
+        QString fileName = "";//文件名字
 
-		Serialization(taskId, taskName, pipelineStepId, pipelineName)
-	};
+        qint32 matchedState = 0;//是否匹配
+
+        Serialization(filePath, fileName, matchedState)
+    };
+
+    struct TaskPipelineStepVO {
+        qint32 taskId = 0;
+        QString taskName = "";
+        qint32 pipelineStepId = 0;
+        QString pipelineName = "";
+
+        qint32 matchedState = 0;//总体来说的匹配情况
+        QList<TaskPipelineStepFileMatchedVO> taskPipelineStepFileMatchedVOs;//需要匹配的文件信息
+
+        Serialization(taskId, taskName, pipelineStepId, pipelineName, matchedState, taskPipelineStepFileMatchedVOs)
+    };
 
 	struct TaskPipelineStepMappingStateVO {
 		enum {
@@ -1896,7 +2031,7 @@ namespace INS {
 		TaskPipelineStepVO shotTaskPipelineStep;
 
 		//key 匹配情况枚举，value 涉及到的任务
-		QMap<qint32, QList<TaskPipelineStepVO>> assetTaskPipelineStepState;
+        QList<TaskPipelineStepVO> assetTaskPipelineStepState;
 
 		qint32 matchedState = 0;//总体来说的匹配情况
 
@@ -1912,13 +2047,101 @@ namespace INS {
 		Serialization(variantId, variantName, assetId, assetName)
 	};
 
-	struct ShotAssetMappingView {
-		qint32 shotId = 0;//镜头id
-		QString shotName = "";//镜头名字
+    struct ShotAssetMappingView {
 
-		QList<QPair<AssetVariantSimpleInfoVO, qint32>> variantMatchedPairs;//variant简单匹配信息
+        enum {
+            NORMAL = 0,
+            DISABLE
+        };
 
-		Serialization(shotId, shotName, variantMatchedPairs)
+        qint32 shotId = 0;//镜头id
+        QString shotName = "";//镜头名字
+
+        QList<QPair<AssetVariantSimpleInfoVO, qint32>> variantMatchedPairs;//variant简单匹配信息
+
+        qint32 status = NORMAL;//状态: 0 NORMAL, 1: DISABLE
+
+        Serialization(shotId, shotName, variantMatchedPairs, status)
+    };
+
+	/**
+	 * 批量文件下载请求
+	 */
+	struct FileDownloadItem {
+		qint32 fileId = 0;      //文件id
+		qint32 version = 0;     //文件版本号，特殊值含义： -1表示获取该文件所有版本信息，0表示获取当前最新版本信息
+
+		Serialization(fileId, version)
+	};
+
+	struct FileDownloadRequestParam {
+		qint32 taskId = 0;    //任务ID，下载任务关联文件时必填。非任务关联文件可填
+		QList<FileDownloadItem> fileList;
+
+		Serialization(taskId, fileList)
+	};
+
+	/**
+	 * 批量文件下载应答
+	 */
+	struct FileStorageInfo {
+		QString ip = ""; //存储服务器IP地址
+		qint32 port = 0; //存储服务器的端口
+		QString path = "";//文件服务器的文件路径
+		QString name = "";//文件在存储服务器的文件名称,一般跟应用服务器的文件名不相同
+		FileVersionVO fileVersionVo; //文件版本信息
+
+		Serialization(ip, port, path, name, fileVersionVo)
+	};
+	struct FileDownloadResponseParam {
+		qint32  fileId = 0;                //文件id
+		QString token = "";               //文件传输的校验码
+		QList<FileStorageInfo>  fileList;   //文件不同版本对应存储服务器信息
+		FileVO  clientInfo;                 //文件基本信息
+
+		Serialization(fileId, token, fileList, clientInfo)
+	};
+
+	/**
+	 * 批量文件上传请求
+	 */
+	struct FileUploadItem {
+		qint32  fileId = 0;    //文件ID。填任务关联文件ID，如果为新文件可以不填。
+		qint32  fileType = 0;    //文件类型。任务关联文件必填，其他可以不填。 0 referenceFile;1 repositoryFile(废弃);2 requiredFile; 3 outputFile
+		QString path = "";   //文件相对路径。由客户端处理
+		QString fileName = "";   //文件名字
+		QString checkCode = "";   //文件md5
+
+		Serialization(fileId, fileType, path, fileName, checkCode)
+	};
+
+	struct FileUploadRequestParams {
+		qint32 projectId = 0; //项目ID  任务关联文件必填，其他类型文件可填
+		qint32 taskId = 0; //任务id  任务关联文件必填，其他类型文件可填
+		qint32 assetId = 0; //资产ID，上传资产参考文件必填，其他可填
+		qint32 shotId = 0; //镜头ID，上传镜头参考文件必填，其他可填
+		qint32 uploadType = 0; //上传类型。 0 任务关联文件; 1 头像文件; 2 placeholder文件 ; 3 评论文件; 4 library文件(for python api); 5 中间文件; 6 资产/镜头参考文件
+		QList<FileUploadItem> files;//文件信息
+
+		Serialization(projectId, taskId, assetId, shotId, uploadType, files)
+	};
+
+	/**
+	 * 批量文件上传应答
+	 */
+	struct TransferFileInfo {
+		FileVO file;//对应的文件信息
+		MessageInfo message;//对应的成功失败信息, messageInfo: 1：成功，2：已存在，不用上传 3：没有权限，4：其他错误
+		QString token = "";//文件传输的校验码
+
+		Serialization(file, message, token)
+	};
+	struct FileUploadResponseParams {
+		QString ip = ""; //存储服务器IP地址
+		qint32 port = 0; //存储服务器的端口
+		QList<TransferFileInfo> fileInfos;//上传的任务下的文件的客户端信息
+
+		Serialization(ip, port, fileInfos)
 	};
 
 	struct INReviewProject {
@@ -1965,8 +2188,9 @@ namespace INS {
         qint32 projectId = 0;   //指定审批任务所属的项目
         qint32 objectType = 0;  //指定审批任务所属的类型，0 == asset，1 == shot, 2 == seq
         qint32 orderBy = 0;     //排序方式：默认time，1 == pipeline step name
+        qint32 taskStatus = 0;  //按照任务的状态筛选
 
-        Serialization(projectId, objectType, orderBy);
+        Serialization(projectId, objectType, orderBy, taskStatus);
     };
 
 	struct INReviewTaskList {
@@ -2037,5 +2261,16 @@ namespace INS {
 
         Serialization(sourceProject, pipelineSteps, pipelineStepWorkPath, workFlows, workFlowFiles,
                       pipelineStepMappingVOs)
+    };
+
+    struct TaskOutputFile {
+
+        qint32 fileId = 0;
+        qint32 isIntermediate = 0;
+        qint32 isReview = 0;
+        QString path;   //文件所在的目录，不包括文件名。以"/"开头，但不以"/"结尾。例如：/ab/cd/ef
+        QString name;   //文件名,包括后缀。例如：abc.txt
+
+        Serialization(fileId, isIntermediate, isReview, path, name);
     };
 };

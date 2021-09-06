@@ -56,7 +56,8 @@ namespace INS
 		enum class ClientTransMsg
 		{
 			enumInfoAbort = 10000,
-			enumInfoTimeout = 20000, enumInfoFileOpenFailed, enumFileIsNotExist
+			enumInfoTimeout = 20000, enumInfoFileOpenFailed, enumFileIsNotExist,
+			enumNetworkError = 30000
 		};
 
 		friend class TransferOperatorAbstract;
@@ -72,11 +73,10 @@ namespace INS
 
 		FileVO m_file;	//客户端输入的文件结构体对象。包含客户端输入的文件数据。
 
-		bool isFinished() { return m_transFinished; }
+		bool isTransFinished() { return m_transFinished; }
 
 		void Process(const QByteArray&) override;	//接收应用服务器的请求，并分析业务的函数。
 		virtual bool Start() = 0;
-		virtual void CancelTransfer() = 0;
 
 		quint32 m_transferType{ 0x00000000 };	//传输业务的类型，
 		QString m_rootDir;
@@ -93,6 +93,7 @@ namespace INS
 		QIODevice::OpenMode m_fileHandleOpenMode{ QIODevice::ReadWrite };
 		QSharedPointer<QTimer> m_waitFotResponTimer {nullptr};
 		QPair<qint32, QString> m_finishedResult;
+		qint32 m_fileCurrentVersion {0};
 
 		/*!
 		 * \brief 注册文件传输步骤的函数。需要更改传输步骤和对应的执行函数时，要重载该函数。该函数需要手动调用。
@@ -253,7 +254,18 @@ namespace INS
 		 * \return
 		 */
         void SigTransLength(qint64);
-    };
+
+        /*!
+         * \brief 请求取消传输的信号，触发该信号，会调用取消函数
+         * \details
+         * \param
+         * \return
+         */
+        void SigReqCancelTransfer();
+
+	protected:
+		virtual void CancelTransfer() = 0;
+	};
 
 
 	//上传文件
@@ -265,7 +277,6 @@ namespace INS
 		INSUpLoad(const FileVO& file, const QString& rootDir, const QString& absolutePath = QString());
 
 		bool Start() override;
-		void CancelTransfer() override;
 
 	protected:
 	    qint64 m_tinyUploadSize = 32 * 1024 * 1024 - 500;
@@ -274,6 +285,7 @@ namespace INS
 
 		void RegistStepFunc() override;
 		void BeginFileTransferStep() override;
+		void CancelTransfer() override;
 
 		/*!
 		 * \brief 封装上传文件到文件服务器的具体操作。
@@ -320,6 +332,8 @@ namespace INS
 		INSDownLoad(const FileVO& file, const QString&rootDir);
 
 		bool Start() override;
+
+	protected:
 		void CancelTransfer() override;
 
 
@@ -382,12 +396,13 @@ namespace INS
 		INSUploadTinyFile(const FileVO& file, const QString& rootDir, const QString& absolutePath = QString());
 
 		bool Start() override;
-		void CancelTransfer() override;
 
 	protected:
 		void BeginFileTransferStep() override;
+		void CancelTransfer() override;
 
-        QPointer<UploadTinyFileOperator> m_uploadOperator{ nullptr };
+
+		QPointer<UploadTinyFileOperator> m_uploadOperator{ nullptr };
 	};
 
 	/*!

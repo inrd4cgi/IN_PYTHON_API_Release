@@ -101,7 +101,9 @@ namespace INS
 		HOLIDAY_ADD = 1011,//C创建节假日
 		HOLIDAY_EDIT = 1012,//编辑节假日
 		HOLIDAY_DEL = 1013, //删除节假日
-		TASK_ON_HOLD = 1267 //手动暂停
+		TASK_ON_HOLD = 1267, //手动暂停
+        TASK_ADD_OUTPUT_FILE = 1288,    //上传任务output file，包括新文件，已有文件新版本。
+        TASK_REMOVE_OUTPUT_FILE = 1289  //删除任务output file
 	};
 
 	/************************************************************************

@@ -170,6 +170,46 @@ namespace INS_INTERFACE {
         return commonRequest.getRetValue();
     }
 
+    MessageInfo saveTaskOutPutFile(qint32 taskId, const QList<TaskOutputFile> &taskOutputFiles)
+    {
+        INSCommonRequest<qint32> commonRequest(5215, taskId, taskOutputFiles);
+        commonRequest.WaitForFinished();
+        return commonRequest.getRetValue();
+    }
+
+    INSDRIVER_EXPORT MessageInfo saveTaskRelationFile(const TaskRelationFileRequest& request){
+        INSCommonRequest<qint32> commonRequest(5215, request);
+        commonRequest.WaitForFinished();
+        return commonRequest.getRetValue();
+    }
+
+    INSDRIVER_EXPORT MessageInfo GetTaskOutputFileComment(qint32 taskId, QList<FileComment>& fileComments) {
+		INSCommonRequest<QList<FileComment>> commonRequest(5216, taskId);
+		commonRequest.WaitForFinished();
+        fileComments = commonRequest.getRecvData();
+		return commonRequest.getRetValue();
+    }
+	INSDRIVER_EXPORT MessageInfo GetTaskDefaultOutputPath(qint32 taskId, QString& path) {
+		INSCommonRequest<QString> commonRequest(5217, taskId);
+		commonRequest.WaitForFinished();
+        path = commonRequest.getRecvData();
+		return commonRequest.getRetValue();
+    }
+	INSDRIVER_EXPORT MessageInfo getOutputFiles(const OutputFileRequest& request, OutputFileResponse& response) {
+		INSCommonRequest<OutputFileResponse> commonRequest(5218, request, response);
+		commonRequest.WaitForFinished();
+        response = commonRequest.getRecvData();
+		return commonRequest.getRetValue();
+    }
+	INSDRIVER_EXPORT MessageInfo getRequiredFiles(qint32 taskId, QList<OutputFileResponse>& responseList) {
+		INSCommonRequest<QList<OutputFileResponse>> commonRequest(5219, taskId);
+		commonRequest.WaitForFinished();
+        responseList = commonRequest.getRecvData();
+		return commonRequest.getRetValue();
+    }
+
+
+
     ///任务审批流程的获取
     INSDRIVER_EXPORT MessageInfo getTaskApprovalList(qint32 taskId, QList<TaskApproval> &approvalList) {
         INSCommonRequest<QList<TaskApproval>> commonRequest(5205, taskId);

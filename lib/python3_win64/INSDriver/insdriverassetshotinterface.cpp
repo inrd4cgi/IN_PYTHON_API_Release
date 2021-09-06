@@ -81,6 +81,28 @@ namespace INS_INTERFACE {
 		return commonRequest.getRetValue();
 	}
 
+	INSDRIVER_EXPORT MessageInfo uploadFilesBatch(const FileUploadRequestParams& request, FileUploadResponseParams& response) {
+		INSCommonRequest<FileUploadResponseParams> commonRequest(340, request);
+		commonRequest.WaitForFinished();
+        response = commonRequest.getRecvData();
+		return commonRequest.getRetValue();
+
+    }
+    INSDRIVER_EXPORT MessageInfo downloadFilesBatch(const FileDownloadRequestParam& request, QMap<qint32, FileDownloadResponseParam>& response) {
+
+		INSCommonRequest< QMap<qint32, FileDownloadResponseParam>> commonRequest(341, request);
+		commonRequest.WaitForFinished();
+		response = commonRequest.getRecvData();
+		return commonRequest.getRetValue();
+    }
+	INSDRIVER_EXPORT MessageInfo postFileComment(const QSet<qint32>& fileIds, const QString& comment) {
+		INSCommonRequest<qint32> commonRequest(342, fileIds, comment);
+		commonRequest.WaitForFinished();
+		return commonRequest.getRetValue();
+	}
+
+
+
     INSDRIVER_EXPORT MessageInfo SaveVariantBath(qint32 assetId, const QList<VariantEditParam> &variantEditParams) {
         INSCommonRequest<qint32> commonRequest(5601, assetId, variantEditParams);
         commonRequest.WaitForFinished();

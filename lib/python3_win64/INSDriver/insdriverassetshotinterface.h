@@ -33,6 +33,9 @@ namespace INS_INTERFACE
 
 	// 到此为止 ////
 	INSDRIVER_EXPORT MessageInfo GetAssetOrShotReferenceFiles(QMap<qint32,FileVO>& files, qint32 objectId, bool isAsset = true);
+	INSDRIVER_EXPORT MessageInfo uploadFilesBatch(const FileUploadRequestParams& request, FileUploadResponseParams& response);
+	INSDRIVER_EXPORT MessageInfo downloadFilesBatch(const FileDownloadRequestParam& request, QMap<qint32, FileDownloadResponseParam>& response);
+	INSDRIVER_EXPORT MessageInfo postFileComment(const QSet<qint32>& fileIds, const QString& comment);
 
 	//////variant//////
 	//批量操作

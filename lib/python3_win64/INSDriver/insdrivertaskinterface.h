@@ -137,4 +137,11 @@ namespace INS_INTERFACE
 
 	//删除task，返回值为0，删除task成功。
 	INSDRIVER_EXPORT qint32 DeleteTask(qint32 taskId);
+
+    INSDRIVER_EXPORT MessageInfo saveTaskRelationFile(const TaskRelationFileRequest& request);
+	INSDRIVER_EXPORT MessageInfo GetTaskOutputFileComment(qint32 taskId, QList<FileComment>& fileComments);
+	INSDRIVER_EXPORT MessageInfo GetTaskDefaultOutputPath(qint32 taskId, QString& path);
+	INSDRIVER_EXPORT MessageInfo getOutputFiles(const OutputFileRequest& request, OutputFileResponse& response);
+	INSDRIVER_EXPORT MessageInfo getRequiredFiles(qint32 taskId, QList<OutputFileResponse>& responseList);
+
 };

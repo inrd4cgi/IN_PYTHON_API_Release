@@ -1,6 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.24.0] - 2021-9-6
+### Added
+    * Update API
+
+### Fixed
+    * Cancel Singleton
+    * Download failed while folder exists
+
+
 ## [1.23.3] - 2021-7-22
 ### Rebuild
 
