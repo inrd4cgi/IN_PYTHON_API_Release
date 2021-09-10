@@ -5,6 +5,7 @@ rem mshta vbscript:createobject("wscript.shell").run("""%~nx0"" h",0)(window.clo
 rem :begin
 
 set PATH=@SITE_PACKAGE_PY_SIDE2_HOME@;%PATH%
+set PATH=@INS_DRIVER_ROOT@;%PATH%
 set PYTHONPATH=@SITE_PACKAGE_HOME@;%PYTHONPATH%
 set PYTHONPATH=@PYTHON_API_PATH@;%PYTHONPATH%
 set PYTHONPATH=@SITE_PACKAGE_LIB@;%PYTHONPATH%
