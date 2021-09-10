@@ -1,18 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.25.0] - 2021-9-10
+### Added
+  * add `decryptPassword` method
+
+
 ## [1.24.1] - 2021-9-10
 ### Fixed
-    * Download failed
+  * Download failed
 
 
 ## [1.24.0] - 2021-9-6
 ### Added
-    * Update API
+  * Update API
+
 
 ### Fixed
-    * Cancel Singleton
-    * Download failed while folder exists
+  * Cancel Singleton
+  * Download failed while folder exists
 
 
 ## [1.23.3] - 2021-7-22
