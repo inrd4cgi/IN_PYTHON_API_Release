@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.25.2] - 2021-9-10
+### Rebuild
+
+
 ## [1.25.1] - 2021-9-10
 ### Fixed
   * try to fix start_server failed
