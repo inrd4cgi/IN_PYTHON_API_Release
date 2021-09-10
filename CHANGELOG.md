@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.24.1] - 2021-9-10
+### Fixed
+    * Download failed
+
+
 ## [1.24.0] - 2021-9-6
 ### Added
     * Update API
