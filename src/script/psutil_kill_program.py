@@ -1,9 +1,9 @@
 import os
 import sys
 import time
-# sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "s_utils"))
-# import utils.s_utils as s_utils
-# sys.path.append(s_utils.get_site_packages_home())
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "s_utils"))
+import utils.s_utils as s_utils
+sys.path.append(s_utils.get_site_packages_home())
 
 import psutil
 
