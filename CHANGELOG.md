@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.25.6] - 2021-9-13
+### Fixed
+  * Fix checkin failed
+
+
 ## [1.25.5] - 2021-9-10
 ### Fixed
   * Fix incorrect Data Structure
