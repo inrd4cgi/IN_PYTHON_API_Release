@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.26.0] - 2021-9-14
+### Added
+  * Add new interface `getRequiredFiles`
+
+
 ## [1.25.6] - 2021-9-13
 ### Fixed
   * Fix checkin failed
