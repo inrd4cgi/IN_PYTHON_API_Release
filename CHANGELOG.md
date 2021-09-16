@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.27.0] - 2021-9-16
+### Added
+  * Add new custom interface `getTasksNextAvailableStatus`
+
 
 ## [1.26.0] - 2021-9-14
 ### Added
