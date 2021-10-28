@@ -1,9 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.27.4] - 2021-10-28
+### Added
+  * Add traceback for start_server
+
 ## [1.27.3] - 2021-10-27
 ### Rebuild
-
 
 ## [1.27.2] - 2021-10-20
 ### Fixed
