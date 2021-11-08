@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.27.6] - 2021-11-08
+### Added
+  * Add function `getPipelineStep` 
+
+## [1.27.5] - 2021-10-28
+### Rebuild
+
 ## [1.27.4] - 2021-10-28
 ### Added
   * Add traceback for start_server
