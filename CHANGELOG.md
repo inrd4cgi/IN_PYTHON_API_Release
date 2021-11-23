@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.27.7] - 2021-11-23
+### Added
+  * Fixed `deleteProject` service ID 
 
 ## [1.27.6] - 2021-11-08
 ### Added
