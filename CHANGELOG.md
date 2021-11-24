@@ -1,8 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.27.7] - 2021-11-23
+## [1.28.0] - 2021-11-24
 ### Added
+  * Add `getSceneListPro` 
+
+## [1.27.7] - 2021-11-23
+### Fixed
   * Fixed `deleteProject` service ID 
 
 ## [1.27.6] - 2021-11-08
