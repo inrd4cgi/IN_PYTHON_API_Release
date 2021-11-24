@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.29.0] - 2021-11-24
+### Added
+  * Add `addPersonToProject` 
+
 ## [1.28.0] - 2021-11-24
 ### Added
   * Add `getSceneListPro` 
