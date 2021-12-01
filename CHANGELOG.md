@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.30.0] - 2021-12-01
+### Updated
+  * update `login` 
+
 ## [1.29.0] - 2021-11-24
 ### Added
   * Add `addPersonToProject` 
