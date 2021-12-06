@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.30.2] - 2021-12-06
+### Fixed
+  * fix login: add token and url.
+
 ## [1.30.1] - 2021-12-06
 ### Fixed
   * fix download: while file size is 0 bit.
