@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.32.0] - 2021-12-09
+### Added
+  * Add parameter "file_name" for `uploadOutputFile`.
 
 ## [1.31.0] - 2021-12-09
 ### Added
