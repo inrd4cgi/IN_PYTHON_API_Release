@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.31.0] - 2021-12-09
+### Added
+  * Add parameter "directory" for `uploadOutputFile`.
+  * Add return value "pid" for `start_server`.
+
 ## [1.30.2] - 2021-12-06
 ### Fixed
   * fix login: add token and url.
