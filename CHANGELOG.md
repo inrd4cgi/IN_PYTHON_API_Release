@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.32.1] - 2021-12-14
+### Fixed
+  * Fix `getPersonList` return incorrect values.
+
 ## [1.32.0] - 2021-12-09
 ### Added
   * Add parameter "file_name" for `uploadOutputFile`.
