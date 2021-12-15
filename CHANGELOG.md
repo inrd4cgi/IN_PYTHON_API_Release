@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.32.2] - 2021-12-15
+### Fixed
+  * Parse `uploadFootageId` failed
+
+
 ## [1.32.1] - 2021-12-14
 ### Fixed
   * Fix `getPersonList` return incorrect values.
