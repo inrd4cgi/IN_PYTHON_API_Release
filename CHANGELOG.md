@@ -2,10 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 
+
+## [1.32.3] - 2021-12-16
+### Fixed
+  * Fix `getTasksByConditions` parameter "tags_name" to "tag_name_reg_exp"
+
 ## [1.32.2] - 2021-12-15
 ### Fixed
   * Parse `uploadFootageId` failed
-
 
 ## [1.32.1] - 2021-12-14
 ### Fixed
