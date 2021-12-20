@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.33.0] - 2021-12-120
+### Added
+  * Add `getTasksOutputFiles`
 
 ## [1.32.3] - 2021-12-16
 ### Fixed
