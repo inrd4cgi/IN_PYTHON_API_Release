@@ -2,7 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
-## [1.33.0] - 2021-12-120
+## [1.34.0] - 2021-12-22
+### Added
+  * Add `uploadFilesBatch`
+
+## [1.33.0] - 2021-12-20
 ### Added
   * Add `getTasksOutputFiles`
 
