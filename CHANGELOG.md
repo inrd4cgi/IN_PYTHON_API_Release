@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.35.0] - 2021-12-23
+### Added
+  * Add "tag_name_reg_exp" for `getAssetsByCondition`
+
 ## [1.34.0] - 2021-12-22
 ### Added
   * Add `uploadFilesBatch`
