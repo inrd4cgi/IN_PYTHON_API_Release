@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.35.1] - 2021-12-27
+### Fixed
+  * Modify `IN_RUN_SERVER.py`
 
 ## [1.35.0] - 2021-12-23
 ### Added
