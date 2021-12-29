@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+
+## [1.35.3] - 2021-12-29
+### Fixed
+  * Fix `getProject`error
+
 ## [1.35.2] - 2021-12-27
 ### Fixed
   * Fix `IN_RUN_SERVER.py`
