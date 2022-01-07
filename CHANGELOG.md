@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.36.0] - 2021-12-29
+### Added
+  * Add `getPermissionTemps`
+
 ## [1.35.3] - 2021-12-29
 ### Fixed
   * Fix `getProject`error
