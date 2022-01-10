@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 
-## [1.37.0] - 2021-12-29
+## [1.37.0] - 2022-01-10
 ### Added
   * Add `approveTaskApprovalStatus`
 
