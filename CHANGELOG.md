@@ -1,10 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-
-## [1.38.0] - 2022-02-23
+## [1.39.0] - 2022-02-23
 ### Added
   * `editTaskOutputFile` add `is_review`
+
+## [1.38.0] - 2022年2月23日12:00:57
+### Fixed
+  * Fix `data_flow_get_task_list`
 
 ## [1.37.0] - 2022-01-10
 ### Added
