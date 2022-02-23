@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.40.0] - 2022-02-23
+### Rebuild
+
 ## [1.39.0] - 2022-02-23
 ### Added
   * `editTaskOutputFile` add `is_review`
