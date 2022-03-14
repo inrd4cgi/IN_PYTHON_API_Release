@@ -4,67 +4,12 @@ rem if "h" == "h" goto begin
 rem mshta vbscript:createobject("wscript.shell").run("""%~nx0"" h",0)(window.close)&&exit
 rem :begin
 
-rem set H=
-rem set HB=
-rem set HFS=
-rem set HH=
-rem set HHC=
-rem set HHP=
-rem set HIP=
-rem set HIPFILE=
-rem set HIPNAME=
-rem set HOUDINI_DESKTOP_DIR=
-rem set HOUDINI_OS=
-rem set HOUDINI_PATH=
-rem set HOUDINI_QT_PREFERRED_BINDING=
-rem set HOUDINI_TEMP_DIR=
-rem set HOUDINI_USER_PREF_DIR=
-rem set HOUDINI_VERSION=
-rem set HT=
-rem set HTB=
-rem set HTTPS_PROXY=
-rem set HTTP_PROXY=
-rem set INNOBRIGHT_LICENSE=
-rem set JOB=
-rem set LOCALAPPDATA=
-rem set LOGONSERVER=
-rem set MAYA_UI_LANGUAGE=
-rem set MOOTZOID_LICENSE=
-rem set MOZ_PLUGIN_PATH=
-rem set NEXTLIMIT_LICENSE=
-rem set NGINX_HOME=
-rem set NUMBER_OF_PROCESSORS=
-rem set NVTOOLSEXT_PATH=
-rem set ONEDRIVE=
-rem set ONEDRIVECONSUMER=
-rem set PATH=
-rem set PATHEXT=
-rem set PEREGRINEL_LICENSE=
-rem set POSE=
-rem set PROCESSOR_ARCHITECTURE=
-rem set PROCESSOR_IDENTIFIER=
-rem set PROCESSOR_LEVEL=
-rem set PROCESSOR_REVISION=
-rem set PROGRAMDATA=
-rem set PROGRAMFILES=
-rem set PROGRAMFILES=
-rem set PROGRAMW6432=
-rem set PROMPT=
-rem set PSMODULEPATH=
-rem set PUBLIC=
-rem set PYCHARM=
-rem set PYTHONPATH=
-rem set QTMSBUILD=
-
-set PATH=D:\DEV\Github\IN_PYTHON_API_Release\env\win64\python3.7\
-set PATH=@SITE_PACKAGE_PY_SIDE2_HOME@;
+set PATH=@SITE_PACKAGE_PY_SIDE2_HOME@;%PATH%
 set PATH=@INS_DRIVER_ROOT@;%PATH%
-set PYTHONPATH=@SITE_PACKAGE_HOME@\
+set PYTHONPATH=@SITE_PACKAGE_HOME@;%PYTHONPATH%
 set PYTHONPATH=@PYTHON_API_PATH@;%PYTHONPATH%
 set PYTHONPATH=@SITE_PACKAGE_LIB@;%PYTHONPATH%
 
 
 call @WS_EXTRA_PYTHON_INTERPRETER@ -c "exec(\"import IN_API_SERVER\nIN_API_SERVER.run_server()\")" %*
-rem call @WS_EXTRA_PYTHON_INTERPRETER@ -I -c "exec(\"import IN_RUN_SERVER\")" %*
-rem call @WS_EXTRA_PYTHON_INTERPRETER@ "D:\DEV\Github\IN_PYTHON_API_Release\src_py3\IN_RUN_SERVER.py" %*
 
