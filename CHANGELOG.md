@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.47.2] - 2022-03-31
+### Fixed
+  * Fix `getTasksByConditions` 
+
 ## [1.47.1] - 2022-03-31
 ### Fixed
   * Fix `getTasksByConditions` 
