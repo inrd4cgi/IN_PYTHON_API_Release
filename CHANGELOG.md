@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.47.0] - 2022-03-31
+### Added
+  * Add function `getTaskAssigneeScoreHistory` 
+
+
 ## [1.46.0] - 2022-03-14
 ### Modified
   * Add argument `project_id` for function `makeTag`, `removeTag` 
