@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.48.0] - 2022-04-12
+### Updated
+  * `createPipeline`, `updatePipeline`, `getPipelineStep`, `getPipelineSteps` 
+
 ## [1.47.2] - 2022-03-31
 ### Fixed
   * Fix `getTasksByConditions` 
