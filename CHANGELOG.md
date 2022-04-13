@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [1.48.2] - 2022-04-13
+### Rebuild
+  * Add Variable for `INPipelineSimple`
+
 ## [1.48.1] - 2022-04-13
 ### Rebuild
   * 
