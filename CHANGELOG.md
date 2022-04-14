@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.48.3] - 2022-04-14
+### Fixed
+  * Fix `createWorkFlowTempl`
 
 ## [1.48.2] - 2022-04-13
 ### Rebuild
