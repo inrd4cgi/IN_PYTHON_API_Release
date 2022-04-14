@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [1.49.0] - 2022-04-14
+### Added
+  * Add `modifyPersonPermissionTemp`
+
 ## [1.48.3] - 2022-04-14
 ### Fixed
   * Fix `createWorkFlowTempl`
