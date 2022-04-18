@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.49.2] - 2022-04-18
+### Fixed
+  * Fix `createPipeline`
+
 ## [1.49.1] - 2022-04-14
 ### Rebuild
   * 
