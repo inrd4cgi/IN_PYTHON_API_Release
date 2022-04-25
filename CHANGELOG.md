@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.50.0] - 2022-04-25
+### Added
+  * Add `editPipelineScore`, `getPipelineScore`
+
 ## [1.49.2] - 2022-04-18
 ### Fixed
   * Fix `createPipeline`
