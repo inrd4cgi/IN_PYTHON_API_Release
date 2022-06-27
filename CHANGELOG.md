@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.50.3] - 2022-06-27
+### Fixed
+  * Fix `editTaskOutputFile`
 
 ## [1.50.2] - 2022-04-25
 ### Rebuild
