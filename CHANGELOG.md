@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.51.0] - 2022-07-07
+### Added
+  * Add `getWorkFlowTemplDict` `createWorkFlowTemplDict`
+
 ## [1.50.3] - 2022-06-27
 ### Fixed
   * Fix `editTaskOutputFile`
