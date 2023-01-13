@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.51.1] - 2023-01-23
+### Fixed
+  * Fix convert size number to time
+
 ## [1.51.0] - 2022-07-07
 ### Added
   * Add `getWorkFlowTemplDict` `createWorkFlowTemplDict`
